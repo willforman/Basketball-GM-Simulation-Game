@@ -1,10 +1,19 @@
 import fetch from "node-fetch";
 
-export default async (url: string) => {
+export default async (url: string): Promise<Response> => {
+  const response = await fetch(url);
+
+  let body: Response;
+
   try {
-    const data = await fetch(url);
-    return data.json();
-  } catch (err) {
-    console.error("Couldn't fetch data: ", err);
+    // may error if there is no body
+    body = await response.json();
+  } catch (ex) {
+    throw new Error(ex);
   }
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return body;
 };
