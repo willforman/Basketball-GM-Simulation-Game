@@ -1,5 +1,5 @@
 import { Roster } from "../models";
-import Player from "../player/player";
+import Player from "../player/Player";
 import Team from "../team/Team";
 import BoxScore from "./BoxScore";
 

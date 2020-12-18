@@ -1,4 +1,4 @@
-import League from "./league/league";
+import League from "./league/League";
 import PlayerNameGenService from "./services/PlayerNameService";
 import TeamNameGenService from "./services/TeamNameService";
 

@@ -1,4 +1,4 @@
-import Player from "../player/player";
+import Player from "../player/Player";
 import { Roster, TeamNames } from "../models";
 
 export default class Team {

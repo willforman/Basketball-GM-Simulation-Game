@@ -1,4 +1,4 @@
-import Player from "./player";
+import Player from "./Player";
 
 it("player is created", () => {
   const player = new Player("Joe Smith", 0, 1);
