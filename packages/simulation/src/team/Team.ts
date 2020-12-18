@@ -1,5 +1,4 @@
 import Player from "../player/player";
-import PlayerNameGenService from "../services/PlayerNameService";
 import { Roster, TeamNames } from "../models";
 
 export default class Team {
