@@ -1,10 +1,10 @@
 import teamNames from "../models/TeamNames";
-import NameGen from "./NameGen";
+import PlayerNameGenService from "./PlayerNameService";
 import RandomSelector from "./RandomSelector";
-import TeamNamesService from "./TeamNamesService";
+import TeamNameGenService from "./TeamNameService";
 
-it("Gets team names", async () => {
-  const service = await TeamNamesService.build();
+it("Generates team names", async () => {
+  const service = await TeamNameGenService.build();
 
   const atlNames: teamNames = {
     name: "Hawks",
@@ -23,15 +23,15 @@ it("Gets team names", async () => {
   expect(service.getNextName()).toEqual(expect.objectContaining(bosNames));
 });
 
-it("generates names correctly", async () => {
-  const ng = await NameGen.build();
+it("Generates player name", async () => {
+  const ng = await PlayerNameGenService.build();
 
   const name = ng.getName();
 
   expect(name).toBeTruthy();
 });
 
-it("Random number selection with weights", () => {
+it("Random selection", () => {
   const choices = [
     { item: "one", weight: 10 },
     { item: "two", weight: 20 },

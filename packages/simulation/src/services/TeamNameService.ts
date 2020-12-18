@@ -9,7 +9,7 @@ interface TeamNameObj {
   location: string;
 }
 
-export default class TeamNamesService {
+export default class TeamNameGenService {
   private names: TeamNames[];
   private currIdx = 0;
 
@@ -26,8 +26,8 @@ export default class TeamNamesService {
     }));
   }
 
-  static async build(): Promise<TeamNamesService> {
-    const obj = new TeamNamesService();
+  static async build(): Promise<TeamNameGenService> {
+    const obj = new TeamNameGenService();
     await obj.init();
     return obj;
   }

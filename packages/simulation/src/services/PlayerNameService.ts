@@ -6,7 +6,7 @@ interface FirstNameResponse {
 }
 
 // gets names for league
-export default class NameGen {
+export default class PlayerNameGenService {
   private firstNames: string[];
   private lastNames: string[];
 
@@ -24,8 +24,8 @@ export default class NameGen {
     this.lastNames = lnResponse.payload.slice(0, 1000); // takes only the first 1000 names
   }
 
-  static async build(): Promise<NameGen> {
-    const ng = new NameGen();
+  static async build(): Promise<PlayerNameGenService> {
+    const ng = new PlayerNameGenService();
     await ng.init();
     return ng;
   }
