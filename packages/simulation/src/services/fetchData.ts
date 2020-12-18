@@ -1,9 +1,13 @@
 import fetch from "node-fetch";
 
-export default async (url: string): Promise<Response> => {
+interface ResponseGeneric<T> {
+  payload: T;
+}
+
+export default async <T>(url: string): Promise<ResponseGeneric<T>> => {
   const response = await fetch(url);
 
-  let body: Response;
+  let body: T;
 
   try {
     // may error if there is no body
@@ -15,5 +19,7 @@ export default async (url: string): Promise<Response> => {
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  return body;
+  return {
+    payload: body,
+  };
 };
