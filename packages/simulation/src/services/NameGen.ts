@@ -30,20 +30,16 @@ export default class NameGen {
     return ng;
   }
 
+  // return random first name and last name
   getName(): string {
-    const fn = this.getFirstName();
-    const ln = this.getLastName();
+    const fName = this.getRandElem(this.firstNames);
+    const lName = this.getRandElem(this.lastNames);
 
-    return `${fn} ${ln}`;
+    return `${fName} ${lName}`;
   }
 
-  // picks random first name
-  private getFirstName(): string {
-    return this.firstNames[Math.floor(Math.random() * this.firstNames.length)];
-  }
-
-  // picks random last name
-  private getLastName(): string {
-    return this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
+  // gets random name from array
+  private getRandElem<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 }

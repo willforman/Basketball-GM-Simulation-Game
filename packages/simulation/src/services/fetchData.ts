@@ -10,7 +10,6 @@ export default async <T>(url: string): Promise<ResponseGeneric<T>> => {
   let body: T;
 
   try {
-    // may error if there is no body
     body = await response.json();
   } catch (ex) {
     throw new Error(ex);
