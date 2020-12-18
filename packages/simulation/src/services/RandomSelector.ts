@@ -1,19 +1,19 @@
 import Choice from "../models/Choice";
 
-export default class RandomSelector {
+export default class RandomSelector<T> {
   private sum: number;
-  private choices: Choice[];
+  private choices: Choice<T>[];
 
-  constructor(choices: Choice[]) {
+  constructor(choices: Choice<T>[]) {
     this.choices = choices;
 
     this.sum = choices.reduce(
-      (total: number, choice: Choice) => total + choice.weight,
+      (total: number, choice: Choice<T>) => total + choice.weight,
       0
     );
   }
 
-  getChoice(): any {
+  getChoice(): T {
     const numGenerated = Math.floor(Math.random() * this.sum);
 
     let currTotal = 0;

@@ -40,19 +40,16 @@ it("Random number selection with weights", () => {
   const rs = new RandomSelector(choices);
 
   let oneSelected = 0;
-  let twoSelected = 0;
   for (let i = 0; i < 1000; i++) {
     const choice = rs.getChoice();
 
     if (choice == "one") {
       oneSelected++;
-    } else if (choice == "two") {
-      twoSelected++;
-    } else {
-      throw Error(`Different choice given: ${choice}`);
     }
   }
 
+  // checks if the value is selected between 30-37% of the selections
+  // ideally should be 33%
   expect(oneSelected).toBeGreaterThanOrEqual(300);
   expect(oneSelected).toBeLessThanOrEqual(370);
 });
