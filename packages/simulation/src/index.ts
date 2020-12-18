@@ -1,10 +1,10 @@
 import League from "./league/league";
-import NameGen from "./services/NameGen";
-import TeamNamesService from "./services/TeamNamesService";
+import PlayerNameGenService from "./services/PlayerNameService";
+import TeamNameGenService from "./services/TeamNameService";
 
 export const build = async (): Promise<League> => {
-  const ng = await NameGen.build();
-  const teamNames = await TeamNamesService.build();
+  const ng = await PlayerNameGenService.build();
+  const teamNames = await TeamNameGenService.build();
 
   const league = new League(ng.getName, teamNames.getNextName);
 

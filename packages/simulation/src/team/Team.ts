@@ -1,5 +1,5 @@
 import Player from "../player/player";
-import NameGen from "../services/NameGen";
+import PlayerNameGenService from "../services/PlayerNameService";
 import { Roster, TeamNames } from "../models";
 
 export default class Team {
@@ -12,65 +12,41 @@ export default class Team {
 
   private roster: Roster;
 
-  private nameGen: NameGen;
-  private genPlayerName: Function;
-  private getNextId: Function; // increment player id number for league
+  private playerNameGen: PlayerNameGenService;
+  private getNextId: () => number; // increment player id number for league
 
   constructor(
     names: TeamNames,
-    genPlayerName: Function,
-    getNextId: Function,
+    playerNameGen: PlayerNameGenService,
+    getNextId: () => number,
     rosterSize: number
   ) {
     this.name = names.name;
     this.location = names.location;
     this.abbreviation = names.abbreviation;
 
-    //this.nameGen = nameGen;
+    this.playerNameGen = playerNameGen;
     this.getNextId = getNextId;
 
     this.wins = 0;
     this.losses = 0;
 
-    let PG = null;
-    let SG = null;
-    let SF = null;
-    let PF = null;
-    let C = null;
     const bench = [];
 
     for (let i = 0; i < rosterSize; i++) {
-      const name = genPlayerName();
+      const name = playerNameGen.getName();
 
-      const player = new Player(name, i, getNextId());
-
-      switch (i) {
-        case 0:
-          PG = player;
-          break;
-        case 1:
-          SG = player;
-          break;
-        case 2:
-          SF = player;
-          break;
-        case 3:
-          PF = player;
-          break;
-        case 4:
-          C = player;
-          break;
-        default:
-          bench.push(player);
-      }
+      bench.push(new Player(name, i, getNextId()));
     }
 
+    // can use non-null-assertion (!) because know the array will have
+    // more than 5 players, so shift() will never return undefined
     this.roster = {
-      PG,
-      SG,
-      SF,
-      PF,
-      C,
+      PG: bench.shift()!,
+      SG: bench.shift()!,
+      SF: bench.shift()!,
+      PF: bench.shift()!,
+      C: bench.shift()!,
       bench,
     };
   }
