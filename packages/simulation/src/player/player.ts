@@ -1,6 +1,5 @@
 import BoxScore from "../game/BoxScore";
-import { getStats, StatsGen } from "./statGen";
-import RandomSelector from "../services/RandomSelector";
+import { getStats } from "./statGen";
 
 export default class Player {
   private name: string;
@@ -29,8 +28,8 @@ export default class Player {
 
   private rebounding: number;
 
-  private getLoc: Function;
-  private getMove: Function;
+  private getLoc: () => string;
+  private getMove: (s: string) => string;
 
   private boxScores: BoxScore[];
 
@@ -74,15 +73,15 @@ export default class Player {
   }
 
   // get methods
-  getId() {
+  getId(): number {
     return this.id;
   }
 
-  goToNextYear() {
+  goToNextYear(): void {
     this.age++;
   }
 
-  addBoxScore(boxScore: BoxScore) {
+  addBoxScore(boxScore: BoxScore): void {
     this.boxScores.push(boxScore);
   }
 }

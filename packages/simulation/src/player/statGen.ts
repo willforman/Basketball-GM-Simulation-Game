@@ -1,10 +1,17 @@
 import RandomSelector from "../services/RandomSelector";
 import { Choice } from "../models";
 
+export interface StatsGen {
+  archetype: string;
+  stats: number[];
+  getLocation: () => string;
+  getMove: (s: string) => string;
+}
+
 interface Location {
   name: string;
-  choice: Choice;
-  getMove: Function;
+  choice: Choice<string>;
+  getMove: (s: string) => string;
 }
 
 const locations = ["paint", "midRange", "topKey", "corner"];
@@ -23,7 +30,7 @@ const makeLocation = (
   const getMove = new RandomSelector(choices).getChoice; // function will get move for this location
 
   // Choice obj for location
-  const choice: Choice = {
+  const choice: Choice<string> = {
     item: locationName,
     weight: probWeight,
   };
@@ -39,14 +46,13 @@ const getRandStatNum = (): number => {
   return Math.floor(Math.random() * 30) - 15;
 };
 
-export const getStats = (archetypeNum: number) => {
+export function getStats(archetypeNum: number): StatsGen {
   // stats order:
   // inside shot, 3 pt shot
   // free throw, passing
   // inside defense, 3 pt defense
   // blocking, stealing
   // rebounding
-
   let archetype: string;
   let stats: number[];
   let locs: Location[];
@@ -126,17 +132,16 @@ export const getStats = (archetypeNum: number) => {
   // getLocation function
   const choices = locs.map((loc: Location) => loc.choice);
 
-  const getLocation = new RandomSelector(choices).getChoice;
+  const getLocation = new RandomSelector<string>(choices).getChoice;
 
   // getMove function
-  const getMove = (locName: string) => {
-    locs.forEach((loc: Location): string => {
+  const getMove = (locName: string): string => {
+    locs.forEach((loc: Location) => {
       if (loc.name === locName) {
-        return loc.getMove();
+        return loc.getMove(locName);
       }
-
-      throw Error("Location not found");
     });
+    throw Error("Location not found");
   };
 
   return {
@@ -145,4 +150,4 @@ export const getStats = (archetypeNum: number) => {
     getLocation,
     getMove,
   };
-};
+}
