@@ -88,4 +88,8 @@ export default class Team {
 
     return values.concat(benchPlayers);
   }
+
+  getLocation(): string {
+    return this.location;
+  }
 }

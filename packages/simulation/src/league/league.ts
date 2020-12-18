@@ -46,4 +46,18 @@ export default class League {
       );
     }
   }
+
+  // get functions
+  getYear(): number {
+    return this.year;
+  }
+
+  getTeamByLocation(locName: string): Team {
+    for (const team of this.teams) {
+      if (locName === team.getLocation()) {
+        return team;
+      }
+    }
+    throw new Error("Team not found, given invalid location");
+  }
 }
