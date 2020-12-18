@@ -1,6 +1,7 @@
 import PlayerNameGenService from "../services/PlayerNameService";
 import TeamNameGenService from "../services/TeamNameService";
 import Team from "../team/Team";
+import { TeamNames } from "../models";
 
 export default class League {
   private year: number;
@@ -23,10 +24,7 @@ export default class League {
   }
   // end constants
 
-  constructor(
-    playerNameGen: PlayerNameGenService,
-    teamNameGen: TeamNameGenService
-  ) {
+  constructor(genPlayerName: () => string, genTeamName: () => TeamNames) {
     this.year = this.START_YEAR;
 
     this.playerID = 1;
@@ -37,12 +35,7 @@ export default class League {
 
     for (let i = 0; i < this.LEAGUE_SIZE; i++) {
       this.teams.push(
-        new Team(
-          teamNameGen.getNextName(),
-          playerNameGen,
-          getNextID,
-          this.ROSTER_SIZE
-        )
+        new Team(genTeamName(), genPlayerName, getNextID, this.ROSTER_SIZE)
       );
     }
   }

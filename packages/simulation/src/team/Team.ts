@@ -12,12 +12,12 @@ export default class Team {
 
   private roster: Roster;
 
-  private playerNameGen: PlayerNameGenService;
+  private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
 
   constructor(
     names: TeamNames,
-    playerNameGen: PlayerNameGenService,
+    genPlayerName: () => string,
     getNextId: () => number,
     rosterSize: number
   ) {
@@ -25,7 +25,7 @@ export default class Team {
     this.location = names.location;
     this.abbreviation = names.abbreviation;
 
-    this.playerNameGen = playerNameGen;
+    this.genPlayerName = genPlayerName;
     this.getNextId = getNextId;
 
     this.wins = 0;
@@ -34,7 +34,7 @@ export default class Team {
     const bench = [];
 
     for (let i = 0; i < rosterSize; i++) {
-      const name = playerNameGen.getName();
+      const name = genPlayerName();
 
       bench.push(new Player(name, i, getNextId()));
     }
