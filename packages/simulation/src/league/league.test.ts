@@ -1,7 +1,8 @@
 import { testLeague } from "../testingObjs";
 
 it("league is created", async () => {
-  const chiTeam = testLeague.getTeamByLocation("Chicago");
+  // test league has all teams with location of "test location"
+  const team = testLeague.getTeamByLocation("Test Location");
 
-  expect(chiTeam).toBeTruthy();
+  expect(team).toBeTruthy();
 });
