@@ -1,13 +1,15 @@
 import fetch from "node-fetch";
 
-interface ResponseGeneric<T> {
-  payload: T;
+interface ResponseGeneric<ResponseStructure> {
+  payload: ResponseStructure;
 }
 
-export default async <T>(url: string): Promise<ResponseGeneric<T>> => {
+export default async <ResponseStructure>(
+  url: string
+): Promise<ResponseGeneric<ResponseStructure>> => {
   const response = await fetch(url);
 
-  let body: T;
+  let body: ResponseStructure;
 
   try {
     body = await response.json();
