@@ -5,10 +5,6 @@ interface FirstNameResponse {
   names: string[];
 }
 
-interface LastNameResponse {
-  names: string[];
-}
-
 // gets names for league
 export default class NameGen {
   private firstNames: string[];
@@ -23,9 +19,9 @@ export default class NameGen {
 
     const lnURL =
       "https://raw.githubusercontent.com/terryweiss/ink-collector/master/tests/nottests/last.names.json";
-    const lnResponse = await fetchData<LastNameResponse>(lnURL);
+    const lnResponse = await fetchData<string[]>(lnURL);
 
-    this.lastNames = lnResponse.payload.names.slice(0, 1000); // takes only the first 1000 names
+    this.lastNames = lnResponse.payload.slice(0, 1000); // takes only the first 1000 names
   }
 
   static async build(): Promise<NameGen> {
