@@ -1,2 +1,1 @@
-const locations = ["paint", "midRange", "topKey", "corner"];
-export default locations;
+export const locations = ["paint", "midRange", "topKey", "corner"];

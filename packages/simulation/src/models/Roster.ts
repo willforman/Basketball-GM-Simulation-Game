@@ -1,9 +1,10 @@
 import Player from "../player/Player";
 
-export default interface Roster {
-  PG: Player;
-  SG: Player;
-  SF: Player;
-  PF: Player;
-  C: Player;
+export interface Roster {
+  starters: Player[];
+  bench: Player[][];
 }
+
+export const getStarter = (roster: Roster, pos: number): Player => {
+  return roster.starters[pos];
+};

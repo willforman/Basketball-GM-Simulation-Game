@@ -1,9 +1,6 @@
-import Roster from "./Roster";
-import TeamNames from "./TeamNames";
-import Choice from "./Choice";
+export * from "./Roster";
+export * from "./TeamNames";
+export * from "./Choice";
 
-import moves from "./moves";
-import locations from "./locations";
-
-export type { Roster, TeamNames, Choice };
-export { moves, locations };
+export * from "./moves";
+export * from "./locations";

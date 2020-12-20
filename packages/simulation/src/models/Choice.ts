@@ -1,4 +1,4 @@
-export default interface Choice<T> {
+export interface Choice<T> {
   item: T;
   weight: number;
 }
