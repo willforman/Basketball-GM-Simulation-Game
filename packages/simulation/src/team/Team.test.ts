@@ -1,9 +1,21 @@
-import Team from "./Team";
+import { team1 } from "../testingObjs";
 
-import { testTeam1, testTeam2 } from "../testingObjs";
+describe("Team", () => {
+  const team = team1;
 
-it("Get player array", async () => {
-  const players = testTeam1.getPlayerArray();
+  it("Get player array", () => {
+    const players = team.getPlayerArray();
 
-  expect(players.length).toBe(testTeam1.getNumberOfPlayers());
+    expect(players.length).toBe(team.getNumberOfPlayers());
+  });
+
+  it("Gets player by postion", () => {
+    const player = team.getPlayer(0);
+
+    expect(player).toEqual(
+      expect.objectContaining({
+        pos: 0,
+      })
+    );
+  });
 });

@@ -5,6 +5,11 @@ export default class RandomSelector<T> {
   private choices: Choice<T>[];
 
   constructor(choices: Choice<T>[]) {
+    if (!choices) {
+      console.error(choices);
+      throw new Error(`Invalid choices given`);
+    }
+
     this.choices = choices;
 
     this.sum = choices.reduce(
@@ -13,7 +18,7 @@ export default class RandomSelector<T> {
     );
   }
 
-  getChoice(): T {
+  getChoice = (): T => {
     const numGenerated = Math.floor(Math.random() * this.sum);
 
     let currTotal = 0;
@@ -24,6 +29,6 @@ export default class RandomSelector<T> {
         return choice.item;
       }
     }
-    throw Error("Couldn't select choice");
-  }
+    throw new Error("Couldn't find choice");
+  };
 }

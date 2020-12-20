@@ -1,27 +1,56 @@
-export default class BoxScore {
-  private completed: boolean;
+import { moves } from "../models";
 
+export default class BoxScore {
   private title: string;
 
   // stats tracked in game
-  private pointCount: number;
-  private reboundCount: number;
-  private assistCount: number;
-  private blockCount: number;
-  private stealCount: number;
-  private FGACount: number;
-  private FGMCount: number;
-  private threePtACount: number;
-  private threePtMCount: number;
-  private FTACount: number;
-  private FTMCount: number;
+  private points: number;
+  private rebounds: number;
+  private assists: number;
+  private blocks: number;
+  private steals: number;
+  private FGAs: number;
+  private FGMs: number;
+  private threePtAs: number;
+  private threePtMs: number;
+  private FTAs: number;
+  private FTMs: number;
 
   constructor(title: string) {
     this.title = title;
 
-    this.pointCount = this.reboundCount = this.assistCount = this.blockCount = this.stealCount = 0;
-    this.FGACount = this.FGMCount = this.threePtACount = this.threePtMCount = this.FTACount = this.FTMCount = 0;
+    this.points = this.rebounds = this.assists = this.blocks = this.steals = 0;
+    this.FGAs = this.FGMs = this.threePtAs = this.threePtMs = this.FTAs = this.FTMs = 0;
+  }
 
-    this.completed = false;
+  addShot(move: string, points = 0): void {
+    this.FGAs++;
+    if (move === moves[2]) {
+      // if move is 3pter
+      this.threePtAs++;
+    }
+    if (points > 0) {
+      this.points += points;
+      this.FGMs++;
+      if (move === move[2]) {
+        this.threePtMs++;
+      }
+    }
+  }
+
+  addAssist(): void {
+    this.assists++;
+  }
+
+  addSteal(): void {
+    this.steals++;
+  }
+
+  addBlock(): void {
+    this.blocks++;
+  }
+
+  addRebound(): void {
+    this.rebounds++;
   }
 }

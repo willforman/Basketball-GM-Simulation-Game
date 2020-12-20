@@ -1,5 +1,6 @@
 import BoxScore from "../game/BoxScore";
 import { getStats } from "./statGen";
+import moves from "../models/moves";
 
 export default class Player {
   private name: string;
@@ -28,8 +29,8 @@ export default class Player {
 
   private rebounding: number;
 
-  private getLoc: () => string;
-  private getMove: (s: string) => string;
+  getLoc: () => string;
+  getMove: (loc: string) => string;
 
   private boxScores: BoxScore[];
 
@@ -68,8 +69,8 @@ export default class Player {
     this.rebounding = stats[10];
   }
 
-  private getRand(lb: number, ub: number) {
-    return Math.floor(Math.random() * (ub - lb)) + lb;
+  private getRand(lb: number, ub: number): number {
+    return Math.floor(Math.random() * (ub - lb + 1)) + lb;
   }
 
   // get methods
@@ -83,5 +84,46 @@ export default class Player {
 
   addBoxScore(boxScore: BoxScore): void {
     this.boxScores.push(boxScore);
+  }
+
+  getOffenseRating(offMove: string): number {
+    switch (offMove) {
+      case moves[0]:
+        return this.insideShot;
+      case moves[1]:
+        return this.midShot;
+      case moves[2]:
+        return this.threePtShot;
+      case moves[3]:
+        return this.passing;
+    }
+    throw new Error(`Invalid move given: ${offMove}`);
+  }
+
+  // get defense rating based on offense move used
+  getDefenseRating(offMove: string): number {
+    switch (offMove) {
+      case moves[0]:
+        return this.insideDefense;
+      case moves[1]:
+        return this.midDefense;
+      case moves[2]:
+        return this.threePtDefense;
+      case moves[3]:
+        return this.stealing;
+    }
+    throw new Error(`Given invalid offMove: ${offMove}`);
+  }
+
+  getRatingMultiplier(): number {
+    return this.rating / 100;
+  }
+
+  getRebounding(): number {
+    return this.rebounding;
+  }
+
+  getPositionNum(): number {
+    return this.pos;
   }
 }

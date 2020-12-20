@@ -1,5 +1,5 @@
 import RandomSelector from "../services/RandomSelector";
-import { Choice } from "../models";
+import { Choice, moves, locations } from "../models";
 
 export interface StatsGen {
   archetype: string;
@@ -11,10 +11,8 @@ export interface StatsGen {
 interface Location {
   name: string;
   choice: Choice<string>;
-  getMove: (s: string) => string;
+  getMove: () => string;
 }
-
-const locations = ["paint", "midRange", "topKey", "corner"];
 
 const makeLocation = (
   locationName: string,
@@ -23,7 +21,7 @@ const makeLocation = (
 ): Location => {
   // turn array of probabilities into array of Choice objs
   const choices = moveProbWeights.map((moveProb: number, i: number) => ({
-    item: locations[i],
+    item: moves[i],
     weight: moveProb,
   }));
 
@@ -43,7 +41,7 @@ const makeLocation = (
 };
 
 const getRandStatNum = (): number => {
-  return Math.floor(Math.random() * 30) - 15;
+  return Math.floor(Math.random() * 31) - 15;
 };
 
 export function getStats(archetypeNum: number): StatsGen {
@@ -132,16 +130,17 @@ export function getStats(archetypeNum: number): StatsGen {
   // getLocation function
   const choices = locs.map((loc: Location) => loc.choice);
 
-  const getLocation = new RandomSelector<string>(choices).getChoice;
+  const getLocation = new RandomSelector(choices).getChoice;
 
   // getMove function
   const getMove = (locName: string): string => {
-    locs.forEach((loc: Location) => {
-      if (loc.name === locName) {
-        return loc.getMove(locName);
-      }
-    });
-    throw Error("Location not found");
+    const sameLoc = locs.find((loc: Location) => loc.name === locName);
+
+    if (!sameLoc) {
+      throw new Error(`Couldn't find location: ${locName}`);
+    }
+
+    return sameLoc.getMove();
   };
 
   return {

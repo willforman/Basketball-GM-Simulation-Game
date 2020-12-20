@@ -1,10 +1,11 @@
+import Player from "./player/Player";
 import Team from "./team/Team";
+import Game from "./game/Game";
 import League from "./league/League";
 import { TeamNames } from "./models";
-import Game from "./game/Game";
 
 const mockGenPlayerName = (): string => {
-  return "John Smith";
+  return "Joe Smith";
 };
 
 const mockGetTeamNames = (): TeamNames => {
@@ -20,19 +21,21 @@ const mockGetId = () => {
   return id++;
 };
 
-export const testTeam1 = new Team(
+export const player = new Player("Joe Smith", 0, 1);
+
+export const team1 = new Team(
   mockGetTeamNames(),
   mockGenPlayerName,
   mockGetId,
   15
 );
-export const testTeam2 = new Team(
+export const team2 = new Team(
   mockGetTeamNames(),
   mockGenPlayerName,
   mockGetId,
   15
 );
 
-export const testGame = new Game(testTeam1, testTeam2);
+export const game = new Game(team1, team2);
 
-export const testLeague = new League(mockGenPlayerName, mockGetTeamNames);
+export const league = new League(mockGenPlayerName, mockGetTeamNames);

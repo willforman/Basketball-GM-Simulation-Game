@@ -1,5 +1,3 @@
-import PlayerNameGenService from "../services/PlayerNameService";
-import TeamNameGenService from "../services/TeamNameService";
 import Team from "../team/Team";
 import { TeamNames } from "../models";
 
@@ -46,11 +44,14 @@ export default class League {
   }
 
   getTeamByLocation(locName: string): Team {
-    for (const team of this.teams) {
-      if (locName === team.getLocation()) {
-        return team;
-      }
+    const foundTeam = this.teams.find(
+      (team: Team) => locName === team.getLocation()
+    );
+
+    if (!foundTeam) {
+      throw new Error(`Team not found, location ${locName} is invalid`);
     }
-    throw new Error("Team not found, given invalid location");
+
+    return foundTeam;
   }
 }
