@@ -6,5 +6,4 @@ export default interface Roster {
   SF: Player;
   PF: Player;
   C: Player;
-  bench: Player[];
 }

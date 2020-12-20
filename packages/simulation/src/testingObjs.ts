@@ -21,7 +21,7 @@ const mockGetId = () => {
   return id++;
 };
 
-export const player = new Player("Joe Smith", 0, 1);
+export const player = new Player("Joe Smith", 1, 0);
 
 export const team1 = new Team(
   mockGetTeamNames(),

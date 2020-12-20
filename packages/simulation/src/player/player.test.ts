@@ -1,10 +1,10 @@
 import { player } from "../testingObjs";
 import Player from "./Player";
-import { getStats, StatsGen } from "./statGen";
+import { getStats } from "./statGen";
 
 describe("Player", () => {
   it("Is created", () => {
-    const createdPlayer = new Player("Joe Smith", 0, 1);
+    const createdPlayer = new Player("Joe Smith", 1, 0);
     expect(createdPlayer).toEqual(
       expect.objectContaining({
         name: "Joe Smith",

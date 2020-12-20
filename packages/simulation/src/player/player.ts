@@ -34,8 +34,16 @@ export default class Player {
 
   private boxScores: BoxScore[];
 
-  constructor(name: string, pos: number, id: number) {
+  constructor(name: string, id: number, pos?: number) {
     this.name = name;
+    this.id = id;
+
+    if (!pos) {
+      pos = this.getRand(0, 5);
+    } else {
+      this.pos = pos;
+    }
+
     this.age = this.getRand(19, 34);
 
     this.rating = 80;

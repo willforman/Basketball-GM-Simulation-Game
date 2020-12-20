@@ -9,7 +9,8 @@ export default class Team {
   private wins: number;
   private losses: number;
 
-  private roster: Roster;
+  private starters: Roster;
+  private benchPositions: Map<number, Player>;
 
   private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
@@ -30,29 +31,26 @@ export default class Team {
     this.wins = 0;
     this.losses = 0;
 
-    const bench = [];
+    this.benchPositions = new Map();
 
-    for (let i = 0; i < rosterSize; i++) {
-      const name = genPlayerName();
-
-      bench.push(new Player(name, i, getNextId()));
-    }
-
-    // can use non-null-assertion (!) because know the array will have
-    // more than 5 players, so shift() will never return undefined
-    this.roster = {
-      PG: bench.shift()!,
-      SG: bench.shift()!,
-      SF: bench.shift()!,
-      PF: bench.shift()!,
-      C: bench.shift()!,
-      bench,
+    this.starters = {
+      PG: new Player(genPlayerName(), getNextId(), 0),
+      SG: new Player(genPlayerName(), getNextId(), 1),
+      SF: new Player(genPlayerName(), getNextId(), 2),
+      PF: new Player(genPlayerName(), getNextId(), 3),
+      C: new Player(genPlayerName(), getNextId(), 4),
     };
+
+    for (let i = 0; i < rosterSize - 5; i++) {
+      const player = new Player(genPlayerName(), getNextId());
+
+      this.benchPositions.set(player.getPositionNum(), player);
+    }
   }
   // get methods
 
   getRoster(): Roster {
-    return this.roster;
+    return this.starters;
   }
 
   getAbreviation(): string {
@@ -62,26 +60,26 @@ export default class Team {
   getPlayer(pos: number): Player {
     switch (pos) {
       case 0:
-        return this.roster.PG;
+        return this.starters.PG;
       case 1:
-        return this.roster.SG;
+        return this.starters.SG;
       case 2:
-        return this.roster.SF;
+        return this.starters.SF;
       case 3:
-        return this.roster.PF;
+        return this.starters.PF;
       case 4:
-        return this.roster.C;
+        return this.starters.C;
       default:
         throw Error(`Illegal position given: ${pos}`);
     }
   }
 
   getNumberOfPlayers(): number {
-    return 5 + this.roster.bench.length;
+    return 5 + this.starters.bench.length;
   }
 
   getPlayerArray(): Player[] {
-    const values = Object.values(this.roster);
+    const values = Object.values(this.starters);
 
     const benchPlayers = values.pop();
 
@@ -90,5 +88,9 @@ export default class Team {
 
   getLocation(): string {
     return this.location;
+  }
+
+  getBench(): Map<number, Player> {
+    return this.benchPositions;
   }
 }

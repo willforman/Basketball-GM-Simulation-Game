@@ -140,8 +140,11 @@ export default class Game {
 
   private completed: boolean;
 
-  private homeRoster: Roster;
-  private awayRoster: Roster;
+  private homeStarters: Roster;
+  private awayStarters: Roster;
+
+  private homeBench: Map<number, Player>;
+  private awayBench: Map<number, Player>;
 
   private homeBoxScores: Map<Player, BoxScore>;
   private awayBoxScores: Map<Player, BoxScore>;
@@ -155,8 +158,11 @@ export default class Game {
     this.homeTeam = homeTeam;
     this.awayTeam = awayTeam;
 
-    this.homeRoster = homeTeam.getRoster();
-    this.awayRoster = awayTeam.getRoster();
+    this.homeStarters = homeTeam.getRoster();
+    this.awayStarters = awayTeam.getRoster();
+
+    this.homeBench = homeTeam.getBench();
+    this.awayBench = awayTeam.getBench();
 
     this.homeScore = 0;
     this.awayScore = 0;
@@ -229,8 +235,8 @@ export default class Game {
 
     if (!teamItems) {
       teamItems = {
-        offRoster: homeHasBall ? this.homeRoster : this.awayRoster,
-        defRoster: homeHasBall ? this.awayRoster : this.homeRoster,
+        offRoster: homeHasBall ? this.homeStarters : this.awayStarters,
+        defRoster: homeHasBall ? this.awayStarters : this.homeStarters,
         offBoxScores: homeHasBall ? this.homeBoxScores : this.awayBoxScores,
         defBoxScores: homeHasBall ? this.awayBoxScores : this.homeBoxScores,
       };
