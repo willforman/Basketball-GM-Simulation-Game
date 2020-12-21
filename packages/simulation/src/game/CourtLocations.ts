@@ -1,48 +1,61 @@
 import Player from "../player/Player";
-import locationNames from "../models/locations";
-import { moves, locations } from "../models";
+import { Move, Location, locationArr } from "../models";
 
 export default class CourtLocations {
-  private locs: Map<string, Player[]>;
+  private players: Player[];
+  private locs: Map<Location, Player[]>;
 
   constructor(players: Player[]) {
+    this.players = players;
     this.locs = new Map();
-    locationNames.forEach((locationName: string) => {
-      this.locs.set(locationName, []);
+  }
+
+  getNewLocs(): void {
+    // need to clear all old arrays
+    locationArr.forEach((locName: Location) => {
+      this.locs.set(locName, []);
     });
 
-    players.forEach((player: Player) => {
+    // then for each player, put them at random location
+    this.players.forEach((player: Player) => {
       const locName = player.getLoc();
       this.getPlayersAtLocation(locName).push(player);
     });
   }
 
-  getLocOfPlayer(player: Player): string {
-    let foundAtLoc = "";
-    for (const [locName, playersAtLoc] of Array.from(this.locs.entries())) {
-      if (playersAtLoc.some((playerAtLoc: Player) => playerAtLoc === player)) {
-        foundAtLoc = locName;
-      }
-    }
-
-    if (!foundAtLoc) {
-      throw new Error(`Given invalid player ${player}`);
-    }
-
-    return foundAtLoc;
-  }
-
-  private getPlayersAtLocation(locName: string): Player[] {
+  private getPlayersAtLocation(locName: Location): Player[] {
     const players = this.locs.get(locName);
 
     if (!players) {
-      throw new Error(`Illegal location given: ${locName}`);
+      throw new Error(`Invalid location given: ${locName}`);
     }
 
     return players;
   }
 
-  getRandPlayerAtLocation(locName: string): Player | null {
+  getLocOfPlayer(player: Player): Location {
+    const locs = Array.from(this.locs.keys());
+
+    const loc = locs.find((loc: Location) => {
+      const playerArrHere = this.locs.get(loc);
+
+      if (!playerArrHere) {
+        throw new Error(`Player array messed up in locs`);
+      }
+
+      return playerArrHere.some(
+        (playerAtLoc: Player) => player === playerAtLoc
+      );
+    });
+
+    if (!loc) {
+      throw new Error(`Invalid player given: ${player}`);
+    }
+
+    return loc;
+  }
+
+  getRandPlayerAtLocation(locName: Location): Player | null {
     const players = this.getPlayersAtLocation(locName);
 
     if (players == []) {
@@ -52,18 +65,16 @@ export default class CourtLocations {
     return players[Math.floor(Math.random() * players.length)];
   }
 
-  getDefenderFromOffMove(offMove: string): Player | null {
-    if (offMove === moves[3]) {
-      throw new Error("Can't get location when move is pass");
+  getDefenderFromOffMove(offMove: Move, offPlayerLoc: Location): Player | null {
+    switch (offMove) {
+      case Move.PASS:
+        throw new Error(`Can't get defender location when move is pass`);
+      case Move.INSIDE_SHOT:
+        return this.getRandPlayerAtLocation(Location.PAINT);
+      case Move.MID_SHOT:
+        return this.getRandPlayerAtLocation(Location.MID_RANGE);
+      case Move.THREE_PT_SHOT:
+        return this.getRandPlayerAtLocation(offPlayerLoc);
     }
-
-    let player: Player | null;
-    for (let i = 0; i < 3; i++) {
-      if (moves[i] === offMove) {
-        player = this.getRandPlayerAtLocation(locations[i]);
-      }
-    }
-
-    return player!;
   }
 }

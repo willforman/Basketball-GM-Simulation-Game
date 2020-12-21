@@ -1,4 +1,5 @@
-import { Roster, moves, Choice, locations } from "../models";
+import { Move, Location } from "../models";
+
 import Player from "../player/Player";
 import RandomSelector from "../services/RandomSelector";
 import Team from "../team/Team";
@@ -8,115 +9,19 @@ import CourtLocations from "./CourtLocations";
 interface Possession {
   resultingPoints: number;
   secondsTaken: number;
-  timesPassed: number;
 }
 
 interface TeamItems {
-  offRoster: Roster;
-  defRoster: Roster;
-  offBoxScores: Map<Player, BoxScore>;
-  defBoxScores: Map<Player, BoxScore>;
+  starters: Player[];
+  boxScores: Map<Player, BoxScore>;
+  locations: CourtLocations;
 }
 
-interface OffenseItems {
-  offBoxScore: BoxScore;
-  offLocs: CourtLocations;
-  offPlayerLoc: string;
-  offMove: string;
-  offRating: number;
-}
-
-const getOffItems = (
-  offRoster: Roster,
-  positionWithBall: number,
-  offBoxScores: Map<Player, BoxScore>,
-  passBonus: number
-): OffenseItems => {
-  const offPlayer = getPlayerByPosition(offRoster, positionWithBall);
-  const offBoxScore = offBoxScores.get(offPlayer);
-
-  if (!offBoxScore) {
-    throw new Error(
-      `Couldn't find box score of player id: ${offPlayer.getId()} `
-    );
-  }
-
-  const offLocs = new CourtLocations(getStartingPlayers(offRoster));
-
-  const offPlayerLoc = offLocs.getLocOfPlayer(offPlayer);
-
-  const offMove = offPlayer.getMove(offPlayerLoc);
-  const offRating =
-    offPlayer.getOffenseRating(offMove) * offPlayer.getRatingMultiplier() +
-    passBonus;
-
-  return {
-    offBoxScore,
-    offLocs,
-    offPlayerLoc,
-    offMove,
-    offRating,
-  };
-};
-
-interface DefItems {
-  defLocs: CourtLocations;
-  defRating: number;
-  defPlayer: Player | null;
-}
-
-const getDefItems = (
-  defRoster: Roster,
-  offMove: string,
-  offPlayerLoc: string
-): DefItems => {
-  const defLocs = new CourtLocations(getStartingPlayers(defRoster));
-
-  let defPlayer: Player | null;
-  if (offMove === moves[3]) {
-    // if move is a pass, get player at same location as passer
-    defPlayer = defLocs.getRandPlayerAtLocation(offPlayerLoc);
-  } else {
-    // if it's a shot, get player at location of shot
-    defPlayer = defLocs.getDefenderFromOffMove(offMove);
-  }
-
-  const defRating = defPlayer
-    ? defPlayer.getDefenseRating(offMove) * defPlayer.getRatingMultiplier()
-    : -1;
-
-  return {
-    defLocs,
-    defRating,
-    defPlayer,
-  };
-};
-
-const getStartingPlayers = (roster: Roster): Player[] => {
-  return [roster.PG, roster.SG, roster.SF, roster.PF, roster.C];
-};
-
-const getPlayerByPosition = (roster: Roster, pos: number): Player => {
-  switch (pos) {
-    case 0:
-      return roster.PG;
-    case 1:
-      return roster.SG;
-    case 2:
-      return roster.SF;
-    case 3:
-      return roster.PF;
-    case 4:
-      return roster.C;
-  }
-  throw new Error(`Given illegal position: ${pos}`);
-};
-
-const getReboundLocation = new RandomSelector([
-  { item: locations[0], weight: 70 },
-  { item: locations[1], weight: 20 },
-  { item: locations[2], weight: 5 },
-  { item: locations[3], weight: 5 },
+const getReboundLocation: () => Location = new RandomSelector<Location>([
+  { item: Location.PAINT, weight: 70 },
+  { item: Location.MID_RANGE, weight: 20 },
+  { item: Location.TOP_KEY, weight: 5 },
+  { item: Location.CORNER, weight: 5 },
 ]).getChoice;
 
 const getRand = (ub: number): number => {
@@ -138,16 +43,10 @@ export default class Game {
   private homeScore: number;
   private awayScore: number;
 
-  private completed: boolean;
-
-  private homeStarters: Roster;
-  private awayStarters: Roster;
-
-  private homeBench: Map<number, Player>;
-  private awayBench: Map<number, Player>;
-
   private homeBoxScores: Map<Player, BoxScore>;
   private awayBoxScores: Map<Player, BoxScore>;
+
+  private completed: boolean;
 
   // declared constants
   get QUARTER_LENGTH_MINUTES(): number {
@@ -158,42 +57,10 @@ export default class Game {
     this.homeTeam = homeTeam;
     this.awayTeam = awayTeam;
 
-    this.homeStarters = homeTeam.getRoster();
-    this.awayStarters = awayTeam.getRoster();
-
-    this.homeBench = homeTeam.getBench();
-    this.awayBench = awayTeam.getBench();
-
     this.homeScore = 0;
     this.awayScore = 0;
 
     this.completed = false;
-
-    const homeBSTitle = `Vs ${this.awayTeam.getAbreviation()}`;
-    this.homeBoxScores = new Map(
-      homeTeam
-        .getPlayerArray()
-        .map((player) => [player, new BoxScore(homeBSTitle)])
-    );
-
-    const awayBSTitle = ` @ ${this.awayTeam.getAbreviation()}`;
-    this.awayBoxScores = new Map(
-      awayTeam
-        .getPlayerArray()
-        .map((player) => [player, new BoxScore(awayBSTitle)])
-    );
-  }
-
-  private initBoxScores(
-    team: Team,
-    boxScores: Map<number, BoxScore>,
-    boxScoreTitle: string
-  ): void {
-    boxScores = new Map(
-      team
-        .getPlayerArray()
-        .map((player: Player) => [player.getId(), new BoxScore(boxScoreTitle)])
-    );
   }
 
   simulate(): void {
@@ -201,13 +68,51 @@ export default class Game {
       throw Error("Game already played");
     }
 
+    // can't setup rosters and box scores until game starts
+    // in case rosters are changed after game is created
+    const homeRoster = this.homeTeam.getRoster();
+    const awayRoster = this.awayTeam.getRoster();
+
+    const hBSTitle = `Vs ${this.awayTeam.getAbreviation()}`;
+    this.homeBoxScores = new Map(
+      this.homeTeam
+        .getPlayerArray()
+        .map((player: Player) => [player, new BoxScore(hBSTitle)])
+    );
+
+    const aBSTitle = ` @ ${this.homeTeam.getAbreviation()}`;
+    this.awayBoxScores = new Map(
+      this.awayTeam
+        .getPlayerArray()
+        .map((player: Player) => [player, new BoxScore(aBSTitle)])
+    );
+
+    const homeLocs = new CourtLocations(homeRoster.starters);
+    const awayLocs = new CourtLocations(awayRoster.starters);
+
+    // creates TeamItems for both teams
+    const homeItems: TeamItems = {
+      starters: homeRoster.starters,
+      boxScores: this.homeBoxScores,
+      locations: homeLocs,
+    };
+
+    const awayItems: TeamItems = {
+      starters: awayRoster.starters,
+      boxScores: this.awayBoxScores,
+      locations: awayLocs,
+    };
+
     // determines if home starts with ball
     let homeHasBall = Math.floor(Math.random() * 2) == 1;
 
     for (let quarter = 1; quarter <= 4; quarter++) {
       let secondsLeftInQuarter = this.QUARTER_LENGTH_MINUTES * 60;
       while (secondsLeftInQuarter > 0) {
-        const possession = this.playPossession(homeHasBall);
+        const offItems = homeHasBall ? homeItems : awayItems;
+        const defItems = homeHasBall ? awayItems : homeItems;
+
+        const possession = this.playPossession(offItems, defItems);
         secondsLeftInQuarter -= possession.secondsTaken;
         if (homeHasBall) {
           this.homeScore += possession.resultingPoints;
@@ -222,83 +127,84 @@ export default class Game {
   }
 
   private playPossession(
-    homeHasBall: boolean,
-    positionWithBall = 0,
+    offItems: TeamItems,
+    defItems: TeamItems,
+    positionWithBall = 0, // PG will start with ball at start of each possession
     secondsTaken = 0,
     passBonus = 0,
-    timesPassed = 0,
-    teamItems?: TeamItems
+    addAssistToPasser?: () => void
   ): Possession {
     let resultingPoints = 0;
 
     secondsTaken += Math.floor(Math.random() * 16) + 8;
 
-    if (!teamItems) {
-      teamItems = {
-        offRoster: homeHasBall ? this.homeStarters : this.awayStarters,
-        defRoster: homeHasBall ? this.awayStarters : this.homeStarters,
-        offBoxScores: homeHasBall ? this.homeBoxScores : this.awayBoxScores,
-        defBoxScores: homeHasBall ? this.awayBoxScores : this.homeBoxScores,
-      };
+    // get offense variables needed
+    const offPlayer = offItems.starters[positionWithBall];
+    const offBoxScore = offItems.boxScores.get(offPlayer);
+
+    if (!offBoxScore) {
+      throw new Error(`Couldn't find box score of player: ${offPlayer}`);
     }
 
-    const { offRoster, defRoster, offBoxScores, defBoxScores } = teamItems;
+    offItems.locations.getNewLocs();
+    const offPlayerLoc = offItems.locations.getLocOfPlayer(offPlayer);
 
-    const {
-      offBoxScore,
-      offLocs,
-      offMove,
-      offPlayerLoc,
-      offRating,
-    } = getOffItems(offRoster, positionWithBall, offBoxScores, passBonus);
+    const offMove = offPlayer.getMove(offPlayerLoc);
+    const offRating = offPlayer.getOffenseRating(offMove) + passBonus;
 
-    const { defLocs, defRating, defPlayer } = getDefItems(
-      defRoster,
-      offMove,
-      offPlayerLoc
-    );
+    // get defense variables needed
+    defItems.locations.getNewLocs();
+
+    const defPlayer =
+      offMove === Move.PASS // if move is a pass
+        ? defItems.locations.getRandPlayerAtLocation(offPlayerLoc) // player at location of offense
+        : defItems.locations.getDefenderFromOffMove(offMove, offPlayerLoc); // player at location of where will shoot
+
+    const defRating = defPlayer ? defPlayer.getDefenseRating(offMove) : -1;
 
     // offense play wins out
     if (compareRatings(offRating, defRating)) {
       // if ball was passed
-      if (offMove === moves[3]) {
+      if (offMove === Move.PASS) {
         // picks random position to pass to
         let posPassingto: number;
         do {
           posPassingto = Math.floor(Math.random() * 5);
         } while (posPassingto === positionWithBall); // loops until finds different position from current
 
+        const addAssistToPasser = () => {
+          offBoxScore.addAssist();
+        };
+
         // calls new play to be played because ball was passed
         const passResult = this.playPossession(
-          homeHasBall,
+          offItems,
+          defItems,
           posPassingto,
           secondsTaken,
           offRating,
-          timesPassed + 1,
-          teamItems
+          addAssistToPasser
         );
 
         // updates current results of this play based on pass
         secondsTaken = passResult.secondsTaken;
         resultingPoints = passResult.resultingPoints;
-
-        const nextPlayerScored = passResult.timesPassed == timesPassed + 1;
-
-        // if next player passed to scores, must add to assists
-        if (resultingPoints > 0 && nextPlayerScored) {
-          offBoxScore.addAssist();
-        }
       }
       // if ball was shot
       else {
         const shotResultPoints = this.checkShot(offMove, offRating);
         offBoxScore.addShot(offMove, shotResultPoints);
         resultingPoints = shotResultPoints;
+
+        // if player was passed to, add assist to passer
+        if (addAssistToPasser) {
+          addAssistToPasser();
+        }
       }
     }
     // if defense rating was higher
     else {
-      const defBoxScore = defBoxScores.get(defPlayer!);
+      const defBoxScore = defItems.boxScores.get(defPlayer!);
 
       if (!defBoxScore) {
         throw new Error(
@@ -306,7 +212,7 @@ export default class Game {
         );
       }
       // if offense tried to pass but defense stole it
-      if (offMove === moves[3]) {
+      if (offMove === Move.PASS) {
         defBoxScore.addSteal();
       }
       //
@@ -318,14 +224,14 @@ export default class Game {
         } else {
           const rebLoc = getReboundLocation();
 
-          let offRebounder = offLocs.getRandPlayerAtLocation(rebLoc);
-          let defRebounder = defLocs.getRandPlayerAtLocation(rebLoc);
+          let offRebounder = offItems.locations.getRandPlayerAtLocation(rebLoc);
+          let defRebounder = defItems.locations.getRandPlayerAtLocation(rebLoc);
 
           // if theres not a player from either team at that location,
           // use both teams centers
           if (!offRebounder && !defRebounder) {
-            offRebounder = getPlayerByPosition(offRoster, 4);
-            defRebounder = getPlayerByPosition(defRoster, 4);
+            offRebounder = offItems.starters[4];
+            defRebounder = defItems.starters[4];
           }
 
           const offRebRating = offRebounder ? offRebounder.getRebounding() : -1;
@@ -333,17 +239,16 @@ export default class Game {
 
           // if offense gets rebound
           if (compareRatings(offRebRating, defRebRating)) {
-            const rebounderBoxScore = offBoxScores.get(offRebounder!);
+            const rebounderBoxScore = offItems.boxScores.get(offRebounder!);
             rebounderBoxScore!.addRebound();
 
             // calls new play to be played because ball was rebounded
             const passResult = this.playPossession(
-              homeHasBall,
+              offItems,
+              defItems,
               offRebounder!.getPositionNum(),
               secondsTaken,
-              0,
-              timesPassed,
-              teamItems
+              0
             );
 
             // updates current results of this play based on pass
@@ -352,7 +257,7 @@ export default class Game {
           }
           // if defense gets rebound
           else {
-            const rebounderBoxScore = defBoxScores.get(defRebounder!);
+            const rebounderBoxScore = defItems.boxScores.get(defRebounder!);
             rebounderBoxScore!.addRebound();
           }
         }
@@ -362,18 +267,17 @@ export default class Game {
     return {
       resultingPoints,
       secondsTaken,
-      timesPassed,
     };
   }
 
   private checkShot(shotType: string, rating: number): number {
     switch (shotType) {
-      case moves[0]: // inside shot
+      case Move.INSIDE_SHOT:
         return rating > Math.floor(Math.random() * 25) ? 2 : 0;
-      case moves[1]: // midrange shot
+      case Move.MID_SHOT:
         return rating > Math.floor(Math.random() * 32) ? 2 : 0;
-      case moves[2]: // 3 point shot
-        return rating > Math.floor(Math.random() * 40) ? 3 : 0;
+      case Move.THREE_PT_SHOT:
+        return rating > Math.floor(Math.random() * 45) ? 3 : 0;
     }
     throw new Error(`Invalid shot type given: ${shotType}`);
   }
@@ -391,5 +295,9 @@ export default class Game {
     );
 
     return homeBoxScoresArr.concat(awayBoxScoresArr);
+  }
+
+  getBoxScoresMap(): Map<Player, BoxScore>[] {
+    return [this.homeBoxScores, this.awayBoxScores];
   }
 }

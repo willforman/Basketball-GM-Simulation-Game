@@ -9,8 +9,7 @@ export default class Team {
   private wins: number;
   private losses: number;
 
-  private starters: Roster;
-  private benchPositions: Map<number, Player>;
+  private roster: Roster;
 
   private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
@@ -31,66 +30,56 @@ export default class Team {
     this.wins = 0;
     this.losses = 0;
 
-    this.benchPositions = new Map();
-
-    this.starters = {
-      PG: new Player(genPlayerName(), getNextId(), 0),
-      SG: new Player(genPlayerName(), getNextId(), 1),
-      SF: new Player(genPlayerName(), getNextId(), 2),
-      PF: new Player(genPlayerName(), getNextId(), 3),
-      C: new Player(genPlayerName(), getNextId(), 4),
+    this.roster = {
+      starters: [],
+      bench: [],
     };
 
-    for (let i = 0; i < rosterSize - 5; i++) {
-      const player = new Player(genPlayerName(), getNextId());
+    for (let i = 0; i < rosterSize; i++) {
+      const player = new Player(genPlayerName(), getNextId(), i);
 
-      this.benchPositions.set(player.getPositionNum(), player);
+      if (0 <= i && i <= 4) {
+        this.roster.starters.push(player);
+        this.roster.bench.push([]); // also need to push the 5 arrays for each position
+      } else {
+        const pos = player.getPositionNum();
+        this.roster.bench[pos].push(player);
+      }
     }
   }
   // get methods
 
   getRoster(): Roster {
-    return this.starters;
+    return this.roster;
   }
 
   getAbreviation(): string {
     return this.abbreviation;
   }
 
-  getPlayer(pos: number): Player {
-    switch (pos) {
-      case 0:
-        return this.starters.PG;
-      case 1:
-        return this.starters.SG;
-      case 2:
-        return this.starters.SF;
-      case 3:
-        return this.starters.PF;
-      case 4:
-        return this.starters.C;
-      default:
-        throw Error(`Illegal position given: ${pos}`);
+  getStarter(pos: number): Player {
+    if (pos < 0 && pos > 4) {
+      throw new Error(`Invalid position given: ${pos}`);
     }
+
+    return this.roster.starters[pos];
   }
 
   getNumberOfPlayers(): number {
-    return 5 + this.starters.bench.length;
+    return 5 + this.getBenchArray().length;
+  }
+
+  getBenchArray(): Player[] {
+    return this.roster.bench.reduce((acc: Player[], benchPos: Player[]) => {
+      return acc.concat(benchPos);
+    }, []);
   }
 
   getPlayerArray(): Player[] {
-    const values = Object.values(this.starters);
-
-    const benchPlayers = values.pop();
-
-    return values.concat(benchPlayers);
+    return this.roster.starters.concat(this.getBenchArray());
   }
 
   getLocation(): string {
     return this.location;
-  }
-
-  getBench(): Map<number, Player> {
-    return this.benchPositions;
   }
 }

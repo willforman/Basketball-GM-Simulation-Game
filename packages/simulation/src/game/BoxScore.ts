@@ -1,4 +1,4 @@
-import { moves } from "../models";
+import { Move } from "../models";
 
 export default class BoxScore {
   private title: string;
@@ -25,14 +25,13 @@ export default class BoxScore {
 
   addShot(move: string, points = 0): void {
     this.FGAs++;
-    if (move === moves[2]) {
-      // if move is 3pter
+    if (move === Move.THREE_PT_SHOT) {
       this.threePtAs++;
     }
     if (points > 0) {
       this.points += points;
       this.FGMs++;
-      if (move === move[2]) {
+      if (move === Move.THREE_PT_SHOT) {
         this.threePtMs++;
       }
     }

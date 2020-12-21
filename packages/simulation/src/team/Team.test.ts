@@ -10,7 +10,7 @@ describe("Team", () => {
   });
 
   it("Gets player by postion", () => {
-    const player = team.getPlayer(0);
+    const player = team.getStarter(0);
 
     expect(player).toEqual(
       expect.objectContaining({

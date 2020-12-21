@@ -1,4 +1,4 @@
-import teamNames from "../models/TeamNames";
+import { TeamNames } from "../models";
 import PlayerNameGenService from "./PlayerNameService";
 import RandomSelector from "./RandomSelector";
 import TeamNameGenService from "./TeamNameService";
@@ -7,13 +7,13 @@ describe("Team Name Service", () => {
   it("Generates team names", async () => {
     const service = await TeamNameGenService.build();
 
-    const atlNames: teamNames = {
+    const atlNames: TeamNames = {
       name: "Hawks",
       location: "Atlanta",
       abbreviation: "ATL",
     };
 
-    const bosNames: teamNames = {
+    const bosNames: TeamNames = {
       name: "Celtics",
       location: "Boston",
       abbreviation: "BOS",

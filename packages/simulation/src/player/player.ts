@@ -1,6 +1,6 @@
 import BoxScore from "../game/BoxScore";
 import { getStats } from "./statGen";
-import moves from "../models/moves";
+import { Move, Location } from "../models";
 
 export default class Player {
   private name: string;
@@ -29,20 +29,17 @@ export default class Player {
 
   private rebounding: number;
 
-  getLoc: () => string;
-  getMove: (loc: string) => string;
+  getLoc: () => Location;
+  getMove: (loc: Location) => Move;
 
   private boxScores: BoxScore[];
 
-  constructor(name: string, id: number, pos?: number) {
+  constructor(name: string, id: number, pos: number) {
     this.name = name;
     this.id = id;
 
-    if (!pos) {
-      pos = this.getRand(0, 5);
-    } else {
-      this.pos = pos;
-    }
+    // if given valid position, use that, otherwise generate random one
+    this.pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
 
     this.age = this.getRand(19, 34);
 
@@ -51,9 +48,6 @@ export default class Player {
     this.id = id;
 
     this.boxScores = [];
-
-    // if given valid position, use that, otherwise generate random one
-    this.pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
 
     const archetypeNum = this.pos + this.getRand(0, 1);
 
@@ -82,6 +76,14 @@ export default class Player {
   }
 
   // get methods
+  getName(): string {
+    return this.name;
+  }
+
+  getArchetype(): string {
+    return this.archetype;
+  }
+
   getId(): number {
     return this.id;
   }
@@ -94,33 +96,31 @@ export default class Player {
     this.boxScores.push(boxScore);
   }
 
-  getOffenseRating(offMove: string): number {
+  getOffenseRating(offMove: Move): number {
     switch (offMove) {
-      case moves[0]:
+      case Move.INSIDE_SHOT:
         return this.insideShot;
-      case moves[1]:
+      case Move.MID_SHOT:
         return this.midShot;
-      case moves[2]:
+      case Move.THREE_PT_SHOT:
         return this.threePtShot;
-      case moves[3]:
+      case Move.PASS:
         return this.passing;
     }
-    throw new Error(`Invalid move given: ${offMove}`);
   }
 
   // get defense rating based on offense move used
-  getDefenseRating(offMove: string): number {
+  getDefenseRating(offMove: Move): number {
     switch (offMove) {
-      case moves[0]:
+      case Move.INSIDE_SHOT:
         return this.insideDefense;
-      case moves[1]:
+      case Move.MID_SHOT:
         return this.midDefense;
-      case moves[2]:
+      case Move.THREE_PT_SHOT:
         return this.threePtDefense;
-      case moves[3]:
+      case Move.PASS:
         return this.stealing;
     }
-    throw new Error(`Given invalid offMove: ${offMove}`);
   }
 
   getRatingMultiplier(): number {
