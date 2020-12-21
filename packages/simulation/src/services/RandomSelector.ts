@@ -1,4 +1,4 @@
-import Choice from "../models/Choice";
+import { Choice } from "../models";
 
 export default class RandomSelector<T> {
   private sum: number;
@@ -29,6 +29,6 @@ export default class RandomSelector<T> {
         return choice.item;
       }
     }
-    throw new Error("Couldn't find choice");
+    throw new Error(`Couldn't find choice`);
   };
 }

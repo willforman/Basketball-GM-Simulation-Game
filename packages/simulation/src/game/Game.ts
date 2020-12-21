@@ -1,4 +1,4 @@
-import { Move, Location } from "../models";
+import { Move, Location, Roster, Choice } from "../models";
 
 import Player from "../player/Player";
 import RandomSelector from "../services/RandomSelector";
@@ -26,6 +26,36 @@ const getReboundLocation: () => Location = new RandomSelector<Location>([
 
 const getRand = (ub: number): number => {
   return Math.floor(Math.random() * ub + 1);
+};
+
+export const subLineup = (roster: Roster): void => {
+  for (let i = 0; i < 5; i++) {
+    const starter = roster.starters[i];
+    const benchPos = roster.bench[i]; // position group on bench
+
+    // if theres no one to sub into, do nothing
+    if (benchPos.length === 0) {
+      continue;
+    }
+
+    // choose player to sub in
+    // need index of this player so can remove them later
+    const choices: Choice<number>[] = benchPos.map(
+      (player: Player, idx: number) => ({
+        item: idx,
+        weight: player.getSubOdds(),
+      })
+    );
+    const idxPlayerSubbingIn = new RandomSelector<number>(choices).getChoice();
+    const playerSubbingIn = benchPos[idxPlayerSubbingIn];
+
+    // add starter to bench and replace them with player subbing in
+    benchPos.push(starter);
+    roster.starters[i] = playerSubbingIn;
+
+    // remove player subbing in from bench
+    benchPos.splice(idxPlayerSubbingIn, 1);
+  }
 };
 
 // returns true if first rating is larger or equal, false if not
@@ -108,6 +138,7 @@ export default class Game {
 
     for (let quarter = 1; quarter <= 4; quarter++) {
       let secondsLeftInQuarter = this.QUARTER_LENGTH_MINUTES * 60;
+      let consecPlays = 0;
       while (secondsLeftInQuarter > 0) {
         const offItems = homeHasBall ? homeItems : awayItems;
         const defItems = homeHasBall ? awayItems : homeItems;
@@ -120,6 +151,15 @@ export default class Game {
           this.awayScore += possession.resultingPoints;
         }
         homeHasBall = !homeHasBall;
+
+        consecPlays++;
+
+        if (Math.floor(Math.random() * consecPlays) > 5) {
+          subLineup(homeRoster);
+          subLineup(awayRoster);
+
+          consecPlays = 0;
+        }
       }
     }
 
@@ -137,7 +177,7 @@ export default class Game {
   ): Possession {
     let resultingPoints = 0;
 
-    secondsTaken += Math.floor(Math.random() * 16) + 8;
+    secondsTaken += Math.floor(Math.random() * 14) + 6;
 
     // get offense variables needed
     const offBoxScore = offItems.boxScores.get(offPlayer);
@@ -274,12 +314,12 @@ export default class Game {
     };
   }
 
-  private checkShot(shotType: string, rating: number): number {
+  private checkShot(shotType: Move, rating: number): number {
     switch (shotType) {
       case Move.INSIDE_SHOT:
-        return rating > Math.floor(Math.random() * 25) ? 2 : 0;
+        return rating > Math.floor(Math.random() * 35) ? 2 : 0;
       case Move.MID_SHOT:
-        return rating > Math.floor(Math.random() * 40) ? 2 : 0;
+        return rating > Math.floor(Math.random() * 45) ? 2 : 0;
       case Move.THREE_PT_SHOT:
         return rating > Math.floor(Math.random() * 50) ? 3 : 0;
     }

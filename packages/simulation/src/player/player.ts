@@ -17,14 +17,12 @@ export default class Player {
   private insideShot: number;
   private midShot: number;
   private threePtShot: number;
-  private freeThrowShot: number;
   private passing: number;
 
   // defense stats
   private insideDefense: number;
   private midDefense: number;
   private threePtDefense: number;
-  private blocking: number;
   private stealing: number;
 
   private rebounding: number;
@@ -61,14 +59,12 @@ export default class Player {
     this.insideShot = stats[0];
     this.midShot = stats[1];
     this.threePtShot = stats[2];
-    this.freeThrowShot = stats[3];
-    this.passing = stats[4];
-    this.insideDefense = stats[5];
-    this.midDefense = stats[6];
-    this.threePtDefense = stats[7];
-    this.blocking = stats[8];
-    this.stealing = stats[9];
-    this.rebounding = stats[10];
+    this.passing = stats[3];
+    this.insideDefense = stats[4];
+    this.midDefense = stats[5];
+    this.threePtDefense = stats[6];
+    this.stealing = stats[7];
+    this.rebounding = stats[8];
   }
 
   private getRand(lb: number, ub: number): number {
@@ -133,5 +129,10 @@ export default class Player {
 
   getPositionNum(): number {
     return this.pos;
+  }
+
+  // used for determining weight of getting subbed into game
+  getSubOdds(): number {
+    return Math.min(this.rating - 40, 10);
   }
 }

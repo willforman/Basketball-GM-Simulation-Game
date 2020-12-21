@@ -44,6 +44,38 @@ const getRandStatNum = (): number => {
   return Math.floor(Math.random() * 31) - 15;
 };
 
+// const getMovesCanDefend = (stats: number[]): Move[] => {
+//   const moves: Move[] = [];
+
+//   const insideDef = stats[5];
+//   const midDef = stats[6];
+//   const longDef = stats[7];
+
+//   if (insideDef >= 50) {
+//     moves.push(Move.INSIDE_SHOT);
+//   }
+//   if (midDef >= 50) {
+//     moves.push(Move.MID_SHOT);
+//   }
+//   if (longDef >= 50) {
+//     moves.push(Move.THREE_PT_SHOT);
+//   }
+
+//   return moves;
+// };
+
+// const getMostLikelyOffenseMove = (locWeights: number[]): Move => {
+//   // if player is mostly in paint
+//   if (locWeights[0] > locWeights[1] && locWeights[0] > locWeights[2]) {
+//     return Move.INSIDE_SHOT;
+//   }
+//   if (locWeights[1] > locWeights[0] && locWeights[1] > locWeights[2]) {
+//     return Move.MID_SHOT;
+//   } else {
+//     return Move.THREE_PT_SHOT;
+//   }
+// };
+
 export function getStats(archetypeNum: number): StatsGen {
   // stats order:
   // inside shot, 3 pt shot
@@ -58,7 +90,7 @@ export function getStats(archetypeNum: number): StatsGen {
   switch (archetypeNum) {
     case 0:
       archetype = "Playmaker";
-      stats = [20, 30, 65, 70, 85, 20, 35, 75, 15, 85, 20];
+      stats = [20, 40, 65, 85, 15, 35, 75, 85, 20];
       locs = [
         makeLocation(Location.PAINT, 1, [70, 20, 0, 10]),
         makeLocation(Location.MID_RANGE, 2, [20, 30, 10, 40]),
@@ -68,7 +100,7 @@ export function getStats(archetypeNum: number): StatsGen {
       break;
     case 1:
       archetype = "Sharpshooter";
-      stats = [15, 85, 85, 85, 30, 15, 50, 85, 15, 40, 15];
+      stats = [15, 85, 85, 50, 15, 50, 85, 40, 15];
       locs = [
         makeLocation(Location.PAINT, 1, [40, 40, 0, 20]),
         makeLocation(Location.MID_RANGE, 2, [5, 50, 20, 25]),
@@ -78,7 +110,7 @@ export function getStats(archetypeNum: number): StatsGen {
       break;
     case 2:
       archetype = "Slasher";
-      stats = [85, 50, 15, 40, 30, 40, 60, 40, 85, 20, 55];
+      stats = [85, 60, 15, 40, 55, 60, 40, 20, 65];
       locs = [
         makeLocation(Location.PAINT, 40, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 55, [50, 30, 0, 20]),
@@ -88,7 +120,7 @@ export function getStats(archetypeNum: number): StatsGen {
       break;
     case 3:
       archetype = "Lockdown";
-      stats = [30, 15, 15, 30, 50, 60, 85, 85, 60, 75, 15];
+      stats = [25, 30, 15, 50, 60, 85, 85, 75, 15];
       locs = [
         makeLocation(Location.PAINT, 30, [50, 0, 0, 50]),
         makeLocation(Location.MID_RANGE, 40, [10, 10, 0, 80]),
@@ -98,7 +130,7 @@ export function getStats(archetypeNum: number): StatsGen {
       break;
     case 4:
       archetype = "Stretch Big";
-      stats = [70, 65, 65, 60, 15, 60, 30, 20, 50, 15, 70];
+      stats = [65, 65, 65, 25, 60, 45, 30, 15, 70];
       locs = [
         makeLocation(Location.PAINT, 55, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 10, [25, 45, 10, 20]),
@@ -108,7 +140,7 @@ export function getStats(archetypeNum: number): StatsGen {
       break;
     case 5:
       archetype = "Rebounder";
-      stats = [70, 15, 15, 15, 35, 85, 60, 40, 85, 15, 85];
+      stats = [70, 25, 15, 45, 85, 60, 40, 15, 85];
       locs = [
         makeLocation(Location.PAINT, 97, [90, 0, 0, 10]),
         makeLocation(Location.MID_RANGE, 3, [50, 30, 0, 20]),
@@ -120,8 +152,8 @@ export function getStats(archetypeNum: number): StatsGen {
       throw new Error("Invalid archetype given");
   }
 
-  if (stats.reduce((total: number, curr: number) => total + curr) != 520) {
-    throw Error("Stats don't sum to 520");
+  if (stats.reduce((total: number, curr: number) => total + curr) != 440) {
+    throw Error("Stats don't sum to 440");
   }
 
   // add number from -15 to 15 to each stat
