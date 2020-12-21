@@ -129,7 +129,8 @@ export default class Game {
   private playPossession(
     offItems: TeamItems,
     defItems: TeamItems,
-    positionWithBall = 0, // PG will start with ball at start of each possession
+    offPlayer = offItems.starters[0], // PG will start with ball at start of each possession
+    offPlayerLoc = Location.TOP_KEY, // PG starts at the top of the key every time
     secondsTaken = 0,
     passBonus = 0,
     addAssistToPasser?: () => void
@@ -139,15 +140,13 @@ export default class Game {
     secondsTaken += Math.floor(Math.random() * 16) + 8;
 
     // get offense variables needed
-    const offPlayer = offItems.starters[positionWithBall];
     const offBoxScore = offItems.boxScores.get(offPlayer);
 
     if (!offBoxScore) {
       throw new Error(`Couldn't find box score of player: ${offPlayer}`);
     }
 
-    offItems.locations.getNewLocs();
-    const offPlayerLoc = offItems.locations.getLocOfPlayer(offPlayer);
+    offItems.locations.getNewLocs(offPlayer, offPlayerLoc);
 
     const offMove = offPlayer.getMove(offPlayerLoc);
     const offRating = offPlayer.getOffenseRating(offMove) + passBonus;
@@ -170,7 +169,10 @@ export default class Game {
         let posPassingto: number;
         do {
           posPassingto = Math.floor(Math.random() * 5);
-        } while (posPassingto === positionWithBall); // loops until finds different position from current
+        } while (posPassingto === offPlayer.getPositionNum()); // loops until finds different position from current
+
+        const playerPassingTo = offItems.starters[posPassingto];
+        const locPassingTo = offItems.locations.getLocOfPlayer(playerPassingTo);
 
         const addAssistToPasser = () => {
           offBoxScore.addAssist();
@@ -180,7 +182,8 @@ export default class Game {
         const passResult = this.playPossession(
           offItems,
           defItems,
-          posPassingto,
+          playerPassingTo,
+          locPassingTo,
           secondsTaken,
           offRating,
           addAssistToPasser
@@ -246,7 +249,8 @@ export default class Game {
             const passResult = this.playPossession(
               offItems,
               defItems,
-              offRebounder!.getPositionNum(),
+              offRebounder!,
+              offItems.locations.getLocOfPlayer(offRebounder!),
               secondsTaken,
               0
             );
@@ -275,9 +279,9 @@ export default class Game {
       case Move.INSIDE_SHOT:
         return rating > Math.floor(Math.random() * 25) ? 2 : 0;
       case Move.MID_SHOT:
-        return rating > Math.floor(Math.random() * 32) ? 2 : 0;
+        return rating > Math.floor(Math.random() * 40) ? 2 : 0;
       case Move.THREE_PT_SHOT:
-        return rating > Math.floor(Math.random() * 45) ? 3 : 0;
+        return rating > Math.floor(Math.random() * 50) ? 3 : 0;
     }
     throw new Error(`Invalid shot type given: ${shotType}`);
   }

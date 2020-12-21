@@ -10,7 +10,11 @@ export default class CourtLocations {
     this.locs = new Map();
   }
 
-  getNewLocs(): void {
+  // generates new locations of team except for given player
+  getNewLocs(
+    playerNeedsToBeAtLocation?: Player,
+    locationOfPlayer?: Location
+  ): void {
     // need to clear all old arrays
     locationArr.forEach((locName: Location) => {
       this.locs.set(locName, []);
@@ -18,9 +22,21 @@ export default class CourtLocations {
 
     // then for each player, put them at random location
     this.players.forEach((player: Player) => {
+      // if theres a player that needs to be at a location, don't put them anywhere in loop
+      if (player === playerNeedsToBeAtLocation) {
+        return;
+      }
+
       const locName = player.getLoc();
       this.getPlayersAtLocation(locName).push(player);
     });
+
+    // then add player that needs to be at certain location to that location
+    if (playerNeedsToBeAtLocation && locationOfPlayer) {
+      this.getPlayersAtLocation(locationOfPlayer).push(
+        playerNeedsToBeAtLocation
+      );
+    }
   }
 
   private getPlayersAtLocation(locName: Location): Player[] {

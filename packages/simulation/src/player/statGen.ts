@@ -72,8 +72,8 @@ export function getStats(archetypeNum: number): StatsGen {
       locs = [
         makeLocation(Location.PAINT, 1, [40, 40, 0, 20]),
         makeLocation(Location.MID_RANGE, 2, [5, 50, 20, 25]),
-        makeLocation(Location.TOP_KEY, 70, [5, 10, 55, 30]),
-        makeLocation(Location.CORNER, 27, [5, 10, 45, 40]),
+        makeLocation(Location.TOP_KEY, 70, [2, 3, 25, 70]),
+        makeLocation(Location.CORNER, 27, [2, 3, 55, 40]),
       ];
       break;
     case 2:
