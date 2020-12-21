@@ -4,7 +4,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test services": "jest src/service",
+    "test league": "jest src/league",
+    "test team": "jest src/team",
+    "test game": "jest src/game",
+    "test player": "jest src/player"
   },
   "dependencies": {
     "node-fetch": "^2.6.1"
