@@ -83,9 +83,17 @@ export default class Game {
     return 15;
   }
 
-  constructor(homeTeam: Team, awayTeam: Team) {
-    this.homeTeam = homeTeam;
-    this.awayTeam = awayTeam;
+  constructor(team1: Team, team2: Team, teamIdx: number) {
+    // if team index is even, first team is home and other is not
+    // necessary based on scheduling algorithm so even split of home and
+    // away games
+    if (teamIdx % 2 === 0) {
+      this.homeTeam = team1;
+      this.awayTeam = team2;
+    } else {
+      this.homeTeam = team2;
+      this.awayTeam = team1;
+    }
 
     this.homeScore = 0;
     this.awayScore = 0;
@@ -343,5 +351,21 @@ export default class Game {
 
   getBoxScoresMap(): Map<Player, BoxScore>[] {
     return [this.homeBoxScores, this.awayBoxScores];
+  }
+
+  getTitle(): string {
+    return `${this.homeTeam.getAbreviation()} vs. ${this.awayTeam.getAbreviation()}`;
+  }
+
+  getWinner(): Team {
+    if (!this.completed) {
+      throw new Error("Game hasn't been finished");
+    }
+
+    if (this.homeScore > this.awayScore) {
+      return this.homeTeam;
+    } else {
+      return this.awayTeam;
+    }
   }
 }

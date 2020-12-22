@@ -1,10 +1,15 @@
 import Team from "../team/Team";
 import { TeamNames } from "../models";
+import RegularSeason from "./RegularSeason";
+import Playoffs from "./Playoffs";
 
 export default class League {
   private year: number;
 
   private teams: Team[];
+
+  private regularSeason: RegularSeason;
+  private playoffs: Playoffs;
 
   private playerID: number;
 
@@ -36,6 +41,28 @@ export default class League {
         new Team(genTeamName(), genPlayerName, getNextID, this.ROSTER_SIZE)
       );
     }
+
+    this.regularSeason = new RegularSeason(this.teams);
+  }
+
+  simulateWeek(): void {
+    this.regularSeason.simulateWeek();
+  }
+
+  simulateSeason(): void {
+    this.regularSeason.simulateAll();
+  }
+
+  simulatePlayoffRound(): void {
+    this.playoffs.simulateRound();
+  }
+
+  simulateAllPlayoffs(): void {
+    this.playoffs.simulateAll();
+  }
+
+  initPlayoffs(): void {
+    this.playoffs = new Playoffs(this.teams);
   }
 
   // get functions
@@ -53,5 +80,13 @@ export default class League {
     }
 
     return foundTeam;
+  }
+
+  getWinner(): Team {
+    if (!this.playoffs.getWinner()) {
+      throw new Error("Playoffs not completed");
+    }
+
+    return this.playoffs.getWinner();
   }
 }

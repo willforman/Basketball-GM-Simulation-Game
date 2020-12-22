@@ -1,4 +1,5 @@
 import Player from "../player/Player";
+import Game from "../game/Game";
 import { Roster, TeamNames } from "../models";
 
 export default class Team {
@@ -10,6 +11,8 @@ export default class Team {
   private losses: number;
 
   private roster: Roster;
+
+  private games: Game[];
 
   private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
@@ -30,6 +33,8 @@ export default class Team {
     this.wins = 0;
     this.losses = 0;
 
+    this.games = [];
+
     this.roster = {
       starters: [],
       bench: [],
@@ -47,6 +52,11 @@ export default class Team {
       }
     }
   }
+
+  addGame(game: Game): void {
+    this.games.push(game);
+  }
+
   // get methods
 
   getRoster(): Roster {
@@ -81,5 +91,13 @@ export default class Team {
 
   getLocation(): string {
     return this.location;
+  }
+
+  getWins(): number {
+    return this.wins;
+  }
+
+  getLosses(): number {
+    return this.losses;
   }
 }

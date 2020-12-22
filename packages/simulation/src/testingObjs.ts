@@ -35,7 +35,19 @@ export const team2 = new Team(
   mockGetId,
   15
 );
+export const team3 = new Team(
+  mockGetTeamNames(),
+  mockGenPlayerName,
+  mockGetId,
+  15
+);
+export const team4 = new Team(
+  mockGetTeamNames(),
+  mockGenPlayerName,
+  mockGetId,
+  15
+);
 
-export const game = new Game(team1, team2);
+export const game = new Game(team1, team2, 0);
 
 export const league = new League(mockGenPlayerName, mockGetTeamNames);
