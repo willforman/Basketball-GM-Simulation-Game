@@ -1,6 +1,8 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
 import { Roster, TeamNames } from "../models";
+import Starters from "./Starters";
+import Bench from "./Bench";
 
 export default class Team {
   private name: string;
@@ -36,25 +38,55 @@ export default class Team {
     this.games = [];
 
     this.roster = {
-      starters: [],
-      bench: [],
+      starters: new Starters(),
+      bench: new Bench(),
+    };
+
+    const retire = (player: Player) => {
+      this.removePlayer(player);
     };
 
     for (let i = 0; i < rosterSize; i++) {
-      const player = new Player(genPlayerName(), getNextId(), i);
+      const player = new Player(genPlayerName(), getNextId(), i, retire);
 
       if (0 <= i && i <= 4) {
-        this.roster.starters.push(player);
-        this.roster.bench.push([]); // also need to push the 5 arrays for each position
+        this.roster.starters.add(player);
       } else {
-        const pos = player.getPositionNum();
-        this.roster.bench[pos].push(player);
+        this.roster.bench.add(player);
       }
     }
   }
 
+  advanceYear(): void {
+    this.getPlayerArray().forEach((player: Player | null) => {
+      if (player) {
+        player.advanceYear();
+      }
+    });
+  }
+
   addGame(game: Game): void {
     this.games.push(game);
+  }
+
+  removePlayer(playerToRemove: Player): void {
+    const pos = playerToRemove.getPositionNum();
+
+    const starterAtPos = this.roster.starters.get(pos);
+
+    if (starterAtPos === playerToRemove) {
+      starterAtPos === null;
+    } else {
+      const benchPos = this.roster.bench.get(pos);
+
+      const idxFoundAt = benchPos.indexOf(playerToRemove);
+
+      if (idxFoundAt === -1) {
+        throw new Error(`Couldn't find given player on roster`);
+      }
+
+      benchPos.splice(idxFoundAt, 1);
+    }
   }
 
   // get methods
@@ -67,26 +99,16 @@ export default class Team {
     return this.abbreviation;
   }
 
-  getStarter(pos: number): Player {
-    if (pos < 0 && pos > 4) {
-      throw new Error(`Invalid position given: ${pos}`);
-    }
-
-    return this.roster.starters[pos];
+  getStarter(pos: number): Player | null {
+    return this.roster.starters.get(pos);
   }
 
   getNumberOfPlayers(): number {
-    return 5 + this.getBenchArray().length;
+    return 5 + this.roster.bench.getArray().length;
   }
 
-  getBenchArray(): Player[] {
-    return this.roster.bench.reduce((acc: Player[], benchPos: Player[]) => {
-      return acc.concat(benchPos);
-    }, []);
-  }
-
-  getPlayerArray(): Player[] {
-    return this.roster.starters.concat(this.getBenchArray());
+  getPlayerArray(): (Player | null)[] {
+    return this.roster.starters.getArray().concat(this.roster.bench.getArray());
   }
 
   getLocation(): string {

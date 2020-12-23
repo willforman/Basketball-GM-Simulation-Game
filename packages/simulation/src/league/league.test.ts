@@ -21,6 +21,7 @@ describe("League", () => {
   it("Simulates playoffs", () => {
     league.initPlayoffs();
 
+    league.simulatePlayoffRound();
     league.simulateAllPlayoffs();
     expect(league.getWinner()).toBeTruthy();
   });

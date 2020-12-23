@@ -73,10 +73,6 @@ export default class RegularSeason {
       this.simulateWeek();
     }
   }
-
-  getCompleted(): boolean {
-    return this.completed;
-  }
 }
 
 class Week {
@@ -94,9 +90,5 @@ class Week {
     }
     this.games.forEach((game: Game) => game.simulate());
     this.completed = true;
-  }
-
-  getCompleted(): boolean {
-    return this.completed;
   }
 }

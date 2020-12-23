@@ -1,10 +1,7 @@
-import Player from "../player/Player";
+import Bench from "../team/Bench";
+import Starters from "../team/Starters";
 
 export interface Roster {
-  starters: Player[];
-  bench: Player[][];
+  starters: Starters;
+  bench: Bench;
 }
-
-export const getStarter = (roster: Roster, pos: number): Player => {
-  return roster.starters[pos];
-};

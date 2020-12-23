@@ -30,11 +30,19 @@ export default class Player {
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
 
+  private retire: (player: Player) => void;
+
   private boxScores: BoxScore[];
 
-  constructor(name: string, id: number, pos: number) {
+  constructor(
+    name: string,
+    id: number,
+    pos: number,
+    retire: (player: Player) => void
+  ) {
     this.name = name;
     this.id = id;
+    this.retire = retire;
 
     // if given valid position, use that, otherwise generate random one
     this.pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
@@ -65,6 +73,14 @@ export default class Player {
     this.threePtDefense = stats[6];
     this.stealing = stats[7];
     this.rebounding = stats[8];
+  }
+
+  advanceYear(): void {
+    this.age++;
+
+    if (this.getRand(this.age - 31, 0) > 5) {
+      this.retire(this);
+    }
   }
 
   private getRand(lb: number, ub: number): number {

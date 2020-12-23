@@ -73,6 +73,10 @@ export default class Playoffs {
 
     return this.winner;
   }
+
+  getCompleted(): boolean {
+    return this.completed;
+  }
 }
 
 class Round {
@@ -90,10 +94,6 @@ class Round {
     }
     this.series.forEach((series: PlayoffSeries) => series.simulate());
     this.completed = true;
-  }
-
-  getCompleted(): boolean {
-    return this.completed;
   }
 
   getWinners(): Team[] {

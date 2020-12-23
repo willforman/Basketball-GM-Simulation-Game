@@ -19,7 +19,7 @@ export default class League {
   }
 
   get START_YEAR(): number {
-    return 2020;
+    return 2021;
   }
 
   get ROSTER_SIZE(): number {
@@ -63,6 +63,15 @@ export default class League {
 
   initPlayoffs(): void {
     this.playoffs = new Playoffs(this.teams);
+  }
+
+  advanceYear(): void {
+    if (!this.playoffs.getCompleted()) {
+      throw new Error("Can't advance, the playoffs haven't been completed");
+    }
+
+    this.teams.forEach((team: Team) => team.advanceYear());
+    this.year++;
   }
 
   // get functions
