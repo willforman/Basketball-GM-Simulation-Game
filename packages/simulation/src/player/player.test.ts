@@ -4,13 +4,17 @@ import { getStats } from "./statGen";
 import { Location } from "../models";
 
 describe("Player", () => {
-  const player = new Player("Test Player", 0, 1, retire);
+  const name = "Test Player";
+  const pos = 0;
+  const id = 1;
+
+  const player = new Player(name, id, pos, retire);
   it("Is created", () => {
     expect(player).toEqual(
       expect.objectContaining({
-        name: "Test Player",
-        pos: 0,
-        id: 1,
+        name,
+        pos,
+        id,
       })
     );
   });

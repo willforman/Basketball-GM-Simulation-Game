@@ -6,8 +6,13 @@ export default class CourtLocations {
   private locs: Map<Location, Player[]>;
 
   constructor(players: Player[]) {
+    this.addPlayers(players);
+  }
+
+  addPlayers(players: Player[]): void {
     this.players = players;
     this.locs = new Map();
+    this.getNewLocs();
   }
 
   // generates new locations of team except for given player

@@ -6,7 +6,13 @@ export default class Roster {
   private positions: Position[];
 
   constructor() {
-    this.positions = [];
+    this.positions = [
+      new Position(),
+      new Position(),
+      new Position(),
+      new Position(),
+      new Position(),
+    ];
   }
 
   add(player: Player): void {

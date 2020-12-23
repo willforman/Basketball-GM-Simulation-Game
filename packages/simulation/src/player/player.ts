@@ -38,7 +38,8 @@ export default class Player {
     name: string,
     id: number,
     pos: number,
-    retire: (player: Player) => void
+    retire: (player: Player) => void,
+    young?: boolean // boolean if player should be young
   ) {
     this.name = name;
     this.id = id;
@@ -47,7 +48,9 @@ export default class Player {
     // if given valid position, use that, otherwise generate random one
     this.pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
 
-    this.age = this.getRand(19, 34);
+    const ageUB = young ? 23 : 34;
+
+    this.age = this.getRand(19, ageUB);
 
     this.rating = 80;
 

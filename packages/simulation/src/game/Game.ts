@@ -139,6 +139,9 @@ export default class Game {
           homeItems.starters = homeRoster.getSubs();
           awayItems.starters = awayRoster.getSubs();
 
+          homeItems.locations.addPlayers(homeItems.starters);
+          awayItems.locations.addPlayers(awayItems.starters);
+
           consecPlays = 0;
         }
       }

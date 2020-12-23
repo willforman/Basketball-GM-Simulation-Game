@@ -13,32 +13,16 @@ describe("Game", () => {
 
     const [homeScore, awayScore] = game.getScores();
 
-    const [homeMap, awayMap] = game.getBoxScoresMap();
+    // const [homeMap, awayMap] = game.getBoxScoresMap();
 
-    Array.from(homeMap.entries()).forEach((map: [Player, BoxScore]) => {
-      console.log(`Archetype: ${map[0].getArchetype()}`);
-      console.log(map[1]);
-    });
+    // Array.from(homeMap.entries()).forEach((map: [Player, BoxScore]) => {
+    //   console.log(`Archetype: ${map[0].getArchetype()}`);
+    //   console.log(map[1]);
+    // });
 
     console.log(`${homeScore} - ${awayScore}`);
 
     expect(homeScore).toBeGreaterThan(0);
     expect(awayScore).toBeGreaterThan(0);
-  });
-
-  it("Subs lineup", () => {
-    const roster = team1.getRoster();
-
-    const origIds = roster
-      .getStarters()
-      .map((player: Player) => player.getId());
-
-    const newIds = roster.getSubs().map((player: Player) => player.getId());
-
-    for (let i = 0; i < 5; i++) {
-      if (roster.getBench(i).length !== 0) {
-        expect(newIds[i]).not.toBe(origIds[i]);
-      }
-    }
   });
 });
