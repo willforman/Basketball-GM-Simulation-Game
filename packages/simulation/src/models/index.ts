@@ -1,4 +1,3 @@
-export * from "./Roster";
 export * from "./TeamNames";
 export * from "./Choice";
 

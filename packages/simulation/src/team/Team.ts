@@ -1,8 +1,7 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
-import { Roster, TeamNames } from "../models";
-import Starters from "./Starters";
-import Bench from "./Bench";
+import { TeamNames } from "../models";
+import Roster from "./Roster";
 
 export default class Team {
   private name: string;
@@ -37,23 +36,16 @@ export default class Team {
 
     this.games = [];
 
-    this.roster = {
-      starters: new Starters(),
-      bench: new Bench(),
-    };
+    this.roster = new Roster();
 
     const retire = (player: Player) => {
-      this.removePlayer(player);
+      this.roster.remove(player);
     };
 
     for (let i = 0; i < rosterSize; i++) {
       const player = new Player(genPlayerName(), getNextId(), i, retire);
 
-      if (0 <= i && i <= 4) {
-        this.roster.starters.add(player);
-      } else {
-        this.roster.bench.add(player);
-      }
+      this.roster.add(player);
     }
   }
 
@@ -69,26 +61,6 @@ export default class Team {
     this.games.push(game);
   }
 
-  removePlayer(playerToRemove: Player): void {
-    const pos = playerToRemove.getPositionNum();
-
-    const starterAtPos = this.roster.starters.get(pos);
-
-    if (starterAtPos === playerToRemove) {
-      starterAtPos === null;
-    } else {
-      const benchPos = this.roster.bench.get(pos);
-
-      const idxFoundAt = benchPos.indexOf(playerToRemove);
-
-      if (idxFoundAt === -1) {
-        throw new Error(`Couldn't find given player on roster`);
-      }
-
-      benchPos.splice(idxFoundAt, 1);
-    }
-  }
-
   // get methods
 
   getRoster(): Roster {
@@ -100,15 +72,11 @@ export default class Team {
   }
 
   getStarter(pos: number): Player | null {
-    return this.roster.starters.get(pos);
+    return this.roster.get(pos);
   }
 
-  getNumberOfPlayers(): number {
-    return 5 + this.roster.bench.getArray().length;
-  }
-
-  getPlayerArray(): (Player | null)[] {
-    return this.roster.starters.getArray().concat(this.roster.bench.getArray());
+  getPlayerArray(): Player[] {
+    return this.roster.getArray();
   }
 
   getLocation(): string {

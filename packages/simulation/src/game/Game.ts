@@ -1,4 +1,4 @@
-import { Move, Location, Roster, Choice } from "../models";
+import { Move, Location } from "../models";
 
 import Player from "../player/Player";
 import RandomSelector from "../services/RandomSelector";
@@ -26,36 +26,6 @@ const getReboundLocation: () => Location = new RandomSelector<Location>([
 
 const getRand = (ub: number): number => {
   return Math.floor(Math.random() * ub + 1);
-};
-
-export const subLineup = (roster: Roster): void => {
-  for (let i = 0; i < 5; i++) {
-    const starter = roster.starters[i];
-    const benchPos = roster.bench[i]; // position group on bench
-
-    // if theres no one to sub into, do nothing
-    if (benchPos.length === 0) {
-      continue;
-    }
-
-    // choose player to sub in
-    // need index of this player so can remove them later
-    const choices: Choice<number>[] = benchPos.map(
-      (player: Player, idx: number) => ({
-        item: idx,
-        weight: player.getSubOdds(),
-      })
-    );
-    const idxPlayerSubbingIn = new RandomSelector<number>(choices).getChoice();
-    const playerSubbingIn = benchPos[idxPlayerSubbingIn];
-
-    // add starter to bench and replace them with player subbing in
-    benchPos.push(starter);
-    roster.starters[i] = playerSubbingIn;
-
-    // remove player subbing in from bench
-    benchPos.splice(idxPlayerSubbingIn, 1);
-  }
 };
 
 // returns true if first rating is larger or equal, false if not
@@ -125,18 +95,21 @@ export default class Game {
         .map((player: Player) => [player, new BoxScore(aBSTitle)])
     );
 
-    const homeLocs = new CourtLocations(homeRoster.starters);
-    const awayLocs = new CourtLocations(awayRoster.starters);
+    const homeStarters = homeRoster.getStarters();
+    const awayStarters = awayRoster.getStarters();
+
+    const homeLocs = new CourtLocations(homeStarters);
+    const awayLocs = new CourtLocations(awayStarters);
 
     // creates TeamItems for both teams
     const homeItems: TeamItems = {
-      starters: homeRoster.starters,
+      starters: homeStarters,
       boxScores: this.homeBoxScores,
       locations: homeLocs,
     };
 
     const awayItems: TeamItems = {
-      starters: awayRoster.starters,
+      starters: awayStarters,
       boxScores: this.awayBoxScores,
       locations: awayLocs,
     };
@@ -163,8 +136,8 @@ export default class Game {
         consecPlays++;
 
         if (Math.floor(Math.random() * consecPlays) > 5) {
-          subLineup(homeRoster);
-          subLineup(awayRoster);
+          homeItems.starters = homeRoster.getSubs();
+          awayItems.starters = awayRoster.getSubs();
 
           consecPlays = 0;
         }
