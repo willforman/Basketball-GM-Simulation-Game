@@ -1,13 +1,13 @@
 import Player from "../player/Player";
-import { game, team1 } from "../testingObjs";
+import { genPlayerName, getId, getTeamNames } from "../mockObjs";
 import BoxScore from "./BoxScore";
-import { subLineup } from "./Game";
+import Game from "./Game";
+import Team from "../team/Team";
 
 describe("Game", () => {
-  it("Creates game", () => {
-    expect(game).toBeTruthy();
-  });
-
+  const team1 = new Team(getTeamNames(), genPlayerName, getId, 15);
+  const team2 = new Team(getTeamNames(), genPlayerName, getId, 15);
+  const game = new Game(team1, team2, 0);
   it("Simulates", () => {
     game.simulate();
 
@@ -29,15 +29,15 @@ describe("Game", () => {
   it("Subs lineup", () => {
     const roster = team1.getRoster();
 
-    const origIds = roster.starters.map((player: Player) => player.getId());
+    const origIds = roster
+      .getStarters()
+      .map((player: Player) => player.getId());
 
-    subLineup(roster);
-
-    const subbedIds = roster.starters.map((player: Player) => player.getId());
+    const newIds = roster.getSubs().map((player: Player) => player.getId());
 
     for (let i = 0; i < 5; i++) {
-      if (roster.bench[i].length !== 0) {
-        expect(subbedIds[i]).not.toBe(origIds[i]);
+      if (roster.getBench(i).length !== 0) {
+        expect(newIds[i]).not.toBe(origIds[i]);
       }
     }
   });

@@ -1,13 +1,14 @@
-import { player } from "../testingObjs";
+import { retire } from "../mockObjs";
 import Player from "./Player";
 import { getStats } from "./statGen";
+import { Location } from "../models";
 
 describe("Player", () => {
+  const player = new Player("Test Player", 0, 1, retire);
   it("Is created", () => {
-    const createdPlayer = new Player("Joe Smith", 1, 0);
-    expect(createdPlayer).toEqual(
+    expect(player).toEqual(
       expect.objectContaining({
-        name: "Joe Smith",
+        name: "Test Player",
         pos: 0,
         id: 1,
       })
@@ -18,8 +19,7 @@ describe("Player", () => {
     expect(loc).toBeTruthy();
   });
   it("Get move", () => {
-    const testLoc = "paint";
-    const move = player.getMove(testLoc);
+    const move = player.getMove(Location.PAINT);
     expect(move).toBeTruthy();
   });
 });
@@ -40,8 +40,6 @@ describe("StatsGen", () => {
   });
 
   it("Gets move at location", () => {
-    const loc = "paint";
-
-    expect(statsGen.getMove(loc)).toBeTruthy();
+    expect(statsGen.getMove(Location.PAINT)).toBeTruthy();
   });
 });

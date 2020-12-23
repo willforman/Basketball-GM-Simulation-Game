@@ -1,13 +1,8 @@
-import { team1 } from "../testingObjs";
+import { getTeamNames, getId, genPlayerName } from "../mockObjs";
+import Team from "../team/Team";
 
 describe("Team", () => {
-  const team = team1;
-
-  it("Get player array", () => {
-    const players = team.getPlayerArray();
-
-    expect(players.length).toBe(team.getNumberOfPlayers());
-  });
+  const team = new Team(getTeamNames(), genPlayerName, getId, 15);
 
   it("Gets player by postion", () => {
     const player = team.getStarter(0);
