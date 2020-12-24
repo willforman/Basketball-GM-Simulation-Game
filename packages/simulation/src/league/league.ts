@@ -2,8 +2,18 @@ import Team from "../team/Team";
 import { TeamNames } from "../models";
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
+import FreeAgents from "./FreeAgents";
+import Player from "../player/Player";
+import Draft from "./Draft";
+
+enum State {
+  PRESEASON = "preseason",
+  REGULAR_SEASON = "regularSeason",
+  PLAYOFFS = "playoffs",
+}
 
 export default class League {
+  private state: State;
   private year: number;
 
   private teams: Team[];
@@ -11,11 +21,14 @@ export default class League {
   private regularSeason: RegularSeason;
   private playoffs: Playoffs;
 
+  private freeAgents: FreeAgents;
+  private draft: Draft;
+
   private playerID: number;
 
   // class constants
   get LEAGUE_SIZE(): number {
-    return 4;
+    return 8;
   }
 
   get START_YEAR(): number {
@@ -25,9 +38,14 @@ export default class League {
   get ROSTER_SIZE(): number {
     return 15;
   }
+
+  get START_FREE_AGENTS_NUM(): number {
+    return 20;
+  }
   // end constants
 
   constructor(genPlayerName: () => string, genTeamName: () => TeamNames) {
+    this.state = State.REGULAR_SEASON;
     this.year = this.START_YEAR;
 
     this.playerID = 1;
@@ -43,6 +61,14 @@ export default class League {
     }
 
     this.regularSeason = new RegularSeason(this.teams);
+
+    this.freeAgents = new FreeAgents(
+      this.START_FREE_AGENTS_NUM,
+      getNextID,
+      genPlayerName
+    );
+
+    this.draft = new Draft(genPlayerName, getNextID);
   }
 
   simulateWeek(): void {
@@ -72,6 +98,12 @@ export default class League {
 
     this.teams.forEach((team: Team) => team.advanceYear());
     this.year++;
+  }
+
+  addUndraftedToFreeAgents(): void {
+    const players = this.draft.getPlayers();
+    this.freeAgents.addPlayers(players);
+    this.draft.clearPlayers();
   }
 
   // get functions

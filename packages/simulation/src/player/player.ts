@@ -90,6 +90,18 @@ export default class Player {
     return Math.floor(Math.random() * (ub - lb + 1)) + lb;
   }
 
+  goToNextYear(): void {
+    this.age++;
+  }
+
+  addBoxScore(boxScore: BoxScore): void {
+    this.boxScores.push(boxScore);
+  }
+
+  playerComp(player: Player): number {
+    return this.rating - player.getRating();
+  }
+
   // get methods
   getName(): string {
     return this.name;
@@ -101,14 +113,6 @@ export default class Player {
 
   getId(): number {
     return this.id;
-  }
-
-  goToNextYear(): void {
-    this.age++;
-  }
-
-  addBoxScore(boxScore: BoxScore): void {
-    this.boxScores.push(boxScore);
   }
 
   getOffenseRating(offMove: Move): number {
@@ -136,6 +140,10 @@ export default class Player {
       case Move.PASS:
         return this.stealing;
     }
+  }
+
+  getRating(): number {
+    return this.rating;
   }
 
   getRatingMultiplier(): number {
