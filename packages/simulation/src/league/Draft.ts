@@ -1,13 +1,19 @@
 import Player from "../player/Player";
+import Team from "../team/Team";
 
 export default class Draft {
   private players: Player[];
+  private order: Team[];
 
   get DRAFT_NUM_PLAYERS(): number {
     return 50;
   }
 
-  constructor(genName: () => string, getId: () => number) {
+  constructor(
+    genName: () => string,
+    getId: () => number,
+    nonPlayoffTeams: Team[]
+  ) {
     this.players = [];
 
     const retire = (player: Player): void => {
@@ -19,6 +25,12 @@ export default class Draft {
     }
 
     this.players.sort((a: Player, b: Player) => a.playerComp(b));
+
+    this.order = nonPlayoffTeams;
+  }
+
+  addPlayoffTeams(playoffTeams: Team[]): void {
+    this.order.concat(playoffTeams);
   }
 
   removePlayer(playerRemove: Player): void {

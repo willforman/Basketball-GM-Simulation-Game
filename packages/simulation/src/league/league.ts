@@ -12,6 +12,22 @@ enum State {
   PLAYOFFS = "playoffs",
 }
 
+export const getPlayoffTeams = (allTeams: Team[]): [Team[], Team[]] => {
+  const sortedTeams = allTeams.sort(
+    (a: Team, b: Team): number => a.getWins() - b.getWins()
+  );
+
+  let cutOffIdx = 2;
+  while (cutOffIdx * 2 < allTeams.length) {
+    cutOffIdx *= 2;
+  }
+
+  const playoffTeams = sortedTeams.slice(0, cutOffIdx);
+  const nonPlayoffTeams = sortedTeams.slice(cutOffIdx, sortedTeams.length);
+
+  return [playoffTeams, nonPlayoffTeams];
+};
+
 export default class League {
   private state: State;
   private year: number;
@@ -78,8 +94,6 @@ export default class League {
       this.getPlayerId,
       genPlayerName
     );
-
-    this.draft = new Draft(genPlayerName, this.getPlayerId);
   }
 
   simulateWeek(): void {
@@ -98,15 +112,11 @@ export default class League {
     this.playoffs.simulateAll();
   }
 
-  initPlayoffs(): void {
-    this.playoffs = new Playoffs(this.teams);
-  }
-
   advanceToDraft(): void {
     this.year++;
     this.teams.forEach((team: Team) => team.advanceYear());
 
-    this.draft = new Draft(this.genPlayerName, this.getPlayerId);
+    this.draft.addPlayoffTeams(this.playoffs.getTeamsInDraftOrder());
   }
 
   advanceToFreeAgency(): void {
@@ -118,7 +128,13 @@ export default class League {
   }
 
   advanceToPlayoffs(): void {
-    this.playoffs = new Playoffs(this.teams);
+    const [playoffTeams, nonPlayoffTeams] = getPlayoffTeams(this.teams);
+    this.playoffs = new Playoffs(playoffTeams);
+    this.draft = new Draft(
+      this.genPlayerName,
+      this.getPlayerId,
+      nonPlayoffTeams
+    );
   }
 
   // get functions

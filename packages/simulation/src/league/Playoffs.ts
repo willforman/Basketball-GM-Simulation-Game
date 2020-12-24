@@ -1,19 +1,6 @@
 import Team from "../team/Team";
 import Game from "../game/Game";
 
-export const getPlayoffTeams = (allTeams: Team[]): Team[] => {
-  const sortedTeams = allTeams.sort(
-    (a: Team, b: Team): number => a.getWins() - b.getWins()
-  );
-
-  let cutOffIdx = 2;
-  while (cutOffIdx * 2 < allTeams.length) {
-    cutOffIdx *= 2;
-  }
-
-  return sortedTeams.slice(0, cutOffIdx);
-};
-
 export const genPlayoffsNextRound = (teams: Team[]): Round => {
   const nextRound: PlayoffSeries[] = [];
 
@@ -30,9 +17,7 @@ export default class Playoffs {
   private completed: boolean;
   private winner: Team;
 
-  constructor(allTeams: Team[]) {
-    const playoffTeams = getPlayoffTeams(allTeams);
-
+  constructor(playoffTeams: Team[]) {
     this.rounds = [];
     this.initNextRound(playoffTeams);
     this.roundIdx = 0;
@@ -77,6 +62,22 @@ export default class Playoffs {
   getCompleted(): boolean {
     return this.completed;
   }
+
+  getTeamsInDraftOrder(): Team[] {
+    if (!this.completed) {
+      throw new Error("Playoffs not complete");
+    }
+
+    const teams: Team[] = [];
+
+    for (let round = 0; round < this.rounds.length; round++) {
+      teams.concat(this.rounds[round].getLosersInOrder());
+    }
+
+    teams.push(this.winner);
+
+    return teams;
+  }
 }
 
 class Round {
@@ -102,6 +103,29 @@ class Round {
 
   isChampionshipRound(): boolean {
     return this.series.length === 1;
+  }
+
+  getLosersInOrder(): Team[] {
+    if (!this.completed) {
+      throw new Error("This series is not completed");
+    }
+
+    const teams: Team[] = [];
+
+    for (let i = 0; i < this.series.length / 2; i++) {
+      const loser1 = this.series[i].getLoser();
+      const loser2 = this.series[this.series.length - 1 - i].getLoser();
+
+      if (i % 2 === 0) {
+        teams.push(loser1);
+        teams.push(loser2);
+      } else {
+        teams.push(loser2);
+        teams.push(loser1);
+      }
+    }
+
+    return teams;
   }
 }
 
@@ -156,12 +180,19 @@ class PlayoffSeries {
     this.completed = true;
   }
 
-  getWinner(): Team {
+  getTeam1Won(): boolean {
     if (!this.completed) {
       throw new Error(`Series not completed: ${this.wins1} - ${this.wins2}`);
     }
+    return this.wins1 === 4;
+  }
 
-    return this.wins1 === 4 ? this.team1 : this.team2;
+  getWinner(): Team {
+    return this.getTeam1Won() ? this.team1 : this.team2;
+  }
+
+  getLoser(): Team {
+    return this.getTeam1Won() ? this.team2 : this.team1;
   }
 
   // returns odds of team 1 winning

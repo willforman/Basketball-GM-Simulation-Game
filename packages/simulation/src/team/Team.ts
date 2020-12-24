@@ -51,7 +51,7 @@ export default class Team {
       this.roster.add(player);
     }
 
-    this.picks = new DraftPicks(currYear);
+    this.picks = new DraftPicks(this, currYear);
   }
 
   advanceYear(): void {
