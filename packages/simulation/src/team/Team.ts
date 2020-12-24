@@ -2,6 +2,7 @@ import Player from "../player/Player";
 import Game from "../game/Game";
 import { TeamNames } from "../models";
 import Roster from "./Roster";
+import DraftPicks from "./DraftPicks";
 
 export default class Team {
   private name: string;
@@ -12,8 +13,9 @@ export default class Team {
   private losses: number;
 
   private roster: Roster;
-
   private games: Game[];
+
+  private picks: DraftPicks;
 
   private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
@@ -22,7 +24,8 @@ export default class Team {
     names: TeamNames,
     genPlayerName: () => string,
     getNextId: () => number,
-    rosterSize: number
+    rosterSize: number,
+    currYear: number
   ) {
     this.name = names.name;
     this.location = names.location;
@@ -47,6 +50,8 @@ export default class Team {
 
       this.roster.add(player);
     }
+
+    this.picks = new DraftPicks(currYear);
   }
 
   advanceYear(): void {
