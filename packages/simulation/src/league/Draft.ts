@@ -6,7 +6,7 @@ export default class Draft {
   private order: Team[];
 
   get DRAFT_NUM_PLAYERS(): number {
-    return 50;
+    return 94;
   }
 
   constructor(
@@ -36,7 +36,7 @@ export default class Draft {
   removePlayer(playerRemove: Player): void {
     const playerIdx = this.players.indexOf(playerRemove);
 
-    if (!playerIdx) {
+    if (playerIdx === -1) {
       throw new Error("Given player can't be found");
     }
 

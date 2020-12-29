@@ -89,11 +89,7 @@ export default class League {
 
     this.regularSeason = new RegularSeason(this.teams);
 
-    this.freeAgents = new FreeAgents(
-      this.START_FREE_AGENTS_NUM,
-      this.getPlayerId,
-      genPlayerName
-    );
+    this.freeAgents = new FreeAgents(this.getPlayerId, genPlayerName);
   }
 
   simulateWeek(): void {

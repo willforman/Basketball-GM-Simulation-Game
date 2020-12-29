@@ -3,18 +3,18 @@ import Player from "../player/Player";
 export default class FreeAgents {
   private players: Player[];
 
-  constructor(
-    numToStartWith: number,
-    getId: () => number,
-    genPlayerName: () => string
-  ) {
+  get START_NUM_FREE_AGENTS(): number {
+    return 60;
+  }
+
+  constructor(getId: () => number, genPlayerName: () => string) {
     const retire = (player: Player) => {
       this.removePlayer(player);
     };
 
     this.players = [];
 
-    for (let i = 0; i < numToStartWith; i++) {
+    for (let i = 0; i < this.START_NUM_FREE_AGENTS; i++) {
       this.players.push(new Player(genPlayerName(), getId(), -1, retire));
     }
   }
