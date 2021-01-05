@@ -1,10 +1,5 @@
 import Team from "./Team";
 
-interface Pick {
-  round: number;
-  team: Team;
-}
-
 export default class DraftPicks {
   private draftYears: DraftYear[];
   private currYear: number;
@@ -25,12 +20,8 @@ export default class DraftPicks {
     }
   }
 
-  addPick(pick: Pick, year: number): void {
-    this.getDraftYear(year).addPick(pick);
-  }
-
-  removePick(pick: Pick, year: number): void {
-    this.getDraftYear(year).removePick(pick);
+  changeOwnership(pick: Pick, year: number, newTeam: Team): void {
+    this.getDraftYear(year).changeOwnership(pick, newTeam);
   }
 
   getDraftYear(year: number): DraftYear {
@@ -59,24 +50,36 @@ class DraftYear {
     this.picks = [];
 
     for (let round = 1; round <= 2; round++) {
-      this.picks.push({
-        round,
-        team,
-      });
+      this.picks.push(new Pick(team));
     }
   }
 
-  addPick(pick: Pick): void {
-    this.picks.push(pick);
-  }
+  changeOwnership(pickToChange: Pick, newTeam: Team): void {
+    const foundPick = this.picks.find((pick: Pick) => pick === pickToChange);
 
-  removePick(pick: Pick): void {
-    const idx = this.picks.indexOf(pick);
-
-    if (idx !== -1) {
-      throw new Error("Team doesn't have this pick");
+    if (!foundPick) {
+      throw new Error("Given pick couldn't be found");
     }
 
-    this.picks.splice(idx, 1);
+    foundPick.changeOwnership(newTeam);
+  }
+
+  get firstPick(): Pick {
+    return this.picks[0];
+  }
+  get secondPick(): Pick {
+    return this.picks[1];
+  }
+}
+
+class Pick {
+  private teamOwning: Team;
+
+  constructor(team: Team) {
+    this.teamOwning = team;
+  }
+
+  changeOwnership(newTeam: Team): void {
+    this.teamOwning = newTeam;
   }
 }
