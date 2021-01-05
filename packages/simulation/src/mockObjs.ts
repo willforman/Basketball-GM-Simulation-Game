@@ -13,10 +13,10 @@ export const getTeamNames = (): TeamNames => {
 };
 
 let id = 0;
-export const getId = () => {
+export const getId = (): number => {
   return id++;
 };
 
-export const retire = () => {
+export const retire = (): void => {
   1 + 1;
 };
