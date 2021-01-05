@@ -1,5 +1,6 @@
 import Team from "../team/Team";
-import { TeamNames } from "../models";
+import { TeamNames, Pick, LEAGUE_SIZE } from "../models";
+
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
 import FreeAgents from "./FreeAgents";
@@ -46,10 +47,6 @@ export default class League {
   private getPlayerId: () => number;
 
   // class constants
-  get LEAGUE_SIZE(): number {
-    return 8;
-  }
-
   get START_YEAR(): number {
     return 2021;
   }
@@ -75,7 +72,7 @@ export default class League {
 
     this.getPlayerId = () => this.playerID++;
 
-    for (let i = 0; i < this.LEAGUE_SIZE; i++) {
+    for (let i = 0; i < LEAGUE_SIZE; i++) {
       this.teams.push(
         new Team(
           genTeamName(),
@@ -113,6 +110,12 @@ export default class League {
     this.teams.forEach((team: Team) => team.advanceYear());
 
     this.draft.addPlayoffTeams(this.playoffs.getTeamsInDraftOrder());
+  }
+
+  getDraftPicks(): Pick[] {
+    if (this.state !== State.PRESEASON_DRAFT) {
+      throw new Error(`Can't get draft picks if not in draft`);
+    }
   }
 
   advanceToFreeAgency(): void {

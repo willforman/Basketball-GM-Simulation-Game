@@ -1,9 +1,14 @@
 import Player from "../player/Player";
 import Team from "../team/Team";
+import { Pick, LEAGUE_SIZE } from "../models";
 
 export default class Draft {
   private players: Player[];
   private order: Team[];
+
+  private picks: Pick[];
+  private pickNum: number;
+  private completed: boolean;
 
   get DRAFT_NUM_PLAYERS(): number {
     return 94;
@@ -33,6 +38,25 @@ export default class Draft {
     this.order.concat(playoffTeams);
   }
 
+  pickPlayer(player: Player): void {
+    if (this.picks.length !== LEAGUE_SIZE * 2) {
+      throw new Error(`Picks haven't been set yet`);
+    }
+    if (this.completed) {
+      throw new Error(`Draft is already completed`);
+    }
+
+    const pick = this.picks[this.pickNum];
+    pick.playerPicked = player;
+
+    this.removePlayer(player);
+
+    this.pickNum++;
+    if (this.pickNum > LEAGUE_SIZE * 2) {
+      this.completed = true;
+    }
+  }
+
   removePlayer(playerRemove: Player): void {
     const playerIdx = this.players.indexOf(playerRemove);
 
@@ -41,6 +65,30 @@ export default class Draft {
     }
 
     this.players.splice(playerIdx, 1);
+  }
+
+  setPicksInOrder(): void {
+    if (this.order.length !== LEAGUE_SIZE) {
+      throw new Error(`Not all teams have been added`);
+    }
+
+    for (let i = 0; i < LEAGUE_SIZE * 2; i++) {
+      this.picks.push();
+    }
+
+    for (let i = 0; i < LEAGUE_SIZE; i++) {
+      const team = this.order[i];
+      const [firstPick, secondPick] = team.getPicks();
+
+      this.picks[i] = firstPick;
+      this.picks[i + LEAGUE_SIZE] = secondPick;
+    }
+
+    this.pickNum = 0;
+  }
+
+  getPicks(): Pick[] {
+    return this.picks;
   }
 
   getPlayers(): Player[] {

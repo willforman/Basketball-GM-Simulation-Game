@@ -1,6 +1,6 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
-import { TeamNames } from "../models";
+import { TeamNames, Pick } from "../models";
 import Roster from "./Roster";
 import DraftPicks from "./DraftPicks";
 
@@ -67,6 +67,9 @@ export default class Team {
   }
 
   // get methods
+  getPicks(): [Pick, Pick] {
+    return this.picks.getAndRemoveCurrYearPicks();
+  }
 
   getRoster(): Roster {
     return this.roster;

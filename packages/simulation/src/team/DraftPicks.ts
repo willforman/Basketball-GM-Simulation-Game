@@ -1,4 +1,5 @@
 import Team from "./Team";
+import { Pick } from "../models";
 
 export default class DraftPicks {
   private draftYears: DraftYear[];
@@ -32,14 +33,14 @@ export default class DraftPicks {
     return this.draftYears[year - this.currYear];
   }
 
-  getAndRemoveCurrYear(): DraftYear {
+  getAndRemoveCurrYearPicks(): [Pick, Pick] {
     const draftYear = this.draftYears.shift();
 
     if (!draftYear) {
       throw new Error("Draft years array is empty");
     }
 
-    return draftYear;
+    return draftYear.getPicks();
   }
 }
 
@@ -50,7 +51,10 @@ class DraftYear {
     this.picks = [];
 
     for (let round = 1; round <= 2; round++) {
-      this.picks.push(new Pick(team));
+      this.picks.push({
+        teamOwning: team,
+        teamOrig: team,
+      });
     }
   }
 
@@ -61,25 +65,10 @@ class DraftYear {
       throw new Error("Given pick couldn't be found");
     }
 
-    foundPick.changeOwnership(newTeam);
+    foundPick.teamOwning = newTeam;
   }
 
-  get firstPick(): Pick {
-    return this.picks[0];
-  }
-  get secondPick(): Pick {
-    return this.picks[1];
-  }
-}
-
-class Pick {
-  private teamOwning: Team;
-
-  constructor(team: Team) {
-    this.teamOwning = team;
-  }
-
-  changeOwnership(newTeam: Team): void {
-    this.teamOwning = newTeam;
+  getPicks(): [Pick, Pick] {
+    return [this.picks[0], this.picks[1]];
   }
 }
