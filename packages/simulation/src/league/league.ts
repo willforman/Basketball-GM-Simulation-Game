@@ -46,15 +46,6 @@ export default class League {
   private genPlayerName: () => string;
   private getPlayerId: () => number;
 
-  // class constants
-  get START_YEAR(): number {
-    return 2021;
-  }
-
-  get ROSTER_SIZE(): number {
-    return 15;
-  }
-
   get START_FREE_AGENTS_NUM(): number {
     return 20;
   }
@@ -89,44 +80,65 @@ export default class League {
     this.freeAgents = new FreeAgents(this.getPlayerId, genPlayerName);
   }
 
-  simulateWeek(): void {
+  simWeek(): void {
     this.regularSeason.simulateWeek();
   }
 
-  simulateSeason(): void {
+  simSeason(): void {
     this.regularSeason.simulateAll();
   }
 
-  simulatePlayoffRound(): void {
+  simPlayoffRound(): void {
     this.playoffs.simulateRound();
   }
 
-  simulateAllPlayoffs(): void {
+  simAllPlayoffs(): void {
     this.playoffs.simulateAll();
   }
 
-  advanceToDraft(): void {
+  simDraft(): void {
+    this.draft.simulate();
+  }
+
+  advToDraft(): void {
+    this.advState(State.PLAYOFFS);
+
+    if (!this.playoffs.getCompleted()) {
+      throw new Error(`Playoffs aren't completed`);
+    }
+
     this.year++;
     this.teams.forEach((team: Team) => team.advanceYear());
 
+    this.freeAgents.advanceYear();
+
     this.draft.addPlayoffTeams(this.playoffs.getTeamsInDraftOrder());
+    this.draft.setPicksInOrder();
   }
 
-  getDraftPicks(): Pick[] {
-    if (this.state !== State.PRESEASON_DRAFT) {
-      throw new Error(`Can't get draft picks if not in draft`);
+  advToFreeAgency(): void {
+    this.advState(State.PRESEASON_DRAFT);
+
+    if (!this.draft.getCompleted()) {
+      throw new Error(`Draft isn't completed`);
     }
-  }
 
-  advanceToFreeAgency(): void {
     this.freeAgents.addPlayers(this.draft.getPlayers());
   }
 
-  advanceToRegularSeason(): void {
+  advToRegSeason(): void {
+    this.advState(State.PRESEASON_FREE_AGENCY);
+
     this.regularSeason = new RegularSeason(this.teams);
   }
 
-  advanceToPlayoffs(): void {
+  advToPlayoffs(): void {
+    this.advState(State.REGULAR_SEASON);
+
+    if (!this.regularSeason.getCompleted()) {
+      throw new Error(`Regular season isn't completed`);
+    }
+
     const [playoffTeams, nonPlayoffTeams] = getPlayoffTeams(this.teams);
     this.playoffs = new Playoffs(playoffTeams);
     this.draft = new Draft(
@@ -134,6 +146,29 @@ export default class League {
       this.getPlayerId,
       nonPlayoffTeams
     );
+  }
+
+  private advState(wantedState: State): void {
+    if (wantedState !== this.state) {
+      throw new Error(
+        `Given state: ${this.state}, Desired state: ${wantedState}`
+      );
+    }
+
+    this.state = this.getNextState();
+  }
+
+  private getNextState(): State {
+    switch (this.state) {
+      case State.PRESEASON_DRAFT:
+        return State.PRESEASON_FREE_AGENCY;
+      case State.PRESEASON_FREE_AGENCY:
+        return State.REGULAR_SEASON;
+      case State.REGULAR_SEASON:
+        return State.PLAYOFFS;
+      case State.PLAYOFFS:
+        return State.PRESEASON_DRAFT;
+    }
   }
 
   // get functions

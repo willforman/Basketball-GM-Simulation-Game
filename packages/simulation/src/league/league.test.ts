@@ -16,16 +16,28 @@ describe("League", () => {
   });
 
   it("Simulates season", () => {
-    league.simulateWeek();
-    league.simulateSeason();
+    league.simWeek();
+    league.simSeason();
   });
 
   it("Simulates playoffs", () => {
-    league.initPlayoffs();
+    league.advToPlayoffs();
 
-    league.simulatePlayoffRound();
-    league.simulateAllPlayoffs();
+    league.simPlayoffRound();
+    league.simAllPlayoffs();
     expect(league.getWinner()).toBeTruthy();
+  });
+
+  it("Simulates draft", () => {
+    league.advToDraft();
+
+    league.simDraft();
+  });
+
+  it("Simulates free agency", () => {
+    league.advToFreeAgency();
+
+    league.simFreeAgency();
   });
 });
 

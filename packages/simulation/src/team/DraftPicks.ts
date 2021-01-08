@@ -54,6 +54,7 @@ class DraftYear {
       this.picks.push({
         teamOwning: team,
         teamOrig: team,
+        playerPicked: null,
       });
     }
   }

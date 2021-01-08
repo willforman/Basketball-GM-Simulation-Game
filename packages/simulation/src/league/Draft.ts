@@ -38,35 +38,6 @@ export default class Draft {
     this.order.concat(playoffTeams);
   }
 
-  pickPlayer(player: Player): void {
-    if (this.picks.length !== LEAGUE_SIZE * 2) {
-      throw new Error(`Picks haven't been set yet`);
-    }
-    if (this.completed) {
-      throw new Error(`Draft is already completed`);
-    }
-
-    const pick = this.picks[this.pickNum];
-    pick.playerPicked = player;
-
-    this.removePlayer(player);
-
-    this.pickNum++;
-    if (this.pickNum > LEAGUE_SIZE * 2) {
-      this.completed = true;
-    }
-  }
-
-  removePlayer(playerRemove: Player): void {
-    const playerIdx = this.players.indexOf(playerRemove);
-
-    if (playerIdx === -1) {
-      throw new Error("Given player can't be found");
-    }
-
-    this.players.splice(playerIdx, 1);
-  }
-
   setPicksInOrder(): void {
     if (this.order.length !== LEAGUE_SIZE) {
       throw new Error(`Not all teams have been added`);
@@ -87,11 +58,54 @@ export default class Draft {
     this.pickNum = 0;
   }
 
+  simulate(): void {
+    this.picks.forEach((pick: Pick) => {
+      const playerPicked = this.players[0];
+
+      this.pickPlayer(playerPicked);
+    });
+  }
+
+  pickPlayer(player: Player): void {
+    if (this.picks.length !== LEAGUE_SIZE * 2) {
+      throw new Error(`Picks haven't been set yet`);
+    }
+    if (this.completed) {
+      throw new Error(`Draft is already completed`);
+    }
+
+    const pick = this.picks[this.pickNum];
+    pick.playerPicked = player;
+
+    pick.teamOwning.addPlayer(player);
+
+    this.removePlayer(player);
+
+    this.pickNum++;
+    if (this.pickNum > LEAGUE_SIZE * 2) {
+      this.completed = true;
+    }
+  }
+
+  removePlayer(playerRemove: Player): void {
+    const playerIdx = this.players.indexOf(playerRemove);
+
+    if (playerIdx === -1) {
+      throw new Error("Given player can't be found");
+    }
+
+    this.players.splice(playerIdx, 1);
+  }
+
   getPicks(): Pick[] {
     return this.picks;
   }
 
   getPlayers(): Player[] {
     return this.players;
+  }
+
+  getCompleted(): boolean {
+    return this.completed;
   }
 }

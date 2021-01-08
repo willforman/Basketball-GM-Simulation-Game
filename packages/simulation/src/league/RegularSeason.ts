@@ -73,6 +73,10 @@ export default class RegularSeason {
       this.simulateWeek();
     }
   }
+
+  getCompleted(): boolean {
+    return this.completed;
+  }
 }
 
 class Week {

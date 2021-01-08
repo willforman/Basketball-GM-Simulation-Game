@@ -1,6 +1,6 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
-import { TeamNames, Pick } from "../models";
+import { TeamNames, Pick, START_YEAR, ROSTER_SIZE } from "../models";
 import Roster from "./Roster";
 import DraftPicks from "./DraftPicks";
 
@@ -19,13 +19,12 @@ export default class Team {
 
   private genPlayerName: () => string;
   private getNextId: () => number; // increment player id number for league
+  private retire: (player: Player) => void;
 
   constructor(
     names: TeamNames,
     genPlayerName: () => string,
-    getNextId: () => number,
-    rosterSize: number,
-    currYear: number
+    getNextId: () => number
   ) {
     this.name = names.name;
     this.location = names.location;
@@ -41,12 +40,12 @@ export default class Team {
 
     this.roster = new Roster();
 
-    const retire = (player: Player) => {
+    this.retire = (player: Player) => {
       this.roster.remove(player);
     };
 
-    for (let i = 0; i < rosterSize; i++) {
-      const player = new Player(genPlayerName(), getNextId(), i, retire);
+    for (let i = 0; i < ROSTER_SIZE; i++) {
+      const player = new Player(genPlayerName(), getNextId(), i, this.retire);
 
       this.roster.add(player);
     }
@@ -55,15 +54,17 @@ export default class Team {
   }
 
   advanceYear(): void {
-    this.getPlayerArray().forEach((player: Player | null) => {
-      if (player) {
-        player.advanceYear();
-      }
+    this.getPlayerArray().forEach((player: Player) => {
+      player.advanceYear();
     });
   }
 
   addGame(game: Game): void {
     this.games.push(game);
+  }
+
+  addPlayer(player: Player): void {
+    this.roster.add(player);
   }
 
   // get methods
