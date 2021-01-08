@@ -11,7 +11,7 @@ export default class Draft {
   private completed: boolean;
 
   get DRAFT_NUM_PLAYERS(): number {
-    return 94;
+    return 64 + 30;
   }
 
   constructor(

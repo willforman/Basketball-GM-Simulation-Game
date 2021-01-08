@@ -1,5 +1,5 @@
 import Team from "../team/Team";
-import { TeamNames, Pick, LEAGUE_SIZE } from "../models";
+import { TeamNames, LEAGUE_SIZE } from "../models";
 
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
@@ -46,10 +46,9 @@ export default class League {
   private genPlayerName: () => string;
   private getPlayerId: () => number;
 
-  get START_FREE_AGENTS_NUM(): number {
-    return 20;
+  get START_YEAR(): number {
+    return 2021;
   }
-  // end constants
 
   constructor(genPlayerName: () => string, genTeamName: () => TeamNames) {
     this.genPlayerName = genPlayerName;
@@ -65,13 +64,7 @@ export default class League {
 
     for (let i = 0; i < LEAGUE_SIZE; i++) {
       this.teams.push(
-        new Team(
-          genTeamName(),
-          genPlayerName,
-          this.getPlayerId,
-          this.ROSTER_SIZE,
-          this.START_YEAR
-        )
+        new Team(genTeamName(), genPlayerName, this.getPlayerId, this.getYear)
       );
     }
 
