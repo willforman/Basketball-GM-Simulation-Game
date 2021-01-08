@@ -63,9 +63,7 @@ export default class League {
     this.getPlayerId = () => this.playerID++;
 
     for (let i = 0; i < LEAGUE_SIZE; i++) {
-      this.teams.push(
-        new Team(genTeamName(), genPlayerName, this.getPlayerId, this.getYear)
-      );
+      this.teams.push(new Team(genTeamName(), genPlayerName, this.getPlayerId));
     }
 
     this.regularSeason = new RegularSeason(this.teams);
@@ -91,6 +89,10 @@ export default class League {
 
   simDraft(): void {
     this.draft.simulate();
+  }
+
+  simFreeAgency(): void {
+    this.freeAgents.simulate();
   }
 
   advToDraft(): void {

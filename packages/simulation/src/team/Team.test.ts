@@ -1,4 +1,4 @@
-import { getTeamNames, getId, genPlayerName } from "../mockObjs";
+import { getTeamNames, getId, genPlayerName, retire } from "../mockObjs";
 import Team from "../team/Team";
 import Player from "../player/Player";
 import { TeamNames } from "../models";
@@ -6,7 +6,7 @@ import DraftPicks from "./DraftPicks";
 
 const makeTeam = (teamNamesGiven?: TeamNames): Team => {
   const teamNames = teamNamesGiven ?? getTeamNames();
-  return new Team(teamNames, 2021, genPlayerName, getId);
+  return new Team(teamNames, genPlayerName, getId);
 };
 
 describe("Team", () => {
@@ -25,6 +25,24 @@ describe("Team", () => {
 
 describe("Roster", () => {
   const team = makeTeam();
+  const player = new Player(genPlayerName(), getId(), 0, retire);
+
+  it("Adds player", () => {
+    team.addPlayer(player);
+
+    expect(
+      team.getPlayerArray().map((player: Player) => player.getId())
+    ).toContain(player.getId());
+  });
+
+  it("Removes player", () => {
+    team.removePlayer(player);
+
+    expect(
+      team.getPlayerArray().map((player: Player) => player.getId())
+    ).not.toContain(player.getId());
+  });
+
   it("Subs lineup", () => {
     const roster = team.getRoster();
 

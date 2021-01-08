@@ -23,7 +23,6 @@ export default class Team {
 
   constructor(
     names: TeamNames,
-    year: number,
     genPlayerName: () => string,
     getNextId: () => number
   ) {
@@ -53,6 +52,10 @@ export default class Team {
 
   addPlayer(player: Player): void {
     this.roster.add(player);
+  }
+
+  removePlayer(player: Player): void {
+    this.roster.remove(player);
   }
 
   // get methods

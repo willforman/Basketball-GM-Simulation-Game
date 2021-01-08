@@ -1,5 +1,5 @@
 import { getId, genPlayerName, getTeamNames } from "../mockObjs";
-import { genPlayoffsNextRound, getPlayoffTeams } from "./Playoffs";
+import { genPlayoffsNextRound } from "./Playoffs";
 import { genRegularSeasonGames } from "./RegularSeason";
 import Game from "../game/Game";
 import League from "./League";
@@ -42,10 +42,10 @@ describe("League", () => {
 });
 
 describe("Game Scheduling", () => {
-  const team1 = new Team(getTeamNames(), genPlayerName, getId, 15);
-  const team2 = new Team(getTeamNames(), genPlayerName, getId, 15);
-  const team3 = new Team(getTeamNames(), genPlayerName, getId, 15);
-  const team4 = new Team(getTeamNames(), genPlayerName, getId, 15);
+  const team1 = new Team(getTeamNames(), 2021, genPlayerName, getId);
+  const team2 = new Team(getTeamNames(), 2021, genPlayerName, getId);
+  const team3 = new Team(getTeamNames(), 2021, genPlayerName, getId);
+  const team4 = new Team(getTeamNames(), 2021, genPlayerName, getId);
 
   const teams = [team1, team2, team3, team4];
   it("Generates regular season", () => {
@@ -60,10 +60,6 @@ describe("Game Scheduling", () => {
     });
 
     expect(count).toBe(6);
-  });
-
-  it("Gets playoff teams", () => {
-    expect(getPlayoffTeams(teams).length).toBe(2);
   });
 
   it("Generates playoffs rounds", () => {
