@@ -3,34 +3,50 @@ import { Pick } from "../models";
 
 export default class DraftPicks {
   private draftYears: DraftYear[];
-  private currYear: number;
   private team: Team;
 
-  get INIT_DRAFT_PICKS(): number {
+  get GEN_PICKS_YEARS_AHEAD(): number {
     return 5;
   }
 
-  constructor(team: Team, currYear: number) {
+  constructor(team: Team) {
     this.team = team;
-    this.currYear = currYear;
 
     this.draftYears = [];
 
-    for (let year = this.currYear; year < this.INIT_DRAFT_PICKS; year++) {
+    for (let i = 0; i < this.GEN_PICKS_YEARS_AHEAD; i++) {
       this.draftYears.push(new DraftYear(team));
     }
   }
 
-  changeOwnership(pick: Pick, year: number, newTeam: Team): void {
-    this.getDraftYear(year).changeOwnership(pick, newTeam);
-  }
-
-  getDraftYear(year: number): DraftYear {
-    if (year < this.currYear || year > this.currYear + this.INIT_DRAFT_PICKS) {
-      throw new Error(`Don't have picks yet for given year: ${year}`);
+  advanceYear(): void {
+    if (this.draftYears.length !== this.GEN_PICKS_YEARS_AHEAD - 1) {
+      throw new Error(`Invalid num of draft years: ${this.draftYears.length}`);
     }
 
-    return this.draftYears[year - this.currYear];
+    this.draftYears.push(new DraftYear(this.team));
+  }
+
+  changeOwnership(yearIdx: number, roundIdx: number, newTeam: Team): void {
+    this.getPick(yearIdx, roundIdx).teamOwning = newTeam;
+  }
+
+  getPick(yearIdx: number, roundIdx: number): Pick {
+    return this.getDraftYear(yearIdx).getPicks()[roundIdx];
+  }
+
+  getDraftYear(idx: number): DraftYear {
+    return this.draftYears[idx];
+  }
+
+  getPicks(): Pick[] {
+    const picks: Pick[] = [];
+
+    this.draftYears.forEach((draftYear: DraftYear) => {
+      picks.push(...draftYear.getPicks());
+    });
+
+    return picks;
   }
 
   getAndRemoveCurrYearPicks(): [Pick, Pick] {
@@ -57,16 +73,6 @@ class DraftYear {
         playerPicked: null,
       });
     }
-  }
-
-  changeOwnership(pickToChange: Pick, newTeam: Team): void {
-    const foundPick = this.picks.find((pick: Pick) => pick === pickToChange);
-
-    if (!foundPick) {
-      throw new Error("Given pick couldn't be found");
-    }
-
-    foundPick.teamOwning = newTeam;
   }
 
   getPicks(): [Pick, Pick] {

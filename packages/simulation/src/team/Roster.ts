@@ -5,14 +5,42 @@ import RandomSelector from "../services/RandomSelector";
 export default class Roster {
   private positions: Position[];
 
-  constructor() {
-    this.positions = [
-      new Position(),
-      new Position(),
-      new Position(),
-      new Position(),
-      new Position(),
-    ];
+  private genPlayerName: () => string;
+  private getNextId: () => number; // increment player id number for league
+  private retire: (player: Player) => void;
+
+  constructor(genPlayerName: () => string, getNextId: () => number) {
+    this.genPlayerName = genPlayerName;
+    this.getNextId = getNextId;
+
+    this.retire = (player: Player) => {
+      this.remove(player);
+    };
+
+    this.positions = [];
+
+    // create the position objs and gen players for them
+    for (let i = 0; i < 5; i++) {
+      const starter = new Player(
+        this.genPlayerName(),
+        this.getNextId(),
+        i,
+        this.retire
+      );
+      this.positions.push(new Position(starter));
+    }
+
+    // generate 10 random players and add them
+    for (let i = 0; i < 10; i++) {
+      const pos = Math.floor(Math.random() * 6);
+      const player = new Player(
+        this.genPlayerName(),
+        this.getNextId(),
+        pos,
+        this.retire
+      );
+      this.add(player);
+    }
   }
 
   add(player: Player): void {
@@ -23,7 +51,7 @@ export default class Roster {
     posObj.add(player);
   }
 
-  get(pos: number): Player {
+  get(pos: number): Player | null {
     if (0 > pos || 4 < pos) {
       throw new Error(`Invalid position given: ${pos}`);
     }
@@ -34,7 +62,7 @@ export default class Roster {
     return this.positions[pos].getBench();
   }
 
-  getStarters(): Player[] {
+  getStarters(): (Player | null)[] {
     return [
       this.positions[0].getStarter(),
       this.positions[1].getStarter(),
@@ -64,13 +92,20 @@ export default class Roster {
   getSubs(): Player[] {
     return this.positions.map((pos: Position) => pos.getSub());
   }
+
+  // determines if roster is empty at any position
+  // can't start game if so
+  isValid(): boolean {
+    return !this.positions.some((pos: Position) => pos.getIfEmpty);
+  }
 }
 
 class Position {
-  private starter: Player;
+  private starter: Player | null;
   private bench: Player[];
 
-  constructor() {
+  constructor(starter: Player) {
+    this.starter = starter;
     this.bench = [];
   }
 
@@ -82,7 +117,7 @@ class Position {
     }
   }
 
-  getStarter(): Player {
+  getStarter(): Player | null {
     return this.starter;
   }
 
@@ -91,7 +126,10 @@ class Position {
   }
 
   getAll(): Player[] {
-    return [this.starter, ...this.bench];
+    if (this.starter) {
+      return [this.starter, ...this.bench];
+    }
+    return this.bench;
   }
 
   remove(player: Player): void {
@@ -121,5 +159,9 @@ class Position {
     }));
 
     return new RandomSelector(choices).getChoice();
+  }
+
+  getIfEmpty(): boolean {
+    return !this.starter || this.bench.length !== 0;
   }
 }

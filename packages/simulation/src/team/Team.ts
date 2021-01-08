@@ -17,46 +17,28 @@ export default class Team {
 
   private picks: DraftPicks;
 
-  private genPlayerName: () => string;
-  private getNextId: () => number; // increment player id number for league
-  private retire: (player: Player) => void;
-  private getYear: () => number;
-
   get ROSTER_SIZE(): number {
     return 15;
   }
 
   constructor(
     names: TeamNames,
+    year: number,
     genPlayerName: () => string,
-    getNextId: () => number,
-    getYear: () => number
+    getNextId: () => number
   ) {
     this.name = names.name;
     this.location = names.location;
     this.abbreviation = names.abbreviation;
-
-    this.genPlayerName = genPlayerName;
-    this.getNextId = getNextId;
 
     this.wins = 0;
     this.losses = 0;
 
     this.games = [];
 
-    this.roster = new Roster();
+    this.roster = new Roster(genPlayerName, getNextId);
 
-    this.retire = (player: Player) => {
-      this.roster.remove(player);
-    };
-
-    for (let i = 0; i < this.ROSTER_SIZE; i++) {
-      const player = new Player(genPlayerName(), getNextId(), i, this.retire);
-
-      this.roster.add(player);
-    }
-
-    this.picks = new DraftPicks(this, getYear());
+    this.picks = new DraftPicks(this);
   }
 
   advanceYear(): void {
