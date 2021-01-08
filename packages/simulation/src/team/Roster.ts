@@ -72,6 +72,22 @@ export default class Roster {
     ];
   }
 
+  getStartersNonNull(): Player[] {
+    if (!this.isValid()) {
+      console.error(
+        this.positions.map((pos: Position) => pos.getStarter()?.getId())
+      );
+      throw new Error(`Can't get non null roster if roster has null spot`);
+    }
+    return [
+      this.positions[0].getStarter()!,
+      this.positions[1].getStarter()!,
+      this.positions[2].getStarter()!,
+      this.positions[3].getStarter()!,
+      this.positions[4].getStarter()!,
+    ];
+  }
+
   getArray(): Player[] {
     return [
       ...this.positions[0].getAll(),
@@ -96,7 +112,7 @@ export default class Roster {
   // determines if roster is empty at any position
   // can't start game if so
   isValid(): boolean {
-    return !this.positions.some((pos: Position) => pos.getIfEmpty);
+    return !this.positions.some((pos: Position) => !pos.hasStarter());
   }
 }
 
@@ -163,5 +179,9 @@ class Position {
 
   getIfEmpty(): boolean {
     return !this.starter || this.bench.length !== 0;
+  }
+
+  hasStarter(): boolean {
+    return this.starter !== null;
   }
 }

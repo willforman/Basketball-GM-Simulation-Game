@@ -18,6 +18,8 @@ describe("League", () => {
   it("Simulates season", () => {
     league.simWeek();
     league.simSeason();
+
+    expect(league.getRegularSeason().getCompleted()).toBeTruthy();
   });
 
   it("Simulates playoffs", () => {
@@ -42,10 +44,10 @@ describe("League", () => {
 });
 
 describe("Game Scheduling", () => {
-  const team1 = new Team(getTeamNames(), 2021, genPlayerName, getId);
-  const team2 = new Team(getTeamNames(), 2021, genPlayerName, getId);
-  const team3 = new Team(getTeamNames(), 2021, genPlayerName, getId);
-  const team4 = new Team(getTeamNames(), 2021, genPlayerName, getId);
+  const team1 = new Team(getTeamNames(), genPlayerName, getId);
+  const team2 = new Team(getTeamNames(), genPlayerName, getId);
+  const team3 = new Team(getTeamNames(), genPlayerName, getId);
+  const team4 = new Team(getTeamNames(), genPlayerName, getId);
 
   const teams = [team1, team2, team3, team4];
   it("Generates regular season", () => {

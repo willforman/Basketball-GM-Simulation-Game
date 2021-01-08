@@ -95,8 +95,8 @@ export default class Game {
         .map((player: Player) => [player, new BoxScore(aBSTitle)])
     );
 
-    const homeStarters = homeRoster.getStarters();
-    const awayStarters = awayRoster.getStarters();
+    const homeStarters = homeRoster.getStartersNonNull();
+    const awayStarters = awayRoster.getStartersNonNull();
 
     const homeLocs = new CourtLocations(homeStarters);
     const awayLocs = new CourtLocations(awayStarters);

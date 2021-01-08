@@ -190,4 +190,12 @@ export default class League {
 
     return this.playoffs.getWinner();
   }
+
+  getRegularSeason(): RegularSeason {
+    return this.regularSeason;
+  }
+
+  getPlayoffs(): Playoffs {
+    return this.playoffs;
+  }
 }

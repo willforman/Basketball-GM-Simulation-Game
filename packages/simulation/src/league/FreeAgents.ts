@@ -46,4 +46,8 @@ export default class FreeAgents {
     });
     this.sort();
   }
+
+  simulate(): void {
+    1 + 1;
+  }
 }

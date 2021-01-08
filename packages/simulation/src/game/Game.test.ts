@@ -5,8 +5,8 @@ import Game from "./Game";
 import Team from "../team/Team";
 
 describe("Game", () => {
-  const team1 = new Team(getTeamNames(), genPlayerName, getId, 15);
-  const team2 = new Team(getTeamNames(), genPlayerName, getId, 15);
+  const team1 = new Team(getTeamNames(), genPlayerName, getId);
+  const team2 = new Team(getTeamNames(), genPlayerName, getId);
   const game = new Game(team1, team2, 0);
   it("Simulates", () => {
     game.simulate();
