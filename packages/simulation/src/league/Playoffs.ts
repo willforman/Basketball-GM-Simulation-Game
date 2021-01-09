@@ -68,13 +68,12 @@ export default class Playoffs {
       throw new Error("Playoffs not complete");
     }
 
-    const teams: Team[] = [];
+    const teams = this.rounds.reduce(
+      (acc: Team[], round: Round) => acc.concat(round.getLosersInOrder()),
+      []
+    );
 
-    for (let round = 0; round < this.rounds.length; round++) {
-      teams.concat(this.rounds[round].getLosersInOrder());
-    }
-
-    teams.push(this.winner);
+    teams.push(this.getWinner());
 
     return teams;
   }
@@ -111,6 +110,10 @@ class Round {
     }
 
     const teams: Team[] = [];
+
+    if (this.series.length === 1) {
+      return [this.series[0].getLoser()];
+    }
 
     for (let i = 0; i < this.series.length / 2; i++) {
       const loser1 = this.series[i].getLoser();
