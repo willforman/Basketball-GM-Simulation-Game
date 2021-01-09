@@ -1,8 +1,9 @@
-import { Move, Location } from "../models";
+import { Move, Location, GameResult } from "../models";
 import RandomSelector from "../services/RandomSelector";
 import Player from "../player/Player";
 import BoxScore from "./BoxScore";
 import CourtLocations from "./CourtLocations";
+import Team from "../team/Team";
 
 const getReboundLocation: () => Location = new RandomSelector<Location>([
   { item: Location.PAINT, weight: 70 },
@@ -194,4 +195,87 @@ const playPossession = (
   };
 };
 
-export default playPossession;
+export default (
+  homeTeam: Team,
+  awayTeam: Team,
+  quarterMins: number
+): GameResult => {
+  const homeRoster = homeTeam.getRoster();
+  const awayRoster = awayTeam.getRoster();
+
+  const hBSTitle = `Vs ${awayTeam.getAbreviation()}`;
+  const homeBoxScores = new Map(
+    homeTeam
+      .getPlayerArray()
+      .map((player: Player) => [player, new BoxScore(hBSTitle)])
+  );
+
+  const aBSTitle = ` @ ${homeTeam.getAbreviation()}`;
+  const awayBoxScores = new Map(
+    awayTeam
+      .getPlayerArray()
+      .map((player: Player) => [player, new BoxScore(aBSTitle)])
+  );
+
+  const homeStarters = homeRoster.getStartersNonNull();
+  const awayStarters = awayRoster.getStartersNonNull();
+
+  const homeLocs = new CourtLocations(homeStarters);
+  const awayLocs = new CourtLocations(awayStarters);
+
+  // creates TeamItems for both teams
+  const homeItems = {
+    starters: homeStarters,
+    boxScores: homeBoxScores,
+    locations: homeLocs,
+  };
+
+  const awayItems = {
+    starters: awayStarters,
+    boxScores: awayBoxScores,
+    locations: awayLocs,
+  };
+
+  let homeScore = 0;
+  let awayScore = 0;
+
+  // determines if home starts with ball
+  let homeHasBall = Math.floor(Math.random() * 2) == 1;
+
+  for (let quarter = 1; quarter <= 4; quarter++) {
+    let secondsLeftInQuarter = quarterMins * 60;
+    let consecPlays = 0;
+    while (secondsLeftInQuarter > 0) {
+      const offItems = homeHasBall ? homeItems : awayItems;
+      const defItems = homeHasBall ? awayItems : homeItems;
+
+      const possession = playPossession(offItems, defItems);
+      secondsLeftInQuarter -= possession.secondsTaken;
+      if (homeHasBall) {
+        homeScore += possession.resultingPoints;
+      } else {
+        awayScore += possession.resultingPoints;
+      }
+      homeHasBall = !homeHasBall;
+
+      consecPlays++;
+
+      if (Math.floor(Math.random() * consecPlays) > 5) {
+        homeItems.starters = homeRoster.getSubs();
+        awayItems.starters = awayRoster.getSubs();
+
+        homeItems.locations.addPlayers(homeItems.starters);
+        awayItems.locations.addPlayers(awayItems.starters);
+
+        consecPlays = 0;
+      }
+    }
+  }
+
+  return {
+    homeBoxScores,
+    awayBoxScores,
+    homeScore,
+    awayScore,
+  };
+};

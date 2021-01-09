@@ -52,4 +52,8 @@ export default class BoxScore {
   addRebound(): void {
     this.rebounds++;
   }
+
+  getFGA(): number {
+    return this.FGAs;
+  }
 }

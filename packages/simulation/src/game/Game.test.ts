@@ -1,6 +1,4 @@
-import Player from "../player/Player";
 import { genPlayerName, getId, getTeamNames } from "../mockObjs";
-import BoxScore from "./BoxScore";
 import Game from "./Game";
 import Team from "../team/Team";
 
@@ -13,16 +11,13 @@ describe("Game", () => {
 
     const [homeScore, awayScore] = game.getScores();
 
-    // const [homeMap, awayMap] = game.getBoxScoresMap();
-
-    // Array.from(homeMap.entries()).forEach((map: [Player, BoxScore]) => {
-    //   console.log(`Archetype: ${map[0].getArchetype()}`);
-    //   console.log(map[1]);
-    // });
-
-    console.log(`${homeScore} - ${awayScore}`);
-
     expect(homeScore).toBeGreaterThan(0);
     expect(awayScore).toBeGreaterThan(0);
+  });
+
+  it("Box scores are correct", () => {
+    const boxScore = game.getBoxScores()[0];
+
+    expect(boxScore.getFGA()).toBeGreaterThan(0);
   });
 });
