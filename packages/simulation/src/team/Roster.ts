@@ -122,13 +122,11 @@ export default class Roster {
 
 class Position {
   private starter: Player | null;
-  private bench: Player[];
 
   private sortedPlayers: Player[];
 
   constructor(starter: Player) {
     this.starter = starter;
-    this.bench = [];
     this.sortedPlayers = [starter];
   }
 
@@ -136,7 +134,7 @@ class Position {
     // insert into sorted players array at correct idx
     let found = false;
     this.sortedPlayers.forEach((player: Player, idx: number) => {
-      if (playerToAdd.playerComp(player) >= 0) {
+      if (!found && playerToAdd.playerComp(player) >= 0) {
         this.sortedPlayers.splice(idx, 0, playerToAdd);
         found = true;
       }
@@ -146,11 +144,9 @@ class Position {
       this.sortedPlayers.push(playerToAdd);
     }
 
-    // add to starter spot if no starter, else add to bench
+    // add to starter spot if no starter
     if (!this.starter) {
       this.starter = playerToAdd;
-    } else {
-      this.bench.push(playerToAdd);
     }
   }
 
@@ -167,14 +163,6 @@ class Position {
     // remove player from starter spot or bench
     if (player === this.starter) {
       this.starter = null;
-    } else {
-      const idxFoundAt = this.bench.indexOf(player);
-
-      if (idxFoundAt === -1) {
-        throw new Error(`Player couldn't be found`);
-      }
-
-      this.bench.splice(idxFoundAt, 1);
     }
   }
 
@@ -183,7 +171,9 @@ class Position {
   }
 
   getBench(): Player[] {
-    return this.bench;
+    return this.sortedPlayers.filter(
+      (player: Player) => player !== this.starter
+    );
   }
 
   getAll(): Player[] {

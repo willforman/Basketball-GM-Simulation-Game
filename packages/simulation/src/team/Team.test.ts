@@ -27,20 +27,26 @@ describe("Roster", () => {
   const team = makeTeam();
   const player = new Player(genPlayerName(), getId(), 0, retire);
 
+  const idArr = (team: Team) =>
+    team.getPlayerArray().map((player: Player) => player.getId());
+
+  it("Has unique players", () => {
+    const players = team.getPlayerArray();
+    const isArrUniq = new Set(players).size === players.length;
+
+    expect(isArrUniq).toBeTruthy();
+  });
+
   it("Adds player", () => {
     team.addPlayer(player);
 
-    expect(
-      team.getPlayerArray().map((player: Player) => player.getId())
-    ).toContain(player.getId());
+    expect(idArr(team)).toContain(player.getId());
   });
 
   it("Removes player", () => {
     team.removePlayer(player);
 
-    expect(
-      team.getPlayerArray().map((player: Player) => player.getId())
-    ).not.toContain(player.getId());
+    expect(idArr(team)).not.toContain(player.getId());
   });
 
   it("Subs lineup", () => {
