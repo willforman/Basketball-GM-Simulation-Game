@@ -58,6 +58,27 @@ export default class Team {
     this.roster.remove(player);
   }
 
+  evaluatePlayer(player: Player): number {
+    return this.roster.calcValueIfAdded(player);
+  }
+
+  pickPlayer(players: Player[]): Player {
+    let maxValue = Number.MIN_SAFE_INTEGER;
+    let maxPlayer: Player;
+
+    players.forEach((player: Player) => {
+      const value = this.evaluatePlayer(player);
+      const randValue = value + Math.floor(Math.random() * (value / 2));
+
+      if (randValue > maxValue) {
+        maxValue = randValue;
+        maxPlayer = player;
+      }
+    });
+
+    return maxPlayer!;
+  }
+
   // get methods
   getPicks(): [Pick, Pick] {
     return this.picks.getAndRemoveCurrYearPicks();

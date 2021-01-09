@@ -59,14 +59,6 @@ export default class Draft {
   }
 
   simulate(): void {
-    this.picks.forEach((pick: Pick) => {
-      const playerPicked = this.players[0];
-
-      this.pickPlayer(playerPicked);
-    });
-  }
-
-  pickPlayer(player: Player): void {
     if (this.picks.length !== LEAGUE_SIZE * 2) {
       throw new Error(`Picks haven't been set yet`);
     }
@@ -74,7 +66,15 @@ export default class Draft {
       throw new Error(`Draft is already completed`);
     }
 
-    const pick = this.picks[this.pickNum];
+    this.picks.forEach((pick: Pick) => {
+      const top15 = this.players.slice(0, 15);
+      const playerPicked = pick.teamOwning.pickPlayer(top15);
+
+      this.pickPlayer(playerPicked, pick);
+    });
+  }
+
+  pickPlayer(player: Player, pick: Pick): void {
     pick.playerPicked = player;
 
     pick.teamOwning.addPlayer(player);

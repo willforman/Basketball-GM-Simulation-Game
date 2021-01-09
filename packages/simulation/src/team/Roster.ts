@@ -114,22 +114,67 @@ export default class Roster {
   isValid(): boolean {
     return !this.positions.some((pos: Position) => !pos.hasStarter());
   }
+
+  calcValueIfAdded(player: Player): number {
+    return this.positions[player.getPositionNum()].calcValueIfAdded(player);
+  }
 }
 
 class Position {
   private starter: Player | null;
   private bench: Player[];
 
+  private sortedPlayers: Player[];
+
   constructor(starter: Player) {
     this.starter = starter;
     this.bench = [];
+    this.sortedPlayers = [starter];
   }
 
-  add(player: Player): void {
+  add(playerToAdd: Player): void {
+    // insert into sorted players array at correct idx
+    let found = false;
+    this.sortedPlayers.forEach((player: Player, idx: number) => {
+      if (playerToAdd.playerComp(player) >= 0) {
+        this.sortedPlayers.splice(idx, 0, playerToAdd);
+        found = true;
+      }
+    });
+
+    if (!found) {
+      this.sortedPlayers.push(playerToAdd);
+    }
+
+    // add to starter spot if no starter, else add to bench
     if (!this.starter) {
-      this.starter = player;
+      this.starter = playerToAdd;
     } else {
-      this.bench.push(player);
+      this.bench.push(playerToAdd);
+    }
+  }
+
+  remove(player: Player): void {
+    // remove player from sorted players
+    const idxAt = this.sortedPlayers.indexOf(player);
+
+    if (idxAt === -1) {
+      throw new Error(`Given illegal player`);
+    }
+
+    this.sortedPlayers.splice(idxAt, 1);
+
+    // remove player from starter spot or bench
+    if (player === this.starter) {
+      this.starter = null;
+    } else {
+      const idxFoundAt = this.bench.indexOf(player);
+
+      if (idxFoundAt === -1) {
+        throw new Error(`Player couldn't be found`);
+      }
+
+      this.bench.splice(idxFoundAt, 1);
     }
   }
 
@@ -142,30 +187,7 @@ class Position {
   }
 
   getAll(): Player[] {
-    if (this.starter) {
-      return [this.starter, ...this.bench];
-    }
-    return this.bench;
-  }
-
-  remove(player: Player): void {
-    if (player === this.starter) {
-      const benchPlayer = this.bench.pop();
-
-      if (!benchPlayer) {
-        throw new Error("Can't remove starter with empty bench");
-      }
-
-      this.starter = benchPlayer;
-    } else {
-      const idxFoundAt = this.bench.indexOf(player);
-
-      if (idxFoundAt === -1) {
-        throw new Error(`Player couldn't be found`);
-      }
-
-      this.bench.splice(idxFoundAt, 1);
-    }
+    return this.sortedPlayers;
   }
 
   getSub(): Player {
@@ -178,10 +200,24 @@ class Position {
   }
 
   getIfEmpty(): boolean {
-    return !this.starter || this.bench.length !== 0;
+    return this.sortedPlayers.length === 0;
   }
 
   hasStarter(): boolean {
     return this.starter !== null;
+  }
+
+  calcValueIfAdded(player: Player): number {
+    if (this.sortedPlayers.length === 0) {
+      return player.getRating();
+    }
+    const topPlayerDiff = this.sortedPlayers[0].getRating() - 50;
+
+    const sumOfRatings = this.sortedPlayers.reduce(
+      (sum: number, curr: Player) => sum + curr.getRating(),
+      0
+    );
+
+    return player.getRating() - (topPlayerDiff * 2 + sumOfRatings);
   }
 }
