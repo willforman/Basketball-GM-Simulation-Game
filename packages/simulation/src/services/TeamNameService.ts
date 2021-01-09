@@ -1,5 +1,5 @@
 import fetchData from "./fetchData";
-import TeamNames from "../models/TeamNames";
+import { TeamNames } from "../models";
 
 interface TeamNameObj {
   teamId: number;
