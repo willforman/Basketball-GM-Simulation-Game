@@ -25,7 +25,7 @@ export default class FreeAgents {
     const foundAt = this.players.indexOf(player);
 
     if (foundAt === -1) {
-      console.log(`Invalid player given`);
+      throw new Error(`Given invalid player`);
     }
 
     this.players.splice(foundAt, 1);
