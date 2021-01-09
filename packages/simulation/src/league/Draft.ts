@@ -20,6 +20,7 @@ export default class Draft {
     nonPlayoffTeams: Team[]
   ) {
     this.players = [];
+    this.picks = [];
 
     const retire = (player: Player): void => {
       this.removePlayer(player);
@@ -35,12 +36,12 @@ export default class Draft {
   }
 
   addPlayoffTeams(playoffTeams: Team[]): void {
-    this.order.concat(playoffTeams);
+    this.order = this.order.concat(playoffTeams);
   }
 
   setPicksInOrder(): void {
     if (this.order.length !== LEAGUE_SIZE) {
-      throw new Error(`Not all teams have been added`);
+      throw new Error(`Not all teams have been added: ${this.order.length}`);
     }
 
     for (let i = 0; i < LEAGUE_SIZE * 2; i++) {
@@ -82,7 +83,7 @@ export default class Draft {
     this.removePlayer(player);
 
     this.pickNum++;
-    if (this.pickNum > LEAGUE_SIZE * 2) {
+    if (this.pickNum === LEAGUE_SIZE * 2) {
       this.completed = true;
     }
   }
