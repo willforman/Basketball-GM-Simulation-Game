@@ -8,11 +8,12 @@ const genPlayerName = (): string => {
   return "Test Player";
 };
 
+let teamNum = 0;
 const getTeamNames = (): TeamNames => {
   return {
-    name: "Test Team",
+    name: `Team ${teamNum}`,
     location: "Test Location",
-    abbreviation: "TEST",
+    abbreviation: `T${teamNum++}`,
   };
 };
 
