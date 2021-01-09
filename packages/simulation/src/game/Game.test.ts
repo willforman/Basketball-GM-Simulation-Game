@@ -1,11 +1,10 @@
-import { genPlayerName, getId, getTeamNames } from "../mockObjs";
-import Game from "./Game";
-import Team from "../team/Team";
+import { makeGame, makeTeam } from "../testingObjs";
 
 describe("Game", () => {
-  const team1 = new Team(getTeamNames(), genPlayerName, getId);
-  const team2 = new Team(getTeamNames(), genPlayerName, getId);
-  const game = new Game(team1, team2, 0);
+  const team1 = makeTeam();
+  const team2 = makeTeam();
+  const game = makeGame(team1, team2);
+
   it("Simulates", () => {
     game.simulate();
 

@@ -1,27 +1,19 @@
-import { retire } from "../mockObjs";
 import Player from "./Player";
 import { getStats } from "./statGen";
 import { Location } from "../models";
+import { makePlayer } from "../testingObjs";
 
 describe("Player", () => {
-  const name = "Test Player";
-  const pos = 0;
-  const id = 1;
-
-  const player = new Player(name, id, pos, retire);
+  const player = makePlayer();
   it("Is created", () => {
-    expect(player).toEqual(
-      expect.objectContaining({
-        name,
-        pos,
-        id,
-      })
-    );
+    expect(player).toBeTruthy();
   });
+
   it("Get location", () => {
     const loc = player.getLoc();
     expect(loc).toBeTruthy();
   });
+
   it("Get move", () => {
     const move = player.getMove(Location.PAINT);
     expect(move).toBeTruthy();

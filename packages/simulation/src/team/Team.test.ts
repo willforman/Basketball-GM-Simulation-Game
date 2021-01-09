@@ -1,13 +1,7 @@
-import { getTeamNames, getId, genPlayerName, retire } from "../mockObjs";
 import Team from "../team/Team";
 import Player from "../player/Player";
-import { TeamNames } from "../models";
 import DraftPicks from "./DraftPicks";
-
-const makeTeam = (teamNamesGiven?: TeamNames): Team => {
-  const teamNames = teamNamesGiven ?? getTeamNames();
-  return new Team(teamNames, genPlayerName, getId);
-};
+import { makePlayer, makeTeam } from "../testingObjs";
 
 describe("Team", () => {
   const team = makeTeam();
@@ -25,7 +19,7 @@ describe("Team", () => {
 
 describe("Roster", () => {
   const team = makeTeam();
-  const player = new Player(genPlayerName(), getId(), 0, retire);
+  const player = makePlayer();
 
   const idArr = (team: Team) =>
     team.getPlayerArray().map((player: Player) => player.getId());

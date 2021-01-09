@@ -1,12 +1,10 @@
-import { getId, genPlayerName, getTeamNames } from "../mockObjs";
 import { genPlayoffsNextRound } from "./Playoffs";
 import { genRegularSeasonGames } from "./RegularSeason";
 import Game from "../game/Game";
-import League from "./League";
-import Team from "../team/Team";
+import { makeLeague, makeTeam } from "../testingObjs";
 
 describe("League", () => {
-  const league = new League(genPlayerName, getTeamNames);
+  const league = makeLeague();
 
   it("Find team by location", () => {
     // test league has all teams with location of "test location"
@@ -44,10 +42,10 @@ describe("League", () => {
 });
 
 describe("Game Scheduling", () => {
-  const team1 = new Team(getTeamNames(), genPlayerName, getId);
-  const team2 = new Team(getTeamNames(), genPlayerName, getId);
-  const team3 = new Team(getTeamNames(), genPlayerName, getId);
-  const team4 = new Team(getTeamNames(), genPlayerName, getId);
+  const team1 = makeTeam();
+  const team2 = makeTeam();
+  const team3 = makeTeam();
+  const team4 = makeTeam();
 
   const teams = [team1, team2, team3, team4];
   it("Generates regular season", () => {
