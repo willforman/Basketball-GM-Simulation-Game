@@ -117,16 +117,16 @@ class Stat {
   private _base: number;
   private _growth: number;
 
-  private _maxGrowth: number;
+  private _isPrimary: number;
 
   constructor(base: number, isPrimary: boolean, startGrowth: number) {
     this._base = base;
     this._growth = startGrowth;
-    this._maxGrowth = isPrimary ? 30 : 15;
   }
 
   get(): number {
-    return this._base + this._growth;
+    const growth = this._isPrimary ? this._growth * 2 : this._growth;
+    return this._base + growth;
   }
 
   get growth(): number {
@@ -136,7 +136,7 @@ class Stat {
   update(potential: number): void {
     const rawPot = potential - 40; // potential can only go from 40 to 100, so this ranges from 0 to 60
     this._growth = Math.round(
-      Math.random() * (this._maxGrowth - this._growth - (rawPot / 4 - 15))
+      Math.random() * (15 - this._growth - (rawPot / 4 - 15))
     );
     if (this._growth < 0) {
       this._growth = 0;

@@ -49,7 +49,7 @@ export default class Roster {
   }
 
   add(player: Player): void {
-    const pos = player.getPositionNum();
+    const pos = player.pos;
 
     const posObj = this.positions[pos];
 
@@ -80,7 +80,7 @@ export default class Roster {
   getStartersNonNull(): Player[] {
     if (!this.isValid()) {
       console.error(
-        this.positions.map((pos: Position) => pos.getStarter()?.getId())
+        this.positions.map((pos: Position) => pos.getStarter()?.id)
       );
       throw new Error(`Can't get non null roster if roster has null spot`);
     }
@@ -104,7 +104,7 @@ export default class Roster {
   }
 
   remove(player: Player): void {
-    const pos = player.getPositionNum();
+    const pos = player.pos;
 
     this.positions[pos].remove(player);
   }
@@ -121,7 +121,7 @@ export default class Roster {
   }
 
   calcValueIfAdded(player: Player): number {
-    return this.positions[player.getPositionNum()].calcValueIfAdded(player);
+    return this.positions[player.pos].calcValueIfAdded(player);
   }
 }
 
@@ -204,15 +204,15 @@ class Position {
 
   calcValueIfAdded(player: Player): number {
     if (this.sortedPlayers.length === 0) {
-      return player.getRating();
+      return player.rating;
     }
-    const topPlayerDiff = this.sortedPlayers[0].getRating() - 50;
+    const topPlayerDiff = this.sortedPlayers[0].rating - 50;
 
     const sumOfRatings = this.sortedPlayers.reduce(
-      (sum: number, curr: Player) => sum + curr.getRating(),
+      (sum: number, curr: Player) => sum + curr.rating,
       0
     );
 
-    return player.getRating() - (topPlayerDiff * 2 + sumOfRatings);
+    return player.rating - (topPlayerDiff * 2 + sumOfRatings);
   }
 }

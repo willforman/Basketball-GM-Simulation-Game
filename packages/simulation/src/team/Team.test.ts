@@ -22,7 +22,7 @@ describe("Roster", () => {
   const player = makePlayer();
 
   const idArr = (team: Team) =>
-    team.getPlayerArray().map((player: Player) => player.getId());
+    team.getPlayerArray().map((player: Player) => player.id);
 
   it("Has unique players", () => {
     const players = team.getPlayerArray();
@@ -34,13 +34,13 @@ describe("Roster", () => {
   it("Adds player", () => {
     team.addPlayer(player);
 
-    expect(idArr(team)).toContain(player.getId());
+    expect(idArr(team)).toContain(player.id);
   });
 
   it("Removes player", () => {
     team.removePlayer(player);
 
-    expect(idArr(team)).not.toContain(player.getId());
+    expect(idArr(team)).not.toContain(player.id);
   });
 
   it("Subs lineup", () => {
@@ -48,7 +48,7 @@ describe("Roster", () => {
 
     const subs = roster.getSubs();
 
-    const newPos = subs.map((player: Player) => player.getPositionNum());
+    const newPos = subs.map((player: Player) => player.pos);
 
     for (let i = 0; i < 5; i++) {
       expect(newPos[i]).toBe(i); // needs to be correct position

@@ -1,19 +1,18 @@
 import BoxScore from "../game/BoxScore";
 import { getStats } from "./statGen";
-import { Move, Location } from "../models";
+import { Move, Location, Archetype } from "../models";
 import Stats from "./Stats";
 
 export default class Player {
-  private name: string;
-  private age: number;
-  private id: number;
+  private _name: string;
+  private _age: number;
+  private _id: number;
 
-  private pos: number; // position, 0 = PG, 1 = SG, 2 = SF, 3 = PF, 4 = C
-  private archetype: string; // determines type of player with stats
+  private _pos: number; // position, 0 = PG, 1 = SG, 2 = SF, 3 = PF, 4 = C
+  private _archetype: Archetype; // determines type of player with stats
 
-  private rating: number;
-  private potential: number;
-  private stats: Stats;
+  private _potential: number;
+  private _stats: Stats;
 
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
@@ -29,51 +28,51 @@ export default class Player {
     retire: (player: Player) => void,
     young?: boolean // boolean if player should be young
   ) {
-    this.name = name;
-    this.id = id;
+    this._name = name;
+    this._id = id;
     this.retire = retire;
 
     // if given valid position, use that, otherwise generate random one
-    this.pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
+    this._pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
 
     const ageUB = young ? 23 : 34;
 
-    this.age = this.getRand(19, ageUB);
+    this._age = this.getRand(19, ageUB);
 
     // create potential that is higher
-    this.potential =
+    this._potential =
       40 +
       this.getRand(0, 25) +
-      this.getRand(0, ((33 - this.age) * 3 - 12) * ageBoolean(this.age));
+      this.getRand(0, ((33 - this._age) * 3 - 12) * ageBoolean(this._age));
 
-    this.rating =
-      this.potential -
-      this.getRand(0, ageBoolean(this.age) * (33 - this.age) * 3);
+    const rating =
+      this._potential -
+      this.getRand(0, ageBoolean(this._age) * (33 - this._age) * 3);
 
-    this.id = id;
+    this._id = id;
 
     this.boxScores = [];
 
-    const archetypeNum = this.pos + this.getRand(0, 1);
+    const archetypeNum = this._pos + this.getRand(0, 1);
 
     const { archetype, stats, getLocation, getMove } = getStats(
       archetypeNum,
-      this.getPotential,
-      this.rating
+      (): number => this._potential,
+      rating
     );
 
-    this.archetype = archetype;
+    this._archetype = archetype;
     this.getLoc = getLocation;
     this.getMove = getMove;
 
     // assign stats from statgen
-    this.stats = stats;
+    this._stats = stats;
   }
 
   advanceYear(): void {
-    this.age++;
+    this._age++;
 
-    if (this.getRand(this.age - 31, 0) > 5) {
+    if (this.getRand(this._age - 31, 0) > 5) {
       this.retire(this);
     }
   }
@@ -83,7 +82,7 @@ export default class Player {
   }
 
   goToNextYear(): void {
-    this.age++;
+    this._age++;
     this.stats.updateStats();
   }
 
@@ -92,36 +91,40 @@ export default class Player {
   }
 
   playerComp(player: Player): number {
-    return this.rating - player.getRating();
+    return this.rating - player.rating;
   }
 
   // get methods
-  getName(): string {
-    return this.name;
+  get stats(): Stats {
+    return this._stats;
   }
 
-  getArchetype(): string {
-    return this.archetype;
+  get name(): string {
+    return this._name;
   }
 
-  getId(): number {
-    return this.id;
+  get archetype(): Archetype {
+    return this._archetype;
   }
 
-  getPotential(): number {
-    return this.potential;
+  get id(): number {
+    return this._id;
   }
 
-  getRating(): number {
-    return this.rating;
+  get potential(): number {
+    return this._potential;
+  }
+
+  get rating(): number {
+    return this.stats.calcRating();
   }
 
   getRatingMultiplier(): number {
     return this.rating / 100;
   }
 
-  getPositionNum(): number {
-    return this.pos;
+  get pos(): number {
+    return this._pos;
   }
 
   // used for determining weight of getting subbed into game

@@ -70,7 +70,7 @@ const playPossession = (
   offItems.locations.getNewLocs(offPlayer, offPlayerLoc);
 
   const offMove = offPlayer.getMove(offPlayerLoc);
-  const offRating = offPlayer.getOffenseRating(offMove) + passBonus;
+  const offRating = offPlayer.stats.getOffenseRating(offMove) + passBonus;
 
   // get defense variables needed
   defItems.locations.getNewLocs();
@@ -80,7 +80,7 @@ const playPossession = (
       ? defItems.locations.getRandPlayerAtLocation(offPlayerLoc) // player at location of offense
       : defItems.locations.getDefenderFromOffMove(offMove, offPlayerLoc); // player at location of where will shoot
 
-  const defRating = defPlayer ? defPlayer.getDefenseRating(offMove) : -1;
+  const defRating = defPlayer ? defPlayer.stats.getDefenseRating(offMove) : -1;
 
   // offense play wins out
   if (compareRatings(offRating, defRating)) {
@@ -90,7 +90,7 @@ const playPossession = (
       let posPassingto: number;
       do {
         posPassingto = Math.floor(Math.random() * 5);
-      } while (posPassingto === offPlayer.getPositionNum()); // loops until finds different position from current
+      } while (posPassingto === offPlayer.pos); // loops until finds different position from current
 
       const playerPassingTo = offItems.starters[posPassingto];
       const locPassingTo = offItems.locations.getLocOfPlayer(playerPassingTo);
@@ -132,7 +132,7 @@ const playPossession = (
 
     if (!defBoxScore) {
       throw new Error(
-        `Couldn't find box score of player id: ${defPlayer!.getId()} `
+        `Couldn't find box score of player id: ${defPlayer!.id} `
       );
     }
     // if offense tried to pass but defense stole it
@@ -158,8 +158,8 @@ const playPossession = (
           defRebounder = defItems.starters[4];
         }
 
-        const offRebRating = offRebounder ? offRebounder.getRebounding() : -1;
-        const defRebRating = defRebounder ? defRebounder.getRebounding() : -1;
+        const offRebRating = offRebounder ? offRebounder.stats.rebounding : -1;
+        const defRebRating = defRebounder ? defRebounder.stats.rebounding : -1;
 
         // if offense gets rebound
         if (compareRatings(offRebRating, defRebRating)) {
