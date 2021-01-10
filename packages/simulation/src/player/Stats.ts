@@ -17,14 +17,21 @@ export default class Stats {
   constructor(
     statsArr: number[],
     primaryIdxs: number[],
-    getPotential: () => number
+    getPotential: () => number,
+    startRating: number
   ) {
     this._getPot = getPotential;
     this._stats = [];
 
     statsArr.forEach((stat: number, idx: number) => {
+      let startGrowth = 0;
+      if (startRating > 0) {
+        const upperBoundRand = startRating > 15 ? startRating / 2 : startRating;
+        startGrowth = Math.floor(Math.random() * upperBoundRand + 1);
+      }
+
       const isPrimary = primaryIdxs.includes(idx);
-      this._stats.push(new Stat(stat, isPrimary));
+      this._stats.push(new Stat(stat, isPrimary, startGrowth));
     });
   }
 
@@ -112,8 +119,9 @@ class Stat {
 
   private _maxGrowth: number;
 
-  constructor(base: number, isPrimary: boolean) {
+  constructor(base: number, isPrimary: boolean, startGrowth: number) {
     this._base = base;
+    this._growth = startGrowth;
     this._maxGrowth = isPrimary ? 30 : 15;
   }
 
@@ -127,8 +135,13 @@ class Stat {
 
   update(potential: number): void {
     const rawPot = potential - 40; // potential can only go from 40 to 100, so this ranges from 0 to 60
-    this._growth += Math.round(
-      Math.random() * ((this._growth - this._maxGrowth) * (rawPot - 15))
+    this._growth = Math.round(
+      Math.random() * (this._maxGrowth - this._growth - (rawPot / 4 - 15))
     );
+    if (this._growth < 0) {
+      this._growth = 0;
+    } else if (this._growth > 15) {
+      this._growth = 15;
+    }
   }
 }

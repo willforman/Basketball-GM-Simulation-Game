@@ -77,7 +77,11 @@ const getRandStatNum = (): number => {
 //   }
 // };
 
-export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
+export function getStats(
+  archetypeNum: number,
+  getPot: () => number,
+  rating: number
+): StatsGen {
   // stats order:
   // inside shot, 3 pt shot
   // free throw, passing
@@ -94,7 +98,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [20, 40, 65, 85, 15, 35, 75, 85, 20],
         [2, 3, 7],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 1, [70, 20, 0, 10]),
@@ -108,7 +113,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [15, 85, 85, 50, 15, 50, 85, 40, 15],
         [1, 2, 6],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 1, [40, 40, 0, 20]),
@@ -122,7 +128,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [85, 60, 15, 40, 55, 60, 40, 20, 65],
         [0, 5, 8],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 40, [85, 10, 0, 5]),
@@ -136,7 +143,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [25, 30, 15, 50, 60, 85, 85, 75, 15],
         [4, 5, 6],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 30, [50, 0, 0, 50]),
@@ -150,7 +158,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [65, 65, 65, 25, 60, 45, 30, 15, 70],
         [1, 2, 3],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 55, [85, 10, 0, 5]),
@@ -164,7 +173,8 @@ export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
       stats = new Stats(
         [70, 25, 15, 45, 85, 60, 40, 15, 85],
         [0, 4, 8],
-        getPot
+        getPot,
+        rating
       );
       locs = [
         makeLocation(Location.PAINT, 97, [90, 0, 0, 10]),

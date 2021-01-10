@@ -46,6 +46,10 @@ export default class Player {
       this.getRand(0, 25) +
       this.getRand(0, ((33 - this.age) * 3 - 12) * ageBoolean(this.age));
 
+    this.rating =
+      this.potential -
+      this.getRand(0, ageBoolean(this.age) * (33 - this.age) * 3);
+
     this.id = id;
 
     this.boxScores = [];
@@ -54,7 +58,8 @@ export default class Player {
 
     const { archetype, stats, getLocation, getMove } = getStats(
       archetypeNum,
-      this.getPotential
+      this.getPotential,
+      this.rating
     );
 
     this.archetype = archetype;
