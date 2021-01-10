@@ -129,7 +129,7 @@ export default class Player {
 
   // used for determining weight of getting subbed into game
   getSubOdds(): number {
-    return Math.min(this.rating - 40, 10);
+    return Math.max(this.rating - 40, 10);
   }
 }
 

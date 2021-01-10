@@ -11,6 +11,7 @@ export default class Stats {
   // 7: stealing
   // 8: rebounding
   private _stats: Stat[];
+  private _rating: number;
 
   private _getPot: () => number;
 
@@ -21,13 +22,19 @@ export default class Stats {
     startRating: number
   ) {
     this._getPot = getPotential;
-    this._stats = [];
+    this._rating = startRating;
 
+    this._stats = [];
     statsArr.forEach((stat: number, idx: number) => {
       let startGrowth = 0;
       if (startRating > 0) {
-        const upperBoundRand = startRating > 15 ? startRating / 2 : startRating;
-        startGrowth = Math.floor(Math.random() * upperBoundRand + 1);
+        if (idx === statsArr.length - 1) {
+          startGrowth = startRating;
+        } else {
+          const upperBoundRand =
+            startRating > 15 ? startRating / 2 : startRating;
+          startGrowth = Math.floor(Math.random() * upperBoundRand + 1);
+        }
       }
 
       const isPrimary = primaryIdxs.includes(idx);
@@ -46,7 +53,10 @@ export default class Stats {
   }
 
   updateStats(): void {
-    this._stats.forEach((stat: Stat) => stat.update(this._getPot()));
+    this._rating += this._stats.reduce(
+      (sum: number, stat: Stat) => sum + stat.update(this._getPot()),
+      0
+    );
   }
 
   getOffenseRating(offMove: Move): number {
@@ -133,15 +143,18 @@ class Stat {
     return this._growth;
   }
 
-  update(potential: number): void {
+  update(potential: number): number {
     const rawPot = potential - 40; // potential can only go from 40 to 100, so this ranges from 0 to 60
-    this._growth = Math.round(
+    let change = Math.round(
       Math.random() * (15 - this._growth - (rawPot / 4 - 15))
     );
-    if (this._growth < 0) {
-      this._growth = 0;
-    } else if (this._growth > 15) {
-      this._growth = 15;
+    if (change + this._growth < 0) {
+      change = 0 - this._growth;
+    } else if (change + this._growth > 15) {
+      change = 15 - this._growth;
     }
+
+    this._growth += change;
+    return change;
   }
 }
