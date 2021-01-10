@@ -1,31 +1,19 @@
 import BoxScore from "../game/BoxScore";
 import { getStats } from "./statGen";
 import { Move, Location } from "../models";
+import Stats from "./Stats";
 
 export default class Player {
   private name: string;
   private age: number;
+  private id: number;
 
   private pos: number; // position, 0 = PG, 1 = SG, 2 = SF, 3 = PF, 4 = C
   private archetype: string; // determines type of player with stats
 
   private rating: number;
-
-  private id: number;
-
-  // offense stats
-  private insideShot: number;
-  private midShot: number;
-  private threePtShot: number;
-  private passing: number;
-
-  // defense stats
-  private insideDefense: number;
-  private midDefense: number;
-  private threePtDefense: number;
-  private stealing: number;
-
-  private rebounding: number;
+  private potential: number;
+  private stats: Stats;
 
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
@@ -52,7 +40,11 @@ export default class Player {
 
     this.age = this.getRand(19, ageUB);
 
-    this.rating = 80;
+    // create potential that is higher
+    this.potential =
+      40 +
+      this.getRand(0, 25) +
+      this.getRand(0, ((33 - this.age) * 3 - 12) * ageBoolean(this.age));
 
     this.id = id;
 
@@ -60,22 +52,17 @@ export default class Player {
 
     const archetypeNum = this.pos + this.getRand(0, 1);
 
-    const { archetype, stats, getLocation, getMove } = getStats(archetypeNum);
+    const { archetype, stats, getLocation, getMove } = getStats(
+      archetypeNum,
+      this.getPotential
+    );
 
     this.archetype = archetype;
     this.getLoc = getLocation;
     this.getMove = getMove;
 
     // assign stats from statgen
-    this.insideShot = stats[0];
-    this.midShot = stats[1];
-    this.threePtShot = stats[2];
-    this.passing = stats[3];
-    this.insideDefense = stats[4];
-    this.midDefense = stats[5];
-    this.threePtDefense = stats[6];
-    this.stealing = stats[7];
-    this.rebounding = stats[8];
+    this.stats = stats;
   }
 
   advanceYear(): void {
@@ -92,6 +79,7 @@ export default class Player {
 
   goToNextYear(): void {
     this.age++;
+    this.stats.updateStats();
   }
 
   addBoxScore(boxScore: BoxScore): void {
@@ -115,31 +103,8 @@ export default class Player {
     return this.id;
   }
 
-  getOffenseRating(offMove: Move): number {
-    switch (offMove) {
-      case Move.INSIDE_SHOT:
-        return this.insideShot;
-      case Move.MID_SHOT:
-        return this.midShot;
-      case Move.THREE_PT_SHOT:
-        return this.threePtShot;
-      case Move.PASS:
-        return this.passing;
-    }
-  }
-
-  // get defense rating based on offense move used
-  getDefenseRating(offMove: Move): number {
-    switch (offMove) {
-      case Move.INSIDE_SHOT:
-        return this.insideDefense;
-      case Move.MID_SHOT:
-        return this.midDefense;
-      case Move.THREE_PT_SHOT:
-        return this.threePtDefense;
-      case Move.PASS:
-        return this.stealing;
-    }
+  getPotential(): number {
+    return this.potential;
   }
 
   getRating(): number {
@@ -150,10 +115,6 @@ export default class Player {
     return this.rating / 100;
   }
 
-  getRebounding(): number {
-    return this.rebounding;
-  }
-
   getPositionNum(): number {
     return this.pos;
   }
@@ -162,4 +123,9 @@ export default class Player {
   getSubOdds(): number {
     return Math.min(this.rating - 40, 10);
   }
+}
+
+// returns 0 if age is over 33, 1 if not
+function ageBoolean(age: number): number {
+  return age <= 33 ? 1 : 0;
 }

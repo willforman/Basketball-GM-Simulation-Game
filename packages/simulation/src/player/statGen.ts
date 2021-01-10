@@ -1,9 +1,10 @@
 import RandomSelector from "../services/RandomSelector";
-import { Choice, Move, Location, moveArr, locationArr } from "../models";
+import { Choice, Move, Location, moveArr, Archetype } from "../models";
+import Stats from "./Stats";
 
 export interface StatsGen {
-  archetype: string;
-  stats: number[];
+  archetype: Archetype;
+  stats: Stats;
   getLocation: () => Location;
   getMove: (loc: Location) => Move;
 }
@@ -76,21 +77,25 @@ const getRandStatNum = (): number => {
 //   }
 // };
 
-export function getStats(archetypeNum: number): StatsGen {
+export function getStats(archetypeNum: number, getPot: () => number): StatsGen {
   // stats order:
   // inside shot, 3 pt shot
   // free throw, passing
   // inside defense, 3 pt defense
   // blocking, stealing
   // rebounding
-  let archetype: string;
-  let stats: number[];
+  let archetype: Archetype;
+  let stats: Stats;
   let locs: LocationObj[];
 
   switch (archetypeNum) {
     case 0:
-      archetype = "Playmaker";
-      stats = [20, 40, 65, 85, 15, 35, 75, 85, 20];
+      archetype = Archetype.PLAYMAKER;
+      stats = new Stats(
+        [20, 40, 65, 85, 15, 35, 75, 85, 20],
+        [2, 3, 7],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 1, [70, 20, 0, 10]),
         makeLocation(Location.MID_RANGE, 2, [20, 30, 10, 40]),
@@ -99,8 +104,12 @@ export function getStats(archetypeNum: number): StatsGen {
       ];
       break;
     case 1:
-      archetype = "Sharpshooter";
-      stats = [15, 85, 85, 50, 15, 50, 85, 40, 15];
+      archetype = Archetype.SHARPSHOOTER;
+      stats = new Stats(
+        [15, 85, 85, 50, 15, 50, 85, 40, 15],
+        [1, 2, 6],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 1, [40, 40, 0, 20]),
         makeLocation(Location.MID_RANGE, 2, [5, 50, 20, 25]),
@@ -109,8 +118,12 @@ export function getStats(archetypeNum: number): StatsGen {
       ];
       break;
     case 2:
-      archetype = "Slasher";
-      stats = [85, 60, 15, 40, 55, 60, 40, 20, 65];
+      archetype = Archetype.SLASHER;
+      stats = new Stats(
+        [85, 60, 15, 40, 55, 60, 40, 20, 65],
+        [0, 5, 8],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 40, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 55, [50, 30, 0, 20]),
@@ -119,8 +132,12 @@ export function getStats(archetypeNum: number): StatsGen {
       ];
       break;
     case 3:
-      archetype = "Lockdown";
-      stats = [25, 30, 15, 50, 60, 85, 85, 75, 15];
+      archetype = Archetype.LOCKDOWN;
+      stats = new Stats(
+        [25, 30, 15, 50, 60, 85, 85, 75, 15],
+        [4, 5, 6],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 30, [50, 0, 0, 50]),
         makeLocation(Location.MID_RANGE, 40, [10, 10, 0, 80]),
@@ -129,8 +146,12 @@ export function getStats(archetypeNum: number): StatsGen {
       ];
       break;
     case 4:
-      archetype = "Stretch Big";
-      stats = [65, 65, 65, 25, 60, 45, 30, 15, 70];
+      archetype = Archetype.STRETCH_BIG;
+      stats = new Stats(
+        [65, 65, 65, 25, 60, 45, 30, 15, 70],
+        [1, 2, 3],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 55, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 10, [25, 45, 10, 20]),
@@ -139,8 +160,12 @@ export function getStats(archetypeNum: number): StatsGen {
       ];
       break;
     case 5:
-      archetype = "Rebounder";
-      stats = [70, 25, 15, 45, 85, 60, 40, 15, 85];
+      archetype = Archetype.REBOUNDER;
+      stats = new Stats(
+        [70, 25, 15, 45, 85, 60, 40, 15, 85],
+        [0, 4, 8],
+        getPot
+      );
       locs = [
         makeLocation(Location.PAINT, 97, [90, 0, 0, 10]),
         makeLocation(Location.MID_RANGE, 3, [50, 30, 0, 20]),
@@ -151,13 +176,6 @@ export function getStats(archetypeNum: number): StatsGen {
     default:
       throw new Error("Invalid archetype given");
   }
-
-  if (stats.reduce((total: number, curr: number) => total + curr) != 440) {
-    throw Error("Stats don't sum to 440");
-  }
-
-  // add number from -15 to 15 to each stat
-  stats = stats.map((stat) => stat + getRandStatNum());
 
   // getLocation function
   const choices = locs.map((loc: LocationObj) => loc.choice);
