@@ -3,6 +3,11 @@ import { Choice } from "../models/Choice";
 import RandomSelector from "../services/RandomSelector";
 
 export default class Roster {
+  // 0: PG
+  // 1: SG
+  // 2: SF
+  // 3: PF
+  // 4: C
   private positions: Position[];
 
   private genPlayerName: () => string;
