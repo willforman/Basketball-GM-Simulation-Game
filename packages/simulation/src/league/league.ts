@@ -50,7 +50,7 @@ export default class League {
     return 2021;
   }
 
-  constructor(genPlayerName: () => string, genTeamName: () => TeamNames) {
+  constructor(genPlayerName: () => string, teamNames: TeamNames[]) {
     this.genPlayerName = genPlayerName;
 
     this.state = State.REGULAR_SEASON;
@@ -63,7 +63,7 @@ export default class League {
     this.getPlayerId = () => this.playerID++;
 
     for (let i = 0; i < LEAGUE_SIZE; i++) {
-      this.teams.push(new Team(genTeamName(), genPlayerName, this.getPlayerId));
+      this.teams.push(new Team(teamNames[i], genPlayerName, this.getPlayerId));
     }
 
     this.regularSeason = new RegularSeason(this.teams);

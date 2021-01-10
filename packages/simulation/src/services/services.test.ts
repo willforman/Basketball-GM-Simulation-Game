@@ -1,11 +1,11 @@
 import { TeamNames } from "../models";
 import PlayerNameGenService from "./PlayerNameService";
 import RandomSelector from "./RandomSelector";
-import TeamNameGenService from "./TeamNameService";
+import getTeamNames from "./getTeamNames";
 
 describe("Team Name Service", () => {
   it("Generates team names", async () => {
-    const service = await TeamNameGenService.build();
+    const teamNames = await getTeamNames();
 
     const atlNames: TeamNames = {
       name: "Hawks",
@@ -19,9 +19,9 @@ describe("Team Name Service", () => {
       abbreviation: "BOS",
     };
 
-    expect(service.getNextName()).toEqual(expect.objectContaining(atlNames));
+    expect(teamNames[0]).toEqual(expect.objectContaining(atlNames));
 
-    expect(service.getNextName()).toEqual(expect.objectContaining(bosNames));
+    expect(teamNames[1]).toEqual(expect.objectContaining(bosNames));
   });
 });
 
