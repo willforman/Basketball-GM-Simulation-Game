@@ -200,21 +200,23 @@ export default (
   awayTeam: Team,
   quarterMins: number
 ): GameResult => {
-  const homeRoster = homeTeam.getRoster();
-  const awayRoster = awayTeam.getRoster();
+  const homeRoster = homeTeam.roster;
+  const awayRoster = awayTeam.roster;
 
-  const hBSTitle = `Vs ${awayTeam.getAbreviation()}`;
+  const hBSTitle = `Vs ${awayTeam.abreviation}`;
   const homeBoxScores = new Map(
-    homeTeam
-      .getPlayerArray()
-      .map((player: Player) => [player, new BoxScore(hBSTitle)])
+    homeTeam.roster.allPlayers.map((player: Player) => [
+      player,
+      new BoxScore(hBSTitle),
+    ])
   );
 
-  const aBSTitle = ` @ ${homeTeam.getAbreviation()}`;
+  const aBSTitle = ` @ ${homeTeam.abreviation}`;
   const awayBoxScores = new Map(
-    awayTeam
-      .getPlayerArray()
-      .map((player: Player) => [player, new BoxScore(aBSTitle)])
+    awayTeam.roster.allPlayers.map((player: Player) => [
+      player,
+      new BoxScore(aBSTitle),
+    ])
   );
 
   const homeStarters = homeRoster.getStartersNonNull();

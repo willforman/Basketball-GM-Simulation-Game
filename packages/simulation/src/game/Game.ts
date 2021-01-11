@@ -78,7 +78,7 @@ export default class Game {
   }
 
   getTitle(): string {
-    return `${this.homeTeam.getAbreviation()} vs. ${this.awayTeam.getAbreviation()}`;
+    return `${this.homeTeam.abreviation} vs. ${this.awayTeam.abreviation}`;
   }
 
   getWinner(): Team {

@@ -2,16 +2,16 @@ import Player from "../player/Player";
 import { Move, Location, locationArr } from "../models";
 
 export default class CourtLocations {
-  private players: Player[];
-  private locs: Map<Location, Player[]>;
+  private _players: Player[];
+  private _locs: Map<Location, Player[]>;
 
   constructor(players: Player[]) {
     this.addPlayers(players);
   }
 
   addPlayers(players: Player[]): void {
-    this.players = players;
-    this.locs = new Map();
+    this._players = players;
+    this._locs = new Map();
     this.getNewLocs();
   }
 
@@ -22,11 +22,11 @@ export default class CourtLocations {
   ): void {
     // need to clear all old arrays
     locationArr.forEach((locName: Location) => {
-      this.locs.set(locName, []);
+      this._locs.set(locName, []);
     });
 
     // then for each player, put them at random location
-    this.players.forEach((player: Player) => {
+    this._players.forEach((player: Player) => {
       // if theres a player that needs to be at a location, don't put them anywhere in loop
       if (player === playerNeedsToBeAtLocation) {
         return;
@@ -45,7 +45,7 @@ export default class CourtLocations {
   }
 
   private getPlayersAtLocation(locName: Location): Player[] {
-    const players = this.locs.get(locName);
+    const players = this._locs.get(locName);
 
     if (!players) {
       throw new Error(`Invalid location given: ${locName}`);
@@ -55,10 +55,10 @@ export default class CourtLocations {
   }
 
   getLocOfPlayer(player: Player): Location {
-    const locs = Array.from(this.locs.keys());
+    const locs = Array.from(this._locs.keys());
 
     const loc = locs.find((loc: Location) => {
-      const playerArrHere = this.locs.get(loc);
+      const playerArrHere = this._locs.get(loc);
 
       if (!playerArrHere) {
         throw new Error(`Player array messed up in locs`);

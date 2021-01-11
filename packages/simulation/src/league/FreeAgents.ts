@@ -1,7 +1,7 @@
 import Player from "../player/Player";
 
 export default class FreeAgents {
-  private players: Player[];
+  private _players: Player[];
 
   get START_NUM_FREE_AGENTS(): number {
     return 60;
@@ -12,42 +12,46 @@ export default class FreeAgents {
       this.removePlayer(player);
     };
 
-    this.players = [];
+    this._players = [];
 
     for (let i = 0; i < this.START_NUM_FREE_AGENTS; i++) {
-      this.players.push(new Player(genPlayerName(), getId(), -1, retire));
+      this._players.push(new Player(genPlayerName(), getId(), -1, retire));
     }
 
     this.sort();
   }
 
   removePlayer(player: Player): void {
-    const foundAt = this.players.indexOf(player);
+    const foundAt = this._players.indexOf(player);
 
     if (foundAt === -1) {
       throw new Error(`Given invalid player`);
     }
 
-    this.players.splice(foundAt, 1);
+    this._players.splice(foundAt, 1);
   }
 
   addPlayers(playersToAdd: Player[]): void {
-    this.players.concat(playersToAdd);
+    this._players.concat(playersToAdd);
     this.sort();
   }
 
   sort(): void {
-    this.players.sort((a: Player, b: Player) => a.playerComp(b));
+    this._players.sort((a: Player, b: Player) => a.playerComp(b));
   }
 
   advanceYear(): void {
-    this.players.forEach((player: Player) => {
+    this._players.forEach((player: Player) => {
       player.advanceYear();
     });
     this.sort();
   }
 
-  simulate(): void {
+  sim(): void {
     1 + 1;
+  }
+
+  get players(): Player[] {
+    return this._players;
   }
 }

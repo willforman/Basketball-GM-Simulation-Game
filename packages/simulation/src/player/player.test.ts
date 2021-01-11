@@ -21,7 +21,7 @@ describe("Player", () => {
 });
 
 describe("StatsGen", () => {
-  const statsGen = getStats(0);
+  const statsGen = getStats(0, () => 60, 50);
 
   it("Outputs correctly", () => {
     expect(statsGen).toEqual(

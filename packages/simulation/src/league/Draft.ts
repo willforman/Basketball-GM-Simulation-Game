@@ -3,12 +3,12 @@ import Team from "../team/Team";
 import { Pick, LEAGUE_SIZE } from "../models";
 
 export default class Draft {
-  private players: Player[];
-  private order: Team[];
+  private _players: Player[];
+  private _order: Team[];
 
-  private picks: Pick[];
-  private pickNum: number;
-  private completed: boolean;
+  private _picks: Pick[];
+  private _pickNum: number;
+  private _completed: boolean;
 
   get DRAFT_NUM_PLAYERS(): number {
     return 64 + 30;
@@ -19,56 +19,56 @@ export default class Draft {
     getId: () => number,
     nonPlayoffTeams: Team[]
   ) {
-    this.players = [];
-    this.picks = [];
+    this._players = [];
+    this._picks = [];
 
     const retire = (player: Player): void => {
       this.removePlayer(player);
     };
 
     for (let i = 0; i < this.DRAFT_NUM_PLAYERS; i++) {
-      this.players.push(new Player(genName(), getId(), -1, retire, true));
+      this._players.push(new Player(genName(), getId(), -1, retire, true));
     }
 
-    this.players.sort((a: Player, b: Player) => a.playerComp(b));
+    this._players.sort((a: Player, b: Player) => a.playerComp(b));
 
-    this.order = nonPlayoffTeams;
+    this._order = nonPlayoffTeams;
   }
 
   addPlayoffTeams(playoffTeams: Team[]): void {
-    this.order = this.order.concat(playoffTeams);
+    this._order = this._order.concat(playoffTeams);
   }
 
   setPicksInOrder(): void {
-    if (this.order.length !== LEAGUE_SIZE) {
-      throw new Error(`Not all teams have been added: ${this.order.length}`);
+    if (this._order.length !== LEAGUE_SIZE) {
+      throw new Error(`Not all teams have been added: ${this._order.length}`);
     }
 
     for (let i = 0; i < LEAGUE_SIZE * 2; i++) {
-      this.picks.push();
+      this._picks.push();
     }
 
     for (let i = 0; i < LEAGUE_SIZE; i++) {
-      const team = this.order[i];
+      const team = this._order[i];
       const [firstPick, secondPick] = team.getPicks();
 
-      this.picks[i] = firstPick;
-      this.picks[i + LEAGUE_SIZE] = secondPick;
+      this._picks[i] = firstPick;
+      this._picks[i + LEAGUE_SIZE] = secondPick;
     }
 
-    this.pickNum = 0;
+    this._pickNum = 0;
   }
 
-  simulate(): void {
-    if (this.picks.length !== LEAGUE_SIZE * 2) {
+  sim(): void {
+    if (this._picks.length !== LEAGUE_SIZE * 2) {
       throw new Error(`Picks haven't been set yet`);
     }
-    if (this.completed) {
+    if (this._completed) {
       throw new Error(`Draft is already completed`);
     }
 
-    this.picks.forEach((pick: Pick) => {
-      const top15 = this.players.slice(0, 15);
+    this._picks.forEach((pick: Pick) => {
+      const top15 = this._players.slice(0, 15);
       const playerPicked = pick.teamOwning.pickPlayer(top15);
 
       this.pickPlayer(playerPicked, pick);
@@ -82,31 +82,31 @@ export default class Draft {
 
     this.removePlayer(player);
 
-    this.pickNum++;
-    if (this.pickNum === LEAGUE_SIZE * 2) {
-      this.completed = true;
+    this._pickNum++;
+    if (this._pickNum === LEAGUE_SIZE * 2) {
+      this._completed = true;
     }
   }
 
   removePlayer(playerRemove: Player): void {
-    const playerIdx = this.players.indexOf(playerRemove);
+    const playerIdx = this._players.indexOf(playerRemove);
 
     if (playerIdx === -1) {
       throw new Error("Given player can't be found");
     }
 
-    this.players.splice(playerIdx, 1);
+    this._players.splice(playerIdx, 1);
   }
 
-  getPicks(): Pick[] {
-    return this.picks;
+  get picks(): Pick[] {
+    return this._picks;
   }
 
-  getPlayers(): Player[] {
-    return this.players;
+  get players(): Player[] {
+    return this._players;
   }
 
-  getCompleted(): boolean {
-    return this.completed;
+  get completed(): boolean {
+    return this._completed;
   }
 }

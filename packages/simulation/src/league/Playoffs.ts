@@ -12,112 +12,115 @@ export const genPlayoffsNextRound = (teams: Team[]): Round => {
 };
 
 export default class Playoffs {
-  private rounds: Round[];
-  private roundIdx: number;
-  private completed: boolean;
-  private winner: Team;
+  private _rounds: Round[];
+  private _roundIdx: number;
+  private _completed: boolean;
+  private _winner: Team;
 
   constructor(playoffTeams: Team[]) {
-    this.rounds = [];
+    this._rounds = [];
     this.initNextRound(playoffTeams);
-    this.roundIdx = 0;
+    this._roundIdx = 0;
   }
 
   initNextRound(teams: Team[]): void {
-    this.rounds.push(genPlayoffsNextRound(teams));
+    this._rounds.push(genPlayoffsNextRound(teams));
   }
 
-  simulateRound(): void {
-    if (this.completed) {
+  simRound(): void {
+    if (this._completed) {
       throw new Error(
-        `Playoffs already completed, roundIdx = ${this.roundIdx}`
+        `Playoffs already completed, roundIdx = ${this._roundIdx}`
       );
     }
-    const currRound = this.rounds[this.roundIdx];
-    currRound.simulate();
+    const currRound = this._rounds[this._roundIdx];
+    currRound.sim();
 
-    if (!currRound.isChampionshipRound()) {
-      this.initNextRound(currRound.getWinners());
-      this.roundIdx++;
+    if (!currRound.isChampionshipRound) {
+      this.initNextRound(currRound.winners);
+      this._roundIdx++;
     } else {
-      this.completed = true;
-      this.winner = currRound.getWinners()[0];
+      this._completed = true;
+      this._winner = currRound.winners[0];
     }
   }
 
-  simulateAll(): void {
-    for (let round = this.roundIdx; round < this.rounds.length; round++) {
-      this.simulateRound();
+  simAll(): void {
+    for (let round = this._roundIdx; round < this._rounds.length; round++) {
+      this.simRound();
     }
   }
 
-  getWinner(): Team {
-    if (!this.completed) {
+  get winner(): Team {
+    if (!this._completed) {
       throw new Error("Can't get winner because playoffs aren't finished");
     }
 
-    return this.winner;
+    return this._winner;
   }
 
-  getCompleted(): boolean {
-    return this.completed;
+  get completed(): boolean {
+    return this._completed;
   }
 
-  getTeamsInDraftOrder(): Team[] {
-    if (!this.completed) {
+  get teamsInDraftOrder(): Team[] {
+    if (!this._completed) {
       throw new Error("Playoffs not complete");
     }
 
-    const teams = this.rounds.reduce(
-      (acc: Team[], round: Round) => acc.concat(round.getLosersInOrder()),
+    const teams = this._rounds.reduce(
+      (acc: Team[], round: Round) => acc.concat(round.losersInOrder),
       []
     );
 
-    teams.push(this.getWinner());
+    teams.push(this.winner);
 
     return teams;
   }
 }
 
 class Round {
-  private series: PlayoffSeries[];
-  private completed: boolean;
+  private _series: PlayoffSeries[];
+  private _completed: boolean;
 
   constructor(series: PlayoffSeries[]) {
-    this.series = series;
-    this.completed = false;
+    this._series = series;
+    this._completed = false;
   }
 
-  simulate(): void {
-    if (this.completed) {
+  sim(): void {
+    if (this._completed) {
       throw new Error("Round has already been completed");
     }
-    this.series.forEach((series: PlayoffSeries) => series.simulate());
-    this.completed = true;
+    this._series.forEach((series: PlayoffSeries) => series.simulate());
+    this._completed = true;
   }
 
-  getWinners(): Team[] {
-    return this.series.map((series: PlayoffSeries) => series.getWinner());
+  get winners(): Team[] {
+    if (!this._completed) {
+      throw new Error(`Playoff round is not complete yet`);
+    }
+    return this._series.map((series: PlayoffSeries) => series.winner);
   }
 
-  isChampionshipRound(): boolean {
-    return this.series.length === 1;
+  get isChampionshipRound(): boolean {
+    return this._series.length === 1;
   }
 
-  getLosersInOrder(): Team[] {
-    if (!this.completed) {
+  get losersInOrder(): Team[] {
+    if (!this._completed) {
       throw new Error("This series is not completed");
     }
 
     const teams: Team[] = [];
 
-    if (this.series.length === 1) {
-      return [this.series[0].getLoser()];
+    if (this._series.length === 1) {
+      return [this._series[0].loser];
     }
 
-    for (let i = 0; i < this.series.length / 2; i++) {
-      const loser1 = this.series[i].getLoser();
-      const loser2 = this.series[this.series.length - 1 - i].getLoser();
+    for (let i = 0; i < this._series.length / 2; i++) {
+      const loser1 = this._series[i].loser;
+      const loser2 = this._series[this._series.length - 1 - i].loser;
 
       if (i % 2 === 0) {
         teams.push(loser1);
@@ -133,42 +136,42 @@ class Round {
 }
 
 class PlayoffSeries {
-  private team1: Team;
-  private team2: Team;
+  private _team1: Team;
+  private _team2: Team;
 
-  private games: Game[];
+  private _games: Game[];
 
-  private wins1: number;
-  private wins2: number;
+  private _wins1: number;
+  private _wins2: number;
 
-  private completed: boolean;
+  private _completed: boolean;
 
   constructor(team1: Team, team2: Team) {
-    this.team1 = team1;
-    this.team2 = team2;
+    this._team1 = team1;
+    this._team2 = team2;
 
-    this.wins1 = 0;
-    this.wins2 = 0;
+    this._wins1 = 0;
+    this._wins2 = 0;
 
-    this.games = [];
+    this._games = [];
   }
 
   // team idx will be even if team1 is home, odd if away
   private simGame(teamIdx: number): void {
-    const game = new Game(this.team1, this.team2, teamIdx);
-    this.games.push(game);
+    const game = new Game(this._team1, this._team2, teamIdx);
+    this._games.push(game);
 
     game.simulate();
 
-    if (game.getWinner() === this.team1) {
-      this.wins1++;
+    if (game.getWinner() === this._team1) {
+      this._wins1++;
     } else {
-      this.wins2++;
+      this._wins2++;
     }
   }
 
   simulate(): void {
-    if (this.completed) {
+    if (this._completed) {
       throw new Error("Series already played");
     }
 
@@ -176,37 +179,37 @@ class PlayoffSeries {
       this.simGame(Math.floor(i / 2));
     }
 
-    for (let i = 0; this.wins1 < 4 && this.wins2 < 4; i++) {
+    for (let i = 0; this._wins1 < 4 && this._wins2 < 4; i++) {
       this.simGame(i % 2);
     }
 
-    this.completed = true;
+    this._completed = true;
   }
 
-  getTeam1Won(): boolean {
-    if (!this.completed) {
-      throw new Error(`Series not completed: ${this.wins1} - ${this.wins2}`);
+  get didTeam1Win(): boolean {
+    if (!this._completed) {
+      throw new Error(`Series not completed: ${this._wins1} - ${this._wins2}`);
     }
-    return this.wins1 === 4;
+    return this._wins1 === 4;
   }
 
-  getWinner(): Team {
-    return this.getTeam1Won() ? this.team1 : this.team2;
+  get winner(): Team {
+    return this.didTeam1Win ? this._team1 : this._team2;
   }
 
-  getLoser(): Team {
-    return this.getTeam1Won() ? this.team2 : this.team1;
+  get loser(): Team {
+    return this.didTeam1Win ? this._team2 : this._team1;
   }
 
   // returns odds of team 1 winning
   // based on https://www.billjamesonline.com/the_mathematics_of_the_nba_playoffs/
   calcOdds(): number {
-    const { team1, team2 } = this;
-    const w1 = team1.getWins();
-    const l1 = team1.getLosses();
+    const { _team1: team1, _team2: team2 } = this;
+    const w1 = team1.wins;
+    const l1 = team1.losses;
 
-    const w2 = team2.getWins();
-    const l2 = team2.getLosses();
+    const w2 = team2.wins;
+    const l2 = team2.losses;
 
     return Math.round((w1 * l2) / (w1 * l2 + w2 * l1));
   }

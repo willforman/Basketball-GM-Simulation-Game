@@ -38,61 +38,65 @@ export const genRegularSeasonGames = (teamsPassed: Team[]): Game[][] => {
 };
 
 export default class RegularSeason {
-  private weeks: Week[];
-  private weekIdx: number;
+  private _weeks: Week[];
+  private _weekIdx: number;
 
-  private completed: boolean;
+  private _completed: boolean;
 
   constructor(teams: Team[]) {
     const gamesMatrix = genRegularSeasonGames(teams);
-    this.weeks = gamesMatrix.map((games: Game[]) => new Week(games));
+    this._weeks = gamesMatrix.map((games: Game[]) => new Week(games));
 
-    this.weekIdx = 0;
-    this.completed = false;
+    this._weekIdx = 0;
+    this._completed = false;
   }
 
-  simulateWeek(): void {
-    if (this.completed) {
+  simWeek(): void {
+    if (this._completed) {
       throw new Error("Season already completed");
     }
 
-    this.weeks[this.weekIdx].simulate();
-    this.weekIdx++;
+    this._weeks[this._weekIdx].simulate();
+    this._weekIdx++;
 
-    if (this.weekIdx === this.weeks.length) {
-      this.completed = true;
+    if (this._weekIdx === this._weeks.length) {
+      this._completed = true;
     }
   }
 
-  simulateAll(): void {
-    if (this.completed) {
+  simAll(): void {
+    if (this._completed) {
       throw new Error("Season already completed");
     }
 
-    for (let week = this.weekIdx; week < this.weeks.length; week++) {
-      this.simulateWeek();
+    for (let week = this._weekIdx; week < this._weeks.length; week++) {
+      this.simWeek();
     }
   }
 
-  getCompleted(): boolean {
-    return this.completed;
+  get completed(): boolean {
+    return this._completed;
   }
 }
 
 class Week {
-  private games: Game[];
-  private completed: boolean;
+  private _games: Game[];
+  private _completed: boolean;
 
   constructor(games: Game[]) {
-    this.games = games;
-    this.completed = false;
+    this._games = games;
+    this._completed = false;
   }
 
   simulate(): void {
-    if (this.completed) {
+    if (this._completed) {
       throw new Error("Week has already been completed");
     }
-    this.games.forEach((game: Game) => game.simulate());
-    this.completed = true;
+    this._games.forEach((game: Game) => game.simulate());
+    this._completed = true;
+  }
+
+  get completed(): boolean {
+    return this._completed;
   }
 }

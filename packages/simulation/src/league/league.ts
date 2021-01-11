@@ -15,7 +15,7 @@ enum State {
 
 export const getPlayoffTeams = (allTeams: Team[]): [Team[], Team[]] => {
   const sortedTeams = allTeams.sort(
-    (a: Team, b: Team): number => a.getWins() - b.getWins()
+    (a: Team, b: Team): number => a.wins - b.wins
   );
 
   let cutOffIdx = 2;
@@ -30,131 +30,109 @@ export const getPlayoffTeams = (allTeams: Team[]): [Team[], Team[]] => {
 };
 
 export default class League {
-  private state: State;
-  private year: number;
+  private _state: State;
+  private _year: number;
 
-  private teams: Team[];
+  private _teams: Team[];
 
-  private regularSeason: RegularSeason;
-  private playoffs: Playoffs;
+  private _regularSeason: RegularSeason;
+  private _playoffs: Playoffs;
 
-  private freeAgents: FreeAgents;
-  private draft: Draft;
+  private _freeAgents: FreeAgents;
+  private _draft: Draft;
 
-  private playerID: number;
+  private _playerID: number;
 
-  private genPlayerName: () => string;
-  private getPlayerId: () => number;
+  private _genPlayerName: () => string;
+  private _getPlayerId: () => number;
 
   get START_YEAR(): number {
     return 2021;
   }
 
   constructor(genPlayerName: () => string, teamNames: TeamNames[]) {
-    this.genPlayerName = genPlayerName;
+    this._genPlayerName = genPlayerName;
 
-    this.state = State.REGULAR_SEASON;
-    this.year = this.START_YEAR;
+    this._state = State.REGULAR_SEASON;
+    this._year = this.START_YEAR;
 
-    this.playerID = 1;
+    this._playerID = 1;
 
-    this.teams = [];
+    this._teams = [];
 
-    this.getPlayerId = () => this.playerID++;
+    this._getPlayerId = () => this._playerID++;
 
     for (let i = 0; i < LEAGUE_SIZE; i++) {
-      this.teams.push(new Team(teamNames[i], genPlayerName, this.getPlayerId));
+      this._teams.push(
+        new Team(teamNames[i], genPlayerName, this._getPlayerId)
+      );
     }
 
-    this.regularSeason = new RegularSeason(this.teams);
+    this._regularSeason = new RegularSeason(this._teams);
 
-    this.freeAgents = new FreeAgents(this.getPlayerId, genPlayerName);
-  }
-
-  simWeek(): void {
-    this.regularSeason.simulateWeek();
-  }
-
-  simSeason(): void {
-    this.regularSeason.simulateAll();
-  }
-
-  simPlayoffRound(): void {
-    this.playoffs.simulateRound();
-  }
-
-  simAllPlayoffs(): void {
-    this.playoffs.simulateAll();
-  }
-
-  simDraft(): void {
-    this.draft.simulate();
-  }
-
-  simFreeAgency(): void {
-    this.freeAgents.simulate();
+    this._freeAgents = new FreeAgents(this._getPlayerId, genPlayerName);
   }
 
   advToDraft(): void {
     this.advState(State.PLAYOFFS);
 
-    if (!this.playoffs.getCompleted()) {
+    if (!this._playoffs.completed) {
       throw new Error(`Playoffs aren't completed`);
     }
 
-    this.year++;
-    this.teams.forEach((team: Team) => team.advanceYear());
+    this._year++;
+    this._teams.forEach((team: Team) => team.advanceYear());
 
-    this.freeAgents.advanceYear();
+    this._freeAgents.advanceYear();
 
-    this.draft.addPlayoffTeams(this.playoffs.getTeamsInDraftOrder());
-    this.draft.setPicksInOrder();
+    this._draft.addPlayoffTeams(this._playoffs.teamsInDraftOrder);
+    this._draft.setPicksInOrder();
   }
 
   advToFreeAgency(): void {
     this.advState(State.PRESEASON_DRAFT);
 
-    if (!this.draft.getCompleted()) {
+    if (!this._draft.completed) {
       throw new Error(`Draft isn't completed`);
     }
 
-    this.freeAgents.addPlayers(this.draft.getPlayers());
+    this._freeAgents.addPlayers(this._draft.players);
   }
 
   advToRegSeason(): void {
     this.advState(State.PRESEASON_FREE_AGENCY);
 
-    this.regularSeason = new RegularSeason(this.teams);
+    this._regularSeason = new RegularSeason(this._teams);
   }
 
   advToPlayoffs(): void {
     this.advState(State.REGULAR_SEASON);
 
-    if (!this.regularSeason.getCompleted()) {
+    if (!this._regularSeason.completed) {
       throw new Error(`Regular season isn't completed`);
     }
 
-    const [playoffTeams, nonPlayoffTeams] = getPlayoffTeams(this.teams);
-    this.playoffs = new Playoffs(playoffTeams);
-    this.draft = new Draft(
-      this.genPlayerName,
-      this.getPlayerId,
+    const [playoffTeams, nonPlayoffTeams] = getPlayoffTeams(this._teams);
+    this._playoffs = new Playoffs(playoffTeams);
+    this._draft = new Draft(
+      this._genPlayerName,
+      this._getPlayerId,
       nonPlayoffTeams
     );
   }
 
   private advState(wantedState: State): void {
-    if (wantedState !== this.state) {
+    if (wantedState !== this._state) {
       throw new Error(
-        `Given state: ${this.state}, Desired state: ${wantedState}`
+        `Given state: ${this._state}, Desired state: ${wantedState}`
       );
     }
 
-    this.state = this.getNextState();
+    this._state = this.getNextState();
   }
 
   private getNextState(): State {
-    switch (this.state) {
+    switch (this._state) {
       case State.PRESEASON_DRAFT:
         return State.PRESEASON_FREE_AGENCY;
       case State.PRESEASON_FREE_AGENCY:
@@ -167,13 +145,13 @@ export default class League {
   }
 
   // get functions
-  getYear(): number {
-    return this.year;
+  get year(): number {
+    return this._year;
   }
 
   getTeamByLocation(locName: string): Team {
-    const foundTeam = this.teams.find(
-      (team: Team) => locName === team.getLocation()
+    const foundTeam = this._teams.find(
+      (team: Team) => locName === team.location
     );
 
     if (!foundTeam) {
@@ -183,19 +161,27 @@ export default class League {
     return foundTeam;
   }
 
-  getWinner(): Team {
-    if (!this.playoffs.getWinner()) {
+  get winner(): Team {
+    if (!this._playoffs.winner) {
       throw new Error("Playoffs not completed");
     }
 
-    return this.playoffs.getWinner();
+    return this._playoffs.winner;
   }
 
-  getRegularSeason(): RegularSeason {
-    return this.regularSeason;
+  get regularSeason(): RegularSeason {
+    return this._regularSeason;
   }
 
-  getPlayoffs(): Playoffs {
-    return this.playoffs;
+  get playoffs(): Playoffs {
+    return this._playoffs;
+  }
+
+  get draft(): Draft {
+    return this._draft;
+  }
+
+  get freeAgents(): FreeAgents {
+    return this._freeAgents;
   }
 }

@@ -7,7 +7,7 @@ describe("Team", () => {
   const team = makeTeam();
   it("Gets player by postion", () => {
     const pos = 0;
-    const player = team.getStarter(pos);
+    const player = team.roster.get(pos);
 
     expect(player).toEqual(
       expect.objectContaining({
@@ -22,10 +22,10 @@ describe("Roster", () => {
   const player = makePlayer();
 
   const idArr = (team: Team) =>
-    team.getPlayerArray().map((player: Player) => player.id);
+    team.roster.allPlayers.map((player: Player) => player.id);
 
   it("Has unique players", () => {
-    const players = team.getPlayerArray();
+    const players = team.roster.allPlayers;
     const isArrUniq = new Set(players).size === players.length;
 
     expect(isArrUniq).toBeTruthy();
@@ -44,7 +44,7 @@ describe("Roster", () => {
   });
 
   it("Subs lineup", () => {
-    const roster = team.getRoster();
+    const roster = team.roster;
 
     const subs = roster.getSubs();
 
@@ -79,9 +79,7 @@ describe("Draft Picks", () => {
   it("Advances year", () => {
     draftPicks.advanceYear();
 
-    expect(draftPicks.getPicks().length).toBe(
-      draftPicks.GEN_PICKS_YEARS_AHEAD * 2
-    );
+    expect(draftPicks.picks.length).toBe(draftPicks.GEN_PICKS_YEARS_AHEAD * 2);
   });
 
   it("Changes ownership", () => {
@@ -90,8 +88,8 @@ describe("Draft Picks", () => {
 
     draftPicks.changeOwnership(yearsAhead, round, team2);
 
-    expect(
-      draftPicks.getPick(yearsAhead, round).teamOwning.getAbreviation()
-    ).toBe(team2.getAbreviation());
+    expect(draftPicks.getPick(yearsAhead, round).teamOwning.abreviation).toBe(
+      team2.abreviation
+    );
   });
 });

@@ -2,29 +2,29 @@ import Team from "./Team";
 import { Pick } from "../models";
 
 export default class DraftPicks {
-  private draftYears: DraftYear[];
-  private team: Team;
+  private _draftYears: DraftYear[];
+  private _team: Team;
 
   get GEN_PICKS_YEARS_AHEAD(): number {
     return 5;
   }
 
   constructor(team: Team) {
-    this.team = team;
+    this._team = team;
 
-    this.draftYears = [];
+    this._draftYears = [];
 
     for (let i = 0; i < this.GEN_PICKS_YEARS_AHEAD; i++) {
-      this.draftYears.push(new DraftYear(team));
+      this._draftYears.push(new DraftYear(team));
     }
   }
 
   advanceYear(): void {
-    if (this.draftYears.length !== this.GEN_PICKS_YEARS_AHEAD - 1) {
-      throw new Error(`Invalid num of draft years: ${this.draftYears.length}`);
+    if (this._draftYears.length !== this.GEN_PICKS_YEARS_AHEAD - 1) {
+      throw new Error(`Invalid num of draft years: ${this._draftYears.length}`);
     }
 
-    this.draftYears.push(new DraftYear(this.team));
+    this._draftYears.push(new DraftYear(this._team));
   }
 
   changeOwnership(yearIdx: number, roundIdx: number, newTeam: Team): void {
@@ -32,42 +32,42 @@ export default class DraftPicks {
   }
 
   getPick(yearIdx: number, roundIdx: number): Pick {
-    return this.getDraftYear(yearIdx).getPicks()[roundIdx];
+    return this.getDraftYear(yearIdx).picks[roundIdx];
   }
 
   getDraftYear(idx: number): DraftYear {
-    return this.draftYears[idx];
+    return this._draftYears[idx];
   }
 
-  getPicks(): Pick[] {
+  get picks(): Pick[] {
     const picks: Pick[] = [];
 
-    this.draftYears.forEach((draftYear: DraftYear) => {
-      picks.push(...draftYear.getPicks());
+    this._draftYears.forEach((draftYear: DraftYear) => {
+      picks.push(...draftYear.picks);
     });
 
     return picks;
   }
 
   getAndRemoveCurrYearPicks(): [Pick, Pick] {
-    const draftYear = this.draftYears.shift();
+    const draftYear = this._draftYears.shift();
 
     if (!draftYear) {
       throw new Error("Draft years array is empty");
     }
 
-    return draftYear.getPicks();
+    return draftYear.picks;
   }
 }
 
 class DraftYear {
-  private picks: Pick[];
+  private _picks: Pick[];
 
   constructor(team: Team) {
-    this.picks = [];
+    this._picks = [];
 
     for (let round = 1; round <= 2; round++) {
-      this.picks.push({
+      this._picks.push({
         teamOwning: team,
         teamOrig: team,
         playerPicked: null,
@@ -75,7 +75,7 @@ class DraftYear {
     }
   }
 
-  getPicks(): [Pick, Pick] {
-    return [this.picks[0], this.picks[1]];
+  get picks(): [Pick, Pick] {
+    return [this._picks[0], this._picks[1]];
   }
 }

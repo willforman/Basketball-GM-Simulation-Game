@@ -5,17 +5,17 @@ import Roster from "./Roster";
 import DraftPicks from "./DraftPicks";
 
 export default class Team {
-  private name: string;
-  private location: string;
-  private abbreviation: string;
+  private _name: string;
+  private _location: string;
+  private _abbreviation: string;
 
-  private wins: number;
-  private losses: number;
+  private _wins: number;
+  private _losses: number;
 
-  private roster: Roster;
-  private games: Game[];
+  private _roster: Roster;
+  private _games: Game[];
 
-  private picks: DraftPicks;
+  private _picks: DraftPicks;
 
   get ROSTER_SIZE(): number {
     return 15;
@@ -26,40 +26,40 @@ export default class Team {
     genPlayerName: () => string,
     getNextId: () => number
   ) {
-    this.name = names.name;
-    this.location = names.location;
-    this.abbreviation = names.abbreviation;
+    this._name = names.name;
+    this._location = names.location;
+    this._abbreviation = names.abbreviation;
 
-    this.wins = 0;
-    this.losses = 0;
+    this._wins = 0;
+    this._losses = 0;
 
-    this.games = [];
+    this._games = [];
 
-    this.roster = new Roster(genPlayerName, getNextId);
+    this._roster = new Roster(genPlayerName, getNextId);
 
-    this.picks = new DraftPicks(this);
+    this._picks = new DraftPicks(this);
   }
 
   advanceYear(): void {
-    this.getPlayerArray().forEach((player: Player) => {
+    this._roster.allPlayers.forEach((player: Player) => {
       player.advanceYear();
     });
   }
 
   addGame(game: Game): void {
-    this.games.push(game);
+    this._games.push(game);
   }
 
   addPlayer(player: Player): void {
-    this.roster.add(player);
+    this._roster.add(player);
   }
 
   removePlayer(player: Player): void {
-    this.roster.remove(player);
+    this._roster.remove(player);
   }
 
   evaluatePlayer(player: Player): number {
-    return this.roster.calcValueIfAdded(player);
+    return this._roster.calcValueIfAdded(player);
   }
 
   pickPlayer(players: Player[]): Player {
@@ -81,34 +81,26 @@ export default class Team {
 
   // get methods
   getPicks(): [Pick, Pick] {
-    return this.picks.getAndRemoveCurrYearPicks();
+    return this._picks.getAndRemoveCurrYearPicks();
   }
 
-  getRoster(): Roster {
-    return this.roster;
+  get roster(): Roster {
+    return this._roster;
   }
 
-  getAbreviation(): string {
-    return this.abbreviation;
+  get abreviation(): string {
+    return this._abbreviation;
   }
 
-  getStarter(pos: number): Player | null {
-    return this.roster.get(pos);
+  get location(): string {
+    return this._location;
   }
 
-  getPlayerArray(): Player[] {
-    return this.roster.getArray();
+  get wins(): number {
+    return this._wins;
   }
 
-  getLocation(): string {
-    return this.location;
-  }
-
-  getWins(): number {
-    return this.wins;
-  }
-
-  getLosses(): number {
-    return this.losses;
+  get losses(): number {
+    return this._losses;
   }
 }
