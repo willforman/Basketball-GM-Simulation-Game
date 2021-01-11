@@ -116,7 +116,7 @@ export default class Player {
   }
 
   get rating(): number {
-    return this.stats.calcRating();
+    return this.stats.rating;
   }
 
   getRatingMultiplier(): number {

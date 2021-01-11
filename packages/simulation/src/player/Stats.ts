@@ -11,7 +11,6 @@ export default class Stats {
   // 7: stealing
   // 8: rebounding
   private _stats: Stat[];
-  private _rating: number;
 
   private _getPot: () => number;
 
@@ -22,7 +21,6 @@ export default class Stats {
     startRating: number
   ) {
     this._getPot = getPotential;
-    this._rating = startRating;
 
     this._stats = [];
     statsArr.forEach((stat: number, idx: number) => {
@@ -42,21 +40,8 @@ export default class Stats {
     });
   }
 
-  // sums growth for each stat and returns sum / 3, rounded
-  // can range from 0 to 60 (inclusive)
-  calcRating(): number {
-    const sum = this._stats.reduce(
-      (sum: number, curr: Stat) => sum + curr.growth,
-      0
-    );
-    return Math.round(sum / 3);
-  }
-
   updateStats(): void {
-    this._rating += this._stats.reduce(
-      (sum: number, stat: Stat) => sum + stat.update(this._getPot()),
-      0
-    );
+    this._stats.forEach((stat: Stat) => stat.update(this._getPot()));
   }
 
   getOffenseRating(offMove: Move): number {
@@ -84,6 +69,16 @@ export default class Stats {
       case Move.PASS:
         return this.stealing;
     }
+  }
+
+  // sums growth for each stat and returns sum / 3, rounded
+  // can range from 0 to 60 (inclusive)
+  get rating(): number {
+    const sum = this._stats.reduce(
+      (sum: number, curr: Stat) => sum + curr.growth,
+      0
+    );
+    return Math.round(sum / 3);
   }
 
   get insideShot(): number {
@@ -140,7 +135,7 @@ class Stat {
   }
 
   get growth(): number {
-    return this._growth;
+    return this._isPrimary ? 2 : 1 * this._growth;
   }
 
   update(potential: number): number {
