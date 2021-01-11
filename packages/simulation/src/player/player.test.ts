@@ -1,4 +1,3 @@
-import Player from "./Player";
 import { getStats } from "./statGen";
 import { Location } from "../models";
 import { makePlayer } from "../testingObjs";
