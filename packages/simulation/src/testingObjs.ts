@@ -1,6 +1,6 @@
 import Game from "./game/Game";
 import League from "./league/League";
-import { TeamNames, LEAGUE_SIZE } from "./models";
+import { TeamNames, LEAGUE_SIZE, ConfNames } from "./models";
 import Player from "./player/Player";
 import Team from "./team/Team";
 
@@ -9,16 +9,22 @@ const genPlayerName = (): string => {
 };
 
 let teamNum = 0;
-const getTeamNames = (): TeamNames[] => {
-  const teamNames: TeamNames[] = [];
+const getTeamNames = (): ConfNames => {
+  const westArr: TeamNames[] = [];
+  const eastArr: TeamNames[] = [];
+
   for (let i = 0; i < LEAGUE_SIZE; i++) {
-    teamNames.push({
+    const namesArr = i % 2 === 0 ? eastArr : westArr;
+    namesArr.push({
       name: `Team ${teamNum}`,
       location: "Test Location",
       abbreviation: `T${teamNum++}`,
     });
   }
-  return teamNames;
+  return {
+    east: eastArr,
+    west: westArr,
+  };
 };
 
 let id = 0;
@@ -31,7 +37,7 @@ const retire = (): void => {
 };
 
 export const makeTeam = (teamNamesGiven?: TeamNames): Team => {
-  const teamNames = teamNamesGiven ?? getTeamNames()[0];
+  const teamNames = teamNamesGiven ?? getTeamNames().east[0];
   return new Team(teamNames, genPlayerName, getId);
 };
 

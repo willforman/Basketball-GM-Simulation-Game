@@ -1,23 +1,48 @@
 import fetchData from "./fetchData";
-import { TeamNames } from "../models";
+import { ConfNames, TeamNames } from "../models";
 
-interface TeamNameObj {
-  teamId: number;
-  abbreviation: string;
-  teamName: string;
-  simpleName: string;
-  location: string;
+interface resType {
+  data: TeamNameObj[];
+  meta: {
+    total_pages: number;
+    current_pages: number;
+    next_page: number | null;
+    per_page: number;
+    total_count: number;
+  };
 }
 
-export default async (): Promise<TeamNames[]> => {
-  const url =
-    "https://raw.githubusercontent.com/bttmly/nba/master/data/teams.json";
+interface TeamNameObj {
+  id: number;
+  abbreviation: string;
+  city: string;
+  conference: string;
+  division: string;
+  full_name: string;
+  name: string;
+}
 
-  const namesResponse = await fetchData<TeamNameObj[]>(url);
+export default async (): Promise<ConfNames> => {
+  const url = "https://www.balldontlie.io/api/v1/teams";
 
-  return namesResponse.payload.map((team: TeamNameObj) => ({
-    name: team.simpleName,
-    location: team.location,
-    abbreviation: team.abbreviation,
-  }));
+  const namesResponse = await fetchData<resType>(url);
+
+  const eastTeams: TeamNames[] = [];
+  const westTeams: TeamNames[] = [];
+
+  namesResponse.payload.data.forEach((team: TeamNameObj) => {
+    const transformedRes: TeamNames = {
+      name: team.name,
+      location: team.city,
+      abbreviation: team.abbreviation,
+    };
+
+    const confArr = team.conference === "East" ? eastTeams : westTeams;
+    confArr.push(transformedRes);
+  });
+
+  return {
+    east: eastTeams,
+    west: westTeams,
+  };
 };

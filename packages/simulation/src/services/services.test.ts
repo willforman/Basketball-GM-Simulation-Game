@@ -13,15 +13,18 @@ describe("Team Name Service", () => {
       abbreviation: "ATL",
     };
 
-    const bosNames: TeamNames = {
-      name: "Celtics",
-      location: "Boston",
-      abbreviation: "BOS",
+    const dalNames: TeamNames = {
+      name: "Mavericks",
+      location: "Dallas",
+      abbreviation: "DAL",
     };
 
-    expect(teamNames[0]).toEqual(expect.objectContaining(atlNames));
+    expect(teamNames.east).toHaveLength(15);
+    expect(teamNames.west).toHaveLength(15);
 
-    expect(teamNames[1]).toEqual(expect.objectContaining(bosNames));
+    expect(teamNames.east[0]).toEqual(expect.objectContaining(atlNames));
+
+    expect(teamNames.west[0]).toEqual(expect.objectContaining(dalNames));
   });
 });
 
