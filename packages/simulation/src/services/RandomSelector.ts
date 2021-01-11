@@ -5,9 +5,15 @@ export default class RandomSelector<T> {
   private choices: Choice<T>[];
 
   constructor(choices: Choice<T>[]) {
-    if (!choices) {
+    let invalid = false;
+    choices.forEach((choice: Choice<T>) => {
+      if (isNaN(choice.weight) || choice.weight < 0) {
+        invalid = true;
+      }
+    });
+    if (invalid) {
       console.error(choices);
-      throw new Error(`Invalid choices given`);
+      throw new Error(`Given invalid choices`);
     }
 
     this.choices = choices;
