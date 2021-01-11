@@ -5,4 +5,6 @@ export interface Pick {
   teamOwning: Team;
   teamOrig: Team;
   playerPicked: Player | null;
+  round: number;
+  yearsAway: number;
 }

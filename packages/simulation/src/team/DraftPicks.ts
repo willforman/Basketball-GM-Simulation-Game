@@ -24,6 +24,8 @@ export default class DraftPicks {
       throw new Error(`Invalid num of draft years: ${this._draftYears.length}`);
     }
 
+    this._draftYears.forEach((year: DraftYear) => year.advanceYear());
+
     this._draftYears.push(new DraftYear(this._team));
   }
 
@@ -63,19 +65,27 @@ export default class DraftPicks {
 class DraftYear {
   private _picks: Pick[];
 
-  constructor(team: Team) {
+  constructor(team: Team, yearsAwayGiven?: number) {
     this._picks = [];
+
+    const yearsAway = yearsAwayGiven ?? 4;
 
     for (let round = 1; round <= 2; round++) {
       this._picks.push({
         teamOwning: team,
         teamOrig: team,
         playerPicked: null,
+        round,
+        yearsAway,
       });
     }
   }
 
   get picks(): [Pick, Pick] {
     return [this._picks[0], this._picks[1]];
+  }
+
+  advanceYear(): void {
+    this._picks.forEach((pick: Pick) => pick.yearsAway--);
   }
 }
