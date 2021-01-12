@@ -1,5 +1,5 @@
 import fetchData from "./fetchData";
-import { ConfNames, TeamNames } from "../models";
+import { ConfNames, TeamNames, DivNames } from "../models";
 
 interface resType {
   data: TeamNameObj[];
@@ -22,13 +22,37 @@ interface TeamNameObj {
   name: string;
 }
 
+const makeDivNames = (name: string): DivNames => {
+  return {
+    teams: [],
+    name,
+  };
+};
+
+const getDivTeams = (name: string, divs: DivNames[]): TeamNames[] => {
+  const div = divs.find((div: DivNames) => div.name === name);
+
+  if (!div) {
+    throw new Error(`Given invalid div name: ${name}`);
+  }
+
+  return div.teams;
+};
+
 export default async (): Promise<ConfNames> => {
   const url = "https://www.balldontlie.io/api/v1/teams";
 
   const namesResponse = await fetchData<resType>(url);
 
-  const eastTeams: TeamNames[] = [];
-  const westTeams: TeamNames[] = [];
+  const atlantic = makeDivNames("Atlantic");
+  const central = makeDivNames("Central");
+  const southEast = makeDivNames("Southeast");
+  const northWest = makeDivNames("Northwest");
+  const pacific = makeDivNames("Pacific");
+  const southWest = makeDivNames("Southwest");
+
+  const eastConf = [atlantic, central, southEast];
+  const westConf = [northWest, pacific, southWest];
 
   namesResponse.payload.data.forEach((team: TeamNameObj) => {
     const transformedRes: TeamNames = {
@@ -37,12 +61,12 @@ export default async (): Promise<ConfNames> => {
       abbreviation: team.abbreviation,
     };
 
-    const confArr = team.conference === "East" ? eastTeams : westTeams;
-    confArr.push(transformedRes);
+    const conf = team.conference === "East" ? eastConf : westConf;
+    getDivTeams(team.division, conf).push(transformedRes);
   });
 
   return {
-    east: eastTeams,
-    west: westTeams,
+    east: eastConf,
+    west: westConf,
   };
 };

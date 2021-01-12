@@ -19,12 +19,10 @@ describe("Team Name Service", () => {
       abbreviation: "DAL",
     };
 
-    expect(teamNames.east).toHaveLength(15);
-    expect(teamNames.west).toHaveLength(15);
-
-    expect(teamNames.east[0]).toEqual(expect.objectContaining(atlNames));
-
-    expect(teamNames.west[0]).toEqual(expect.objectContaining(dalNames));
+    expect(teamNames.east).toHaveLength(3);
+    expect(teamNames.east[0].teams).toHaveLength(5);
+    expect(teamNames.east[2].teams[0]).toEqual(atlNames);
+    expect(teamNames.west[2].teams[0]).toEqual(dalNames);
   });
 });
 
