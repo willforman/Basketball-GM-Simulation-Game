@@ -135,7 +135,7 @@ class Stat {
   }
 
   get(): number {
-    const growth = this._isPrimary ? this._growth * 2 : this._growth;
+    const growth = this._growth * this._isPrimary ? 2 : 1;
     return this._base + growth;
   }
 
