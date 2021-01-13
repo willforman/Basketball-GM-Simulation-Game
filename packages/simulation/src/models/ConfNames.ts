@@ -1,4 +1,4 @@
-export interface ConfNames {
+export interface LeagueNames {
   east: DivNames[];
   west: DivNames[];
 }

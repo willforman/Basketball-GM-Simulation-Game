@@ -1,10 +1,11 @@
 import Team from "../team/Team";
-import { TeamNames, LEAGUE_SIZE } from "../models";
+import { TeamNames, LEAGUE_SIZE, LeagueNames } from "../models";
 
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
 import FreeAgents from "./FreeAgents";
 import Draft from "./Draft";
+import Conferences from "./Conference";
 
 enum State {
   PRESEASON_DRAFT = "preseasonDraft",
@@ -33,7 +34,8 @@ export default class League {
   private _state: State;
   private _year: number;
 
-  private _teams: Team[];
+  //private _teams: Team[];
+  private _conferences: Conferences;
 
   private _regularSeason: RegularSeason;
   private _playoffs: Playoffs;
@@ -50,7 +52,7 @@ export default class League {
     return 2021;
   }
 
-  constructor(genPlayerName: () => string, teamNames: TeamNames[]) {
+  constructor(genPlayerName: () => string, confNames: LeagueNames) {
     this._genPlayerName = genPlayerName;
 
     this._state = State.REGULAR_SEASON;
@@ -58,15 +60,13 @@ export default class League {
 
     this._playerID = 1;
 
-    this._teams = [];
-
     this._getPlayerId = () => this._playerID++;
 
-    for (let i = 0; i < LEAGUE_SIZE; i++) {
-      this._teams.push(
-        new Team(teamNames[i], genPlayerName, this._getPlayerId)
-      );
-    }
+    this._conferences = new Conferences(
+      confNames,
+      genPlayerName,
+      this._getPlayerId
+    );
 
     this._regularSeason = new RegularSeason(this._teams);
 
@@ -81,8 +81,8 @@ export default class League {
     }
 
     this._year++;
-    this._teams.forEach((team: Team) => team.advanceYear());
 
+    this._conferences.advanceYear();
     this._freeAgents.advanceYear();
 
     this._draft.addPlayoffTeams(this._playoffs.teamsInDraftOrder);

@@ -1,5 +1,5 @@
 import fetchData from "./fetchData";
-import { ConfNames, TeamNames, DivNames } from "../models";
+import { LeagueNames, TeamNames, DivNames } from "../models";
 
 interface resType {
   data: TeamNameObj[];
@@ -39,7 +39,7 @@ const getDivTeams = (name: string, divs: DivNames[]): TeamNames[] => {
   return div.teams;
 };
 
-export default async (): Promise<ConfNames> => {
+export default async (): Promise<LeagueNames> => {
   const url = "https://www.balldontlie.io/api/v1/teams";
 
   const namesResponse = await fetchData<resType>(url);
