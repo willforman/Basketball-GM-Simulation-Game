@@ -4,16 +4,16 @@ import BoxScore from "./BoxScore";
 import simGame from "./simGame";
 
 export default class Game {
-  private homeTeam: Team;
-  private awayTeam: Team;
+  private _homeTeam: Team;
+  private _awayTeam: Team;
 
-  private homeScore: number;
-  private awayScore: number;
+  private _homeScore: number;
+  private _awayScore: number;
 
-  private homeBoxScores: Map<Player, BoxScore>;
-  private awayBoxScores: Map<Player, BoxScore>;
+  private _homeBoxScores: Map<Player, BoxScore>;
+  private _awayBoxScores: Map<Player, BoxScore>;
 
-  private completed: boolean;
+  private _completed: boolean;
 
   // declared constants
   get QUARTER_LENGTH_MINUTES(): number {
@@ -25,71 +25,74 @@ export default class Game {
     // necessary based on scheduling algorithm so even split of home and
     // away games
     if (teamIdx % 2 === 0) {
-      this.homeTeam = team1;
-      this.awayTeam = team2;
+      this._homeTeam = team1;
+      this._awayTeam = team2;
     } else {
-      this.homeTeam = team2;
-      this.awayTeam = team1;
+      this._homeTeam = team2;
+      this._awayTeam = team1;
     }
 
-    this.homeScore = 0;
-    this.awayScore = 0;
+    this._homeScore = 0;
+    this._awayScore = 0;
 
-    this.completed = false;
+    this._completed = false;
   }
 
   simulate(): void {
-    if (this.completed) {
+    if (this._completed) {
       throw Error("Game already played");
     }
 
     const result = simGame(
-      this.homeTeam,
-      this.awayTeam,
+      this._homeTeam,
+      this._awayTeam,
       this.QUARTER_LENGTH_MINUTES
     );
 
-    this.homeScore = result.homeScore;
-    this.awayScore = result.awayScore;
+    this._homeScore = result.homeScore;
+    this._awayScore = result.awayScore;
 
-    this.homeBoxScores = result.homeBoxScores;
-    this.awayBoxScores = result.awayBoxScores;
+    this._homeBoxScores = result.homeBoxScores;
+    this._awayBoxScores = result.awayBoxScores;
 
-    this.completed = true;
+    this._completed = true;
   }
 
-  getScores(): number[] {
-    return [this.homeScore, this.awayScore];
+  get scores(): number[] {
+    return [this._homeScore, this._awayScore];
   }
 
-  getBoxScores(): BoxScore[] {
+  get boxScores(): BoxScore[] {
+    if (!this._completed) {
+      throw new Error(`Game hasn't been played yet`);
+    }
     const homeBoxScoresArr: BoxScore[] = Array.from(
-      this.homeBoxScores.values()
+      this._homeBoxScores.values()
     );
     const awayBoxScoresArr: BoxScore[] = Array.from(
-      this.homeBoxScores.values()
+      this._homeBoxScores.values()
     );
 
     return homeBoxScoresArr.concat(awayBoxScoresArr);
   }
 
-  getBoxScoresMap(): Map<Player, BoxScore>[] {
-    return [this.homeBoxScores, this.awayBoxScores];
+  get boxScoresMap(): Map<Player, BoxScore>[] {
+    return [this._homeBoxScores, this._awayBoxScores];
   }
 
-  getTitle(): string {
-    return `${this.homeTeam.abreviation} vs. ${this.awayTeam.abreviation}`;
+  get title(): string {
+    return `${this._homeTeam.abreviation} vs. ${this._awayTeam.abreviation}`;
   }
 
-  getWinner(): Team {
-    if (!this.completed) {
+  get winner(): Team {
+    if (!this._completed) {
       throw new Error("Game hasn't been finished");
     }
 
-    if (this.homeScore > this.awayScore) {
-      return this.homeTeam;
+    if (this._homeScore > this._awayScore) {
+      return this._homeTeam;
     } else {
-      return this.awayTeam;
+      return this._awayTeam;
     }
   }
 }
