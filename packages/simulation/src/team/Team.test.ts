@@ -1,7 +1,7 @@
 import Team from "../team/Team";
 import Player from "../player/Player";
 import DraftPicks from "./DraftPicks";
-import { makePlayer, makeTeam } from "../testingObjs";
+import { makePlayer, makeTeam } from "../testingObjs/testingObjs";
 
 describe("Team", () => {
   const team = makeTeam();

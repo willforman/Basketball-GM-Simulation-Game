@@ -1,6 +1,6 @@
 import { getStats } from "./statGen";
 import { Location } from "../models";
-import { makePlayer } from "../testingObjs";
+import { makePlayer } from "../testingObjs/testingObjs";
 
 describe("Player", () => {
   const player = makePlayer();

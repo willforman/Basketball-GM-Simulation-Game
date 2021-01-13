@@ -1,4 +1,4 @@
-import { makeGame, makeTeam } from "../testingObjs";
+import { makeGame, makeTeam } from "../testingObjs/testingObjs";
 
 describe("Game", () => {
   const team1 = makeTeam();
@@ -8,14 +8,14 @@ describe("Game", () => {
   it("Simulates", () => {
     game.simulate();
 
-    const [homeScore, awayScore] = game.getScores();
+    const [homeScore, awayScore] = game.scores;
 
     expect(homeScore).toBeGreaterThan(0);
     expect(awayScore).toBeGreaterThan(0);
   });
 
   it("Box scores are correct", () => {
-    const boxScore = game.getBoxScores()[0];
+    const boxScore = game.boxScores[0];
 
     expect(boxScore.FGA).toBeGreaterThan(0);
   });
