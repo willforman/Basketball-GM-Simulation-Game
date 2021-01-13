@@ -84,6 +84,10 @@ export default class Game {
     return `${this._homeTeam.abreviation} vs. ${this._awayTeam.abreviation}`;
   }
 
+  get teams(): [Team, Team] {
+    return [this._homeTeam, this._awayTeam];
+  }
+
   get winner(): Team {
     if (!this._completed) {
       throw new Error("Game hasn't been finished");
