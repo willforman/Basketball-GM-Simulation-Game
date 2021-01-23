@@ -99,4 +99,8 @@ export default class Game {
       return this._awayTeam;
     }
   }
+
+  isTeamInGame(team: Team): boolean {
+    return this._homeTeam === team || this._awayTeam === team;
+  }
 }

@@ -1,21 +1,16 @@
 import {
-  trans3Dto2D,
   getDivGames,
   getNonConfGames,
   getNonDivGames,
   getSeasonGames,
+  combine2DArrs,
 } from "./scheduleGames";
 import { makeLeague, makeConfs } from "../testingObjs/testingObjs";
+import Game from "../game/Game";
+import Team from "../team/Team";
 
 describe("League", () => {
   const league = makeLeague();
-
-  it("Find team by location", () => {
-    // test league has all teams with location of "test location"
-    const team = league.getTeamByLocation("Test Location");
-
-    expect(team).toBeTruthy();
-  });
 
   it("Simulates season", () => {
     league.regularSeason.simWeek();
@@ -32,88 +27,108 @@ describe("League", () => {
     expect(league.winner).toBeTruthy();
   });
 
-  it("Simulates draft", () => {
-    league.advToDraft();
+  // it("Simulates draft", () => {
+  //   league.advToDraft();
 
-    league.draft.sim();
-  });
+  //   league.draft.sim();
+  // });
 
-  it("Simulates free agency", () => {
-    league.advToFreeAgency();
+  // it("Simulates free agency", () => {
+  //   league.advToFreeAgency();
 
-    league.freeAgents.sim();
-  });
+  //   league.freeAgents.sim();
+  // });
 });
 
 // describe("Game Scheduling", () => {
-//   const team1 = makeTeam();
-//   const team2 = makeTeam();
-//   const team3 = makeTeam();
-//   const team4 = makeTeam();
+//   const confs = makeConfs();
 
-//   const teams = [team1, team2, team3, team4];
-//   it("Generates regular season", () => {
-//     const games = genRegularSeasonGames(teams);
+//   const expectSameLengths2d = <T>(weeks: T[][]): void => {
+//     const lengths = new Map<number, number>();
 
-//     let count = 0;
-//     games.forEach((week: Game[]) => {
-//       week.forEach((game: Game) => {
-//         expect(game).toBeTruthy();
-//         count++;
-//       });
+//     weeks.forEach((curr: T[]) => {
+//       lengths.set(curr.length, (lengths.get(curr.length) ?? 0) + 1);
 //     });
 
-//     expect(count).toBe(6);
+//     if (lengths.size !== 1) {
+//       console.error(lengths);
+//       expect(lengths.size).toBe(1);
+//     }
+//   };
+
+//   const expectCorrectNumOfGames = (games: Game[][]) => {
+//     games.forEach((week: Game[]) => {
+//       expect(week.length).toBe(15);
+//     });
+//   };
+
+//   const expectTeamToBeInGames = (games: Game[][], confs: Team[][][]) => {
+//     const teams = [confs[0][0][0], confs[1][0][0], confs[0][2][0]];
+
+//     teams.forEach((team: Team, teamIdx: number) => {
+//       games.forEach((gamesThisWeek: Game[], idx: number) => {
+//         let found = false;
+//         gamesThisWeek.forEach((game: Game) => {
+//           if (game.isTeamInGame(team)) {
+//             found = true;
+//           }
+//         });
+
+//         if (!found) {
+//           console.error(teamIdx);
+//         }
+
+//         expect(found).toBeTruthy();
+//       });
+//     });
+//   };
+
+//   const expectSchedulingToBeCorrect = (
+//     getGames: (confs: Team[][][]) => Game[][],
+//     weeksShouldBe: number
+//   ): void => {
+//     const games = getGames(confs);
+
+//     expectSameLengths2d(games);
+//     expectCorrectNumOfGames(games);
+//     expectTeamToBeInGames(games, confs);
+
+//     expect(games.length).toBe(weeksShouldBe);
+//   };
+
+//   it("Combine 2d arrays", () => {
+//     let baseArr: number[][] = [];
+//     const arr1 = [
+//       [1, 2],
+//       [3, 4],
+//     ];
+//     const arr2 = [
+//       [5, 6],
+//       [7, 8],
+//     ];
+
+//     baseArr = combine2DArrs(baseArr, arr1);
+
+//     baseArr = combine2DArrs(baseArr, arr2);
+
+//     expect(baseArr[0]).toHaveLength(4);
 //   });
 
-//   it("Generates playoffs rounds", () => {
-//     const round = genPlayoffsNextRound(teams);
+//   it("Creates in division games", () => {
+//     expectSchedulingToBeCorrect(getDivGames, 4);
+//   });
 
-//     expect(round).toBeTruthy();
+//   it("Creates out of division games", () => {
+//     expectSchedulingToBeCorrect(getNonDivGames, 10);
+//   });
+
+//   it("Creates out of conference games", () => {
+//     expectSchedulingToBeCorrect(getNonConfGames, 15);
+//   });
+
+//   it("Creates full schedule", () => {
+//     const games = getSeasonGames(confs);
+
+//     expect(games.length).toBe(82);
 //   });
 // });
-
-describe("Game Scheduling", () => {
-  const confs = makeConfs();
-  it("Transforms 3d array to 2d", () => {
-    const pairs = [
-      [1, 2],
-      [3, 4],
-      [5, 6],
-      [7, 8],
-    ];
-
-    const arr3D = [
-      [pairs[0], pairs[1]],
-      [pairs[2], pairs[3]],
-    ];
-
-    const arr2D = trans3Dto2D(arr3D);
-
-    expect(arr2D).toStrictEqual(pairs);
-  });
-
-  it("Gets in division games", () => {
-    const games = getDivGames(confs);
-
-    expect(games).toHaveLength(5);
-  });
-
-  // it("Creates out of division games", () => {
-  //   const games = getNonDivGames(confs);
-
-  //   expect(games).toHaveLength(24);
-  // });
-
-  // it("Creates out of conference games", () => {
-  //   const games = getNonConfGames(confs);
-
-  //   expect(games).toHaveLength(15);
-  // });
-
-  // it("Creates full schedule", () => {
-  //   const games = getSeasonGames(confs);
-
-  //   expect(games).toHaveLength(82);
-  // });
-});

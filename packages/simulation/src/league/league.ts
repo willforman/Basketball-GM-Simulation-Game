@@ -5,7 +5,7 @@ import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
 import FreeAgents from "./FreeAgents";
 import Draft from "./Draft";
-import Conferences from "./Conference";
+import Conferences from "./Conferences";
 
 enum State {
   PRESEASON_DRAFT = "preseasonDraft",
@@ -13,22 +13,6 @@ enum State {
   REGULAR_SEASON = "regularSeason",
   PLAYOFFS = "playoffs",
 }
-
-export const getPlayoffTeams = (allTeams: Team[]): [Team[], Team[]] => {
-  const sortedTeams = allTeams.sort(
-    (a: Team, b: Team): number => a.wins - b.wins
-  );
-
-  let cutOffIdx = 2;
-  while (cutOffIdx * 2 < allTeams.length) {
-    cutOffIdx *= 2;
-  }
-
-  const playoffTeams = sortedTeams.slice(0, cutOffIdx);
-  const nonPlayoffTeams = sortedTeams.slice(cutOffIdx, sortedTeams.length);
-
-  return [playoffTeams, nonPlayoffTeams];
-};
 
 export default class League {
   private _state: State;
@@ -68,7 +52,7 @@ export default class League {
       this._getPlayerId
     );
 
-    this._regularSeason = new RegularSeason(this._teams);
+    this._regularSeason = new RegularSeason(this._conferences.allTeams);
 
     this._freeAgents = new FreeAgents(this._getPlayerId, genPlayerName);
   }
@@ -102,7 +86,7 @@ export default class League {
   advToRegSeason(): void {
     this.advState(State.PRESEASON_FREE_AGENCY);
 
-    this._regularSeason = new RegularSeason(this._teams);
+    this._regularSeason = new RegularSeason(this._conferences.allTeams);
   }
 
   advToPlayoffs(): void {
@@ -112,8 +96,10 @@ export default class League {
       throw new Error(`Regular season isn't completed`);
     }
 
-    const [playoffTeams, nonPlayoffTeams] = getPlayoffTeams(this._teams);
-    this._playoffs = new Playoffs(playoffTeams);
+    const nonPlayoffTeams = this._conferences.nonPlayoffTeams[0].concat(
+      this._conferences.nonPlayoffTeams[1]
+    );
+    this._playoffs = new Playoffs(this._conferences.playoffTeams);
     this._draft = new Draft(
       this._genPlayerName,
       this._getPlayerId,
@@ -147,18 +133,6 @@ export default class League {
   // get functions
   get year(): number {
     return this._year;
-  }
-
-  getTeamByLocation(locName: string): Team {
-    const foundTeam = this._teams.find(
-      (team: Team) => locName === team.location
-    );
-
-    if (!foundTeam) {
-      throw new Error(`Team not found, location ${locName} is invalid`);
-    }
-
-    return foundTeam;
   }
 
   get winner(): Team {
