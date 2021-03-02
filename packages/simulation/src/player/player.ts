@@ -1,6 +1,6 @@
 import BoxScore from "../game/BoxScore";
 import { getStats } from "./statGen";
-import { Move, Location, Archetype } from "../models";
+import { Move, Location, Archetype, Contract } from "../models";
 import Stats from "./Stats";
 
 export default class Player {
@@ -13,6 +13,8 @@ export default class Player {
 
   private _potential: number;
   private _stats: Stats;
+
+  private _contract: Contract;
 
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
@@ -67,6 +69,11 @@ export default class Player {
 
     // assign stats from statgen
     this._stats = stats;
+
+    this._contract = {
+      price: this.idealPay,
+      yearsLeft: Math.floor(Math.random() * 5) + 1,
+    };
   }
 
   advanceYear(): void {
@@ -75,6 +82,8 @@ export default class Player {
     if (this.getRand(this._age - 31, 0) > 5) {
       this.retire(this);
     }
+
+    this._contract.yearsLeft--;
   }
 
   private getRand(lb: number, ub: number): number {
@@ -130,6 +139,26 @@ export default class Player {
   // used for determining weight of getting subbed into game
   getSubOdds(): number {
     return Math.max(this.rating - 40, 10);
+  }
+
+  get idealPay(): number {
+    return ((this.rating - 40) / 60) * 30e7;
+  }
+
+  get contractOptions(): number[] {
+    const rand = Math.floor(Math.random() * 5);
+
+    const idealPay = this.idealPay;
+
+    const options: number[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      const diff = Math.abs(rand - i);
+      const addedPrice = Math.floor(Math.random() * 2e7 * diff);
+      options.push(idealPay + addedPrice);
+    }
+
+    return options;
   }
 }
 

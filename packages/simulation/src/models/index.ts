@@ -4,6 +4,7 @@ export * from "./GameResult";
 export * from "./Archetype";
 export * from "./TradeItems";
 export * from "./ConfNames";
+export * from "./Contract";
 
 export * from "./moves";
 export * from "./locations";
