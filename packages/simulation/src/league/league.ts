@@ -1,5 +1,5 @@
 import Team from "../team/Team";
-import { TeamNames, LEAGUE_SIZE, LeagueNames } from "../models";
+import { LeagueNames } from "../models";
 
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
