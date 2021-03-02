@@ -1,10 +1,3 @@
-import {
-  getDivGames,
-  getNonConfGames,
-  getNonDivGames,
-  getSeasonGames,
-  combine2DArrs,
-} from "./scheduleGames";
 import { makeLeague, makeConfs } from "../testingObjs/testingObjs";
 import Game from "../game/Game";
 import Team from "../team/Team";
