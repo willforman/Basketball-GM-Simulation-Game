@@ -17,6 +17,10 @@ describe("Player", () => {
     const move = player.getMove(Location.PAINT);
     expect(move).toBeTruthy();
   });
+
+  it("Gets contract options", () => {
+    expect(player.contractOptions).toHaveLength(5);
+  });
 });
 
 describe("StatsGen", () => {

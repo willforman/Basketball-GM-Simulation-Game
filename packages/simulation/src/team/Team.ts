@@ -1,8 +1,9 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
-import { TeamNames, Pick } from "../models";
+import { TeamNames, Pick, MAX_CAP } from "../models";
 import Roster from "./Roster";
 import DraftPicks from "./DraftPicks";
+import CapSpace from "./CapSpace";
 
 export default class Team {
   private _name: string;
@@ -16,6 +17,7 @@ export default class Team {
   private _games: Game[];
 
   private _picks: DraftPicks;
+  private _cap: CapSpace;
 
   get ROSTER_SIZE(): number {
     return 15;
@@ -38,12 +40,15 @@ export default class Team {
     this._roster = new Roster(genPlayerName, getNextId);
 
     this._picks = new DraftPicks(this);
+    const currPay = this._roster.allPlayers.reduce(
+      (tot: number, player: Player) => tot + player.contract.price,
+      0
+    );
+    this._cap = new CapSpace(currPay, MAX_CAP);
   }
 
   advanceYear(): void {
-    this._roster.allPlayers.forEach((player: Player) => {
-      player.advanceYear();
-    });
+    this._roster.advanceYear();
   }
 
   addGame(game: Game): void {
@@ -102,5 +107,9 @@ export default class Team {
 
   get losses(): number {
     return this._losses;
+  }
+
+  get name(): string {
+    return this._name;
   }
 }

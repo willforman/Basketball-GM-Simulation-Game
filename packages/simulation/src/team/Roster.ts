@@ -46,6 +46,10 @@ export default class Roster {
     }
   }
 
+  advanceYear(): void {
+    this.allPlayers.forEach((p: Player) => p.advanceYear());
+  }
+
   add(player: Player): void {
     const pos = player.pos;
 
@@ -118,6 +122,10 @@ export default class Roster {
 
   calcValueIfAdded(player: Player): number {
     return this._positions[player.pos].calcValueIfAdded(player);
+  }
+
+  get playersToRenew(): Player[] {
+    return this.allPlayers.filter((p: Player) => p.contract.yearsLeft === 0);
   }
 }
 

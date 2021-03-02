@@ -145,6 +145,10 @@ export default class Player {
     return ((this.rating - 40) / 60) * 30e7;
   }
 
+  get contract(): Contract {
+    return this._contract;
+  }
+
   get contractOptions(): number[] {
     const rand = Math.floor(Math.random() * 5);
 
