@@ -67,6 +67,13 @@ export default class Team {
     return this._roster.calcValueIfAdded(player);
   }
 
+  evaluatePlayers(players: Player[]): number {
+    return players.reduce(
+      (totVal: number, player: Player) => totVal + this.evaluatePlayer(player),
+      0
+    );
+  }
+
   getPlayerValueRand(player: Player): number {
     const value = this.evaluatePlayer(player);
     return value + Math.floor(Math.random() * (value / 2));
@@ -91,22 +98,49 @@ export default class Team {
     return maxPlayer!;
   }
 
-  pickPlayers(freeAgents: Player[]): Player[] {
-    return freeAgents.filter((player: Player) => {
-      if (this._cap.canAdd(player.idealPay)) {
-        if (this.shouldAddPlayer(player)) {
-          this.addPlayer(player);
-          player.newContract();
-          return true;
-        }
-        return false;
+  renewFreeAgents(): void {
+    const toRenew = this._roster.playersToRenew;
+    const [renewed, notRenewed] = this.pickPlayers(toRenew);
+    notRenewed.forEach((player: Player) => {
+      this.removePlayer(player);
+    });
+  }
+
+  pickPlayers(freeAgents: Player[]): [Player[], Player[]] {
+    const picked: Player[] = [],
+      notPicked: Player[] = [];
+
+    freeAgents.forEach((player: Player) => {
+      if (this._cap.canAdd(player.idealPay) && this.shouldAddPlayer(player)) {
+        this.addPlayer(player);
+        player.newContract();
+        picked.push(player);
+      } else {
+        notPicked.push(player);
       }
     });
+
+    return [picked, notPicked];
   }
 
   // get methods
   getPicks(): [Pick, Pick] {
     return this._picks.getAndRemoveCurrYearPicks();
+  }
+
+  evaluateTrade(playersRecieving: Player[], playersGiving: Player[]): boolean {
+    return (
+      this.evaluatePlayers(playersRecieving) >
+      this.evaluatePlayers(playersGiving)
+    );
+  }
+
+  getTrade(roster: Roster): Player[] {
+    return roster.allPlayers.reduce(
+      (trade: Player[], currPlayer: Player) =>
+        this.evaluatePlayer(currPlayer) > 70 ? trade.concat(currPlayer) : trade,
+      []
+    );
   }
 
   get roster(): Roster {

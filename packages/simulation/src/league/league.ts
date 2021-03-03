@@ -1,4 +1,5 @@
 import Team from "../team/Team";
+import Player from "../player/Player";
 import { LeagueNames } from "../models";
 
 import RegularSeason from "./RegularSeason";
@@ -82,10 +83,7 @@ export default class League {
 
     this._freeAgents.addPlayers(this._draft.players);
 
-    this._conferences.allTeams.forEach((team: Team) => {
-      const toRenew = team.roster.playersToRenew;
-      team.pickPlayers(toRenew);
-    });
+    this._conferences.allTeams.forEach((team: Team) => team.renewFreeAgents());
   }
 
   advToRegSeason(): void {

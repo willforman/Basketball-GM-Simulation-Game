@@ -127,7 +127,7 @@ export default class Roster {
   get playersToRenew(): Player[] {
     return this._positions.reduce(
       (toRenew: Player[], currPos: Position) =>
-        toRenew.concat(currPos.endingContracts),
+        toRenew.concat(currPos.playersToRenew),
       []
     );
   }
@@ -210,40 +210,40 @@ class Position {
     return this.starter !== null;
   }
 
-  calcValueIfAdded(player: Player): number {
-    if (this._sortedPlayers.length === 0) {
-      return player.rating;
+  calcValueIfAdded(playerToCalc: Player): number {
+    if (
+      this._sortedPlayers.length === 0 ||
+      (this._sortedPlayers.length === 1 &&
+        this._sortedPlayers[0] === playerToCalc)
+    ) {
+      return playerToCalc.rating * 2;
     }
 
-    const sumOfRatings = this._sortedPlayers.reduce(
+    // in order to calculate value of player already on roster
+    const playersFiltered = this._sortedPlayers.filter(
+      (player: Player) => player !== playerToCalc
+    );
+
+    const sumOfRatings = playersFiltered.reduce(
       (sum: number, curr: Player) => sum + curr.rating,
       0
     );
 
-    const avgRating =
-      (sumOfRatings + this._sortedPlayers[0].rating) /
-      (this._sortedPlayers.length + 1);
+    // gets highest rated player for this position besides the player to calculate
+    const highestRating = this._sortedPlayers[
+      playerToCalc !== this._sortedPlayers[0] ? 0 : 1
+    ].rating;
 
-    return player.rating * 2 - avgRating;
+    const avgRating =
+      (sumOfRatings + highestRating) / (playersFiltered.length + 1);
+
+    return playerToCalc.rating * 2 - avgRating;
   }
 
-  get endingContracts(): Player[] {
-    const ending: Player[] = [],
-      notEnding: Player[] = [];
-    this._sortedPlayers.forEach((p: Player) => {
-      if (p.contract.yearsLeft === 0) {
-        ending.push(p);
-        if (this._starter === p) {
-          this._starter === null;
-        }
-      } else {
-        notEnding.push(p);
-      }
-    });
-
-    this._sortedPlayers = notEnding;
-
-    return ending;
+  get playersToRenew(): Player[] {
+    return this._sortedPlayers.filter(
+      (player: Player) => player.contract.yearsLeft === 0
+    );
   }
 
   get highestRated(): Player | null {

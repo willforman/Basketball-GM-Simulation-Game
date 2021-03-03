@@ -52,7 +52,7 @@ export default class FreeAgents {
     const randomOrderTeams = teams.sort((a: Team, b: Team) => Math.random());
 
     randomOrderTeams.forEach((team: Team) => {
-      const playersPicked = team.pickPlayers(this._players);
+      const [playersPicked, playersNotPicked] = team.pickPlayers(this._players);
       this._players = this._players.filter(
         (player: Player) => !playersPicked.includes(player)
       );
