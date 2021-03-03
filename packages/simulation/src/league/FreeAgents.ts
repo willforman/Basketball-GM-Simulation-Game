@@ -1,4 +1,5 @@
 import Player from "../player/Player";
+import Team from "../team/Team";
 
 export default class FreeAgents {
   private _players: Player[];
@@ -47,8 +48,17 @@ export default class FreeAgents {
     this.sort();
   }
 
-  sim(): void {
-    1 + 1;
+  sim(teams: Team[]): void {
+    const randomOrderTeams = teams.sort((a: Team, b: Team) => Math.random());
+
+    randomOrderTeams.forEach((team: Team) => {
+      const playersPicked = team.pickFreeAgents(this._players);
+      this._players.filter((player: Player) => playersPicked.includes(player));
+      playersPicked.forEach((player: Player) => {
+        player.newContract();
+        team.addPlayer(player);
+      });
+    });
   }
 
   get players(): Player[] {

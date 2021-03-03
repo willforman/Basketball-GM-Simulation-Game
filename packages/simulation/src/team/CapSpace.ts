@@ -7,12 +7,12 @@ export default class CapSpace {
     this._currPay = currPay;
   }
 
-  add(addCap: number): boolean {
-    if (this._currPay + addCap > this._capacity) {
-      return false;
-    }
+  add(addCap: number): void {
     this._currPay += addCap;
-    return true;
+  }
+
+  canAdd(addCap: number): boolean {
+    return this._currPay + addCap <= this._capacity;
   }
 
   remove(removeCap: number): void {

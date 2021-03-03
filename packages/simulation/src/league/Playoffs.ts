@@ -87,6 +87,7 @@ export default class Playoffs {
       []
     );
 
+    teams.push(this._championship.loser);
     teams.push(this.winner);
 
     return teams;

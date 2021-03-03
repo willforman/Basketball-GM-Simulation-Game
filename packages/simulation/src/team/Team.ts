@@ -57,6 +57,7 @@ export default class Team {
 
   addPlayer(player: Player): void {
     this._roster.add(player);
+    
   }
 
   removePlayer(player: Player): void {
@@ -67,14 +68,17 @@ export default class Team {
     return this._roster.calcValueIfAdded(player);
   }
 
+  getPlayerValueRand(player: Player): number {
+    const value = this.evaluatePlayer(player);
+    return value + Math.floor(Math.random() * (value / 2));
+  }
+
   pickPlayer(players: Player[]): Player {
     let maxValue = Number.MIN_SAFE_INTEGER;
     let maxPlayer: Player;
 
     players.forEach((player: Player) => {
-      const value = this.evaluatePlayer(player);
-      const randValue = value + Math.floor(Math.random() * (value / 2));
-
+      const randValue = this.getPlayerValueRand(player);
       if (randValue > maxValue) {
         maxValue = randValue;
         maxPlayer = player;
@@ -82,6 +86,14 @@ export default class Team {
     });
 
     return maxPlayer!;
+  }
+
+  pickFreeAgents(freeAgents: Player[]): Player[] {
+    return freeAgents.filter((player: Player) => {
+      if (this.getPlayerValueRand(player) > 100) {
+        return this._cap.canAdd(player.idealPay);
+      }
+    });
   }
 
   // get methods

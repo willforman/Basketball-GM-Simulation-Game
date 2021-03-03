@@ -158,4 +158,8 @@ export default class League {
   get freeAgents(): FreeAgents {
     return this._freeAgents;
   }
+
+  get teams(): Team[] {
+    return this._conferences.allTeams;
+  }
 }

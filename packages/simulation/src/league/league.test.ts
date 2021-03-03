@@ -1,18 +1,18 @@
-import { makeLeague, makeConfs } from "../testingObjs/testingObjs";
-import Game from "../game/Game";
-import Team from "../team/Team";
+import { makeLeague } from "../testingObjs/testingObjs";
 
-describe("League", () => {
-  const league = makeLeague();
+const league = makeLeague();
 
-  it("Simulates season", () => {
+describe("Regular Season", () => {
+  it("Simulates", () => {
     league.regularSeason.simWeek();
     league.regularSeason.simAll();
 
     expect(league.regularSeason.completed).toBeTruthy();
   });
+});
 
-  it("Simulates playoffs", () => {
+describe("Playoffs", () => {
+  it("Simulates", () => {
     league.advToPlayoffs();
 
     league.playoffs.simRound();
@@ -20,17 +20,24 @@ describe("League", () => {
     expect(league.winner).toBeTruthy();
   });
 
-  // it("Simulates draft", () => {
-  //   league.advToDraft();
+  it("Gets all playoff teams", () => {
+    expect(league.playoffs.teamsInDraftOrder).toContain(league.playoffs.winner);
+    expect(league.playoffs.teamsInDraftOrder.length).toBe(16);
+  });
+});
 
-  //   league.draft.sim();
-  // });
+describe("Draft", () => {
+  it("Simulates", () => {
+    league.advToDraft();
+    league.draft.sim();
+  });
+});
 
-  // it("Simulates free agency", () => {
-  //   league.advToFreeAgency();
-
-  //   league.freeAgents.sim();
-  // });
+describe("Free Agency", () => {
+  it("Simulates", () => {
+    league.advToFreeAgency();
+    league.freeAgents.sim(league.teams);
+  });
 });
 
 // describe("Game Scheduling", () => {

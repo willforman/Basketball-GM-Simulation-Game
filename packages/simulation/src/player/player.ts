@@ -103,6 +103,13 @@ export default class Player {
     return this.rating - player.rating;
   }
 
+  newContract(contract?: Contract): void {
+    this._contract = contract ?? {
+      yearsLeft: Math.floor(Math.random() * 6),
+      price: this.idealPay,
+    };
+  }
+
   // get methods
   get stats(): Stats {
     return this._stats;
