@@ -59,7 +59,15 @@ export default class Roster {
     players.forEach((player: Player) => this.add(player));
   }
 
-  get(pos: number): Player | null {
+  remove(player: Player): void {
+    this._positions[player.pos].remove(player);
+  }
+
+  removeMultiple(players: Player[]): void {
+    players.forEach((player: Player) => this.remove(player));
+  }
+
+  get(pos: number): Player {
     if (0 > pos || 4 < pos) {
       throw new Error(`Invalid position given: ${pos}`);
     }
@@ -70,27 +78,13 @@ export default class Roster {
     return this._positions[pos].bench;
   }
 
-  getStarters(): (Player | null)[] {
+  get starters(): Player[] {
     return [
       this._positions[0].starter,
       this._positions[1].starter,
       this._positions[2].starter,
       this._positions[3].starter,
       this._positions[4].starter,
-    ];
-  }
-
-  getStartersNonNull(): Player[] {
-    if (!this.isValid()) {
-      console.error(this._positions.map((pos: Position) => pos.starter?.id));
-      throw new Error(`Can't get non null roster if roster has null spot`);
-    }
-    return [
-      this._positions[0].starter!,
-      this._positions[1].starter!,
-      this._positions[2].starter!,
-      this._positions[3].starter!,
-      this._positions[4].starter!,
     ];
   }
 
@@ -104,23 +98,9 @@ export default class Roster {
     ];
   }
 
-  remove(player: Player): void {
-    this._positions[player.pos].remove(player);
-  }
-
-  removeMultiple(players: Player[]): void {
-    players.forEach((player: Player) => this.remove(player));
-  }
-
   // returns a new list of starters
   getSubs(): Player[] {
     return this._positions.map((pos: Position) => pos.getSub());
-  }
-
-  // determines if roster is empty at any position
-  // can't start game if so
-  isValid(): boolean {
-    return !this._positions.some((pos: Position) => !pos.hasStarter());
   }
 
   calcValueIfAdded(player: Player): number {
@@ -142,7 +122,7 @@ export default class Roster {
 }
 
 class Position {
-  private _starter: Player | null;
+  private _starter: Player;
 
   private _sortedPlayers: Player[];
 
@@ -164,14 +144,9 @@ class Position {
     if (!found) {
       this._sortedPlayers.push(playerToAdd);
     }
-
-    // add to starter spot if no starter
-    if (!this._starter) {
-      this._starter = playerToAdd;
-    }
   }
 
-  remove(player: Player): void {
+  remove(player: Player): boolean {
     // remove player from sorted players
     const idxAt = this._sortedPlayers.indexOf(player);
 
@@ -183,15 +158,21 @@ class Position {
       );
     }
 
+    if (this._sortedPlayers.length === 1) {
+      return false;
+    }
+
     this._sortedPlayers.splice(idxAt, 1);
 
     // remove player from starter spot or bench
     if (player === this._starter) {
-      this._starter = null;
+      this._starter = this._sortedPlayers[0];
     }
+
+    return true;
   }
 
-  get starter(): Player | null {
+  get starter(): Player {
     return this._starter;
   }
 
@@ -216,10 +197,6 @@ class Position {
 
   get isEmpty(): boolean {
     return this._sortedPlayers.length === 0;
-  }
-
-  hasStarter(): boolean {
-    return this.starter !== null;
   }
 
   calcValueIfAdded(playerToCalc: Player): number {

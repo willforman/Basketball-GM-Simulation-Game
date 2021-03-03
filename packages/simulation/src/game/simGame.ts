@@ -219,8 +219,8 @@ export default (
     ])
   );
 
-  const homeStarters = homeRoster.getStartersNonNull();
-  const awayStarters = awayRoster.getStartersNonNull();
+  const homeStarters = homeRoster.starters;
+  const awayStarters = awayRoster.starters;
 
   const homeLocs = new CourtLocations(homeStarters);
   const awayLocs = new CourtLocations(awayStarters);

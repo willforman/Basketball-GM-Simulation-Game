@@ -233,7 +233,7 @@ class PlayoffSeries {
     const game = new Game(this._team1, this._team2, teamIdx);
     this._games.push(game);
 
-    game.simulate();
+    game.sim();
 
     if (game.winner === this._team1) {
       this._wins1++;

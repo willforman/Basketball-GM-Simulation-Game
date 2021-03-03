@@ -43,10 +43,6 @@ export default class Game {
       throw Error("Game already played");
     }
 
-    if (!this._homeTeam.roster.isValid() && !this._awayTeam.roster.isValid()) {
-      return false;
-    }
-
     const result = simGame(
       this._homeTeam,
       this._awayTeam,
