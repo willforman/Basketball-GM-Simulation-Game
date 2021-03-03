@@ -72,6 +72,10 @@ export default class Team {
     return value + Math.floor(Math.random() * (value / 2));
   }
 
+  shouldAddPlayer(player: Player): boolean {
+    return this.getPlayerValueRand(player) > 40;
+  }
+
   pickPlayer(players: Player[]): Player {
     let maxValue = Number.MIN_SAFE_INTEGER;
     let maxPlayer: Player;
@@ -87,10 +91,15 @@ export default class Team {
     return maxPlayer!;
   }
 
-  pickFreeAgents(freeAgents: Player[]): Player[] {
+  pickPlayers(freeAgents: Player[]): Player[] {
     return freeAgents.filter((player: Player) => {
       if (this._cap.canAdd(player.idealPay)) {
-        return this.getPlayerValueRand(player) > 40;
+        if (this.shouldAddPlayer(player)) {
+          this.addPlayer(player);
+          player.newContract();
+          return true;
+        }
+        return false;
       }
     });
   }

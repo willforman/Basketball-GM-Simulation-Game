@@ -81,6 +81,11 @@ export default class League {
     }
 
     this._freeAgents.addPlayers(this._draft.players);
+
+    this._conferences.allTeams.forEach((team: Team) => {
+      const toRenew = team.roster.playersToRenew;
+      team.pickPlayers(toRenew);
+    });
   }
 
   advToRegSeason(): void {

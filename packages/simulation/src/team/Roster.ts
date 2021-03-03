@@ -125,7 +125,11 @@ export default class Roster {
   }
 
   get playersToRenew(): Player[] {
-    return this.allPlayers.filter((p: Player) => p.contract.yearsLeft === 0);
+    return this._positions.reduce(
+      (toRenew: Player[], currPos: Position) =>
+        toRenew.concat(currPos.endingContracts),
+      []
+    );
   }
 }
 
@@ -221,6 +225,25 @@ class Position {
       (this._sortedPlayers.length + 1);
 
     return player.rating * 2 - avgRating;
+  }
+
+  get endingContracts(): Player[] {
+    const ending: Player[] = [],
+      notEnding: Player[] = [];
+    this._sortedPlayers.forEach((p: Player) => {
+      if (p.contract.yearsLeft === 0) {
+        ending.push(p);
+        if (this._starter === p) {
+          this._starter === null;
+        }
+      } else {
+        notEnding.push(p);
+      }
+    });
+
+    this._sortedPlayers = notEnding;
+
+    return ending;
   }
 
   get highestRated(): Player | null {
