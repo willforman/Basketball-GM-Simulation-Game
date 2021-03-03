@@ -1,6 +1,6 @@
 import Team from "../team/Team";
-import Player from "../player/Player";
 import { LeagueNames } from "../models";
+import { proposeTrades } from "../team/trade";
 
 import RegularSeason from "./RegularSeason";
 import Playoffs from "./Playoffs";
@@ -53,10 +53,14 @@ export default class League {
       this._getPlayerId
     );
 
-    this._regularSeason = new RegularSeason(this._conferences.allTeams);
+    this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
     this._freeAgents = new FreeAgents(this._getPlayerId, genPlayerName);
   }
+
+  triggerTrades = (): void => {
+    proposeTrades(this.teams);
+  };
 
   advToDraft(): void {
     this.advState(State.PLAYOFFS);
@@ -83,13 +87,13 @@ export default class League {
 
     this._freeAgents.addPlayers(this._draft.players);
 
-    this._conferences.allTeams.forEach((team: Team) => team.renewFreeAgents());
+    this.teams.forEach((team: Team) => team.renewFreeAgents());
   }
 
   advToRegSeason(): void {
     this.advState(State.PRESEASON_FREE_AGENCY);
 
-    this._regularSeason = new RegularSeason(this._conferences.allTeams);
+    this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
   }
 
   advToPlayoffs(): void {

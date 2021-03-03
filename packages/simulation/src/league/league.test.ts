@@ -2,6 +2,12 @@ import { makeLeague } from "../testingObjs/testingObjs";
 
 const league = makeLeague();
 
+describe("League", () => {
+  it("Gets teams", () => {
+    expect(league.teams.length).toBe(30);
+  });
+});
+
 describe("Regular Season", () => {
   it("Simulates", () => {
     league.regularSeason.simWeek();

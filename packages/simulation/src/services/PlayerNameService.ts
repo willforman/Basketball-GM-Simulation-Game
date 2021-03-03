@@ -1,4 +1,5 @@
 import fetchData from "./fetchData";
+import { getRandElem } from "./funcs";
 
 interface FirstNameResponse {
   year: number;
@@ -32,14 +33,9 @@ export default class PlayerNameGenService {
 
   // return random first name and last name
   getName(): string {
-    const fName = this.getRandElem(this.firstNames);
-    const lName = this.getRandElem(this.lastNames);
+    const fName = getRandElem(this.firstNames);
+    const lName = getRandElem(this.lastNames);
 
     return `${fName} ${lName}`;
-  }
-
-  // gets random name from array
-  private getRandElem<T>(arr: T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)];
   }
 }

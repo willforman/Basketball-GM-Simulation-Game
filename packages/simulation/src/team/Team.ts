@@ -1,6 +1,6 @@
 import Player from "../player/Player";
 import Game from "../game/Game";
-import { TeamNames, Pick, MAX_CAP } from "../models";
+import { TeamNames, Pick, MAX_CAP, ROSTER_SIZE } from "../models";
 import Roster from "./Roster";
 import DraftPicks from "./DraftPicks";
 import CapSpace from "./CapSpace";
@@ -18,10 +18,6 @@ export default class Team {
 
   private _picks: DraftPicks;
   private _cap: CapSpace;
-
-  get ROSTER_SIZE(): number {
-    return 15;
-  }
 
   constructor(
     names: TeamNames,
@@ -126,21 +122,6 @@ export default class Team {
   // get methods
   getPicks(): [Pick, Pick] {
     return this._picks.getAndRemoveCurrYearPicks();
-  }
-
-  evaluateTrade(playersRecieving: Player[], playersGiving: Player[]): boolean {
-    return (
-      this.evaluatePlayers(playersRecieving) >
-      this.evaluatePlayers(playersGiving)
-    );
-  }
-
-  getTrade(roster: Roster): Player[] {
-    return roster.allPlayers.reduce(
-      (trade: Player[], currPlayer: Player) =>
-        this.evaluatePlayer(currPlayer) > 70 ? trade.concat(currPlayer) : trade,
-      []
-    );
   }
 
   get roster(): Roster {

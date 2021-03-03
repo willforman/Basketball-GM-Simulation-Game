@@ -6,7 +6,7 @@ describe("Game", () => {
   const game = makeGame(team1, team2);
 
   it("Simulates", () => {
-    game.simulate();
+    game.sim();
 
     const [homeScore, awayScore] = game.scores;
 

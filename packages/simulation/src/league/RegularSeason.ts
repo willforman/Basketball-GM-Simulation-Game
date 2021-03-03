@@ -8,7 +8,11 @@ export default class RegularSeason {
 
   private _completed: boolean;
 
-  constructor(teams: Team[]) {
+  private _triggerTrades: () => void;
+
+  constructor(teams: Team[], triggerTrades: () => void) {
+    this._triggerTrades = triggerTrades;
+
     const gamesMatrix = roundRobin(teams);
     this._weeks = gamesMatrix.map((games: Game[]) => new Week(games));
 
@@ -23,6 +27,11 @@ export default class RegularSeason {
 
     this._weeks[this._weekIdx].simulate();
     this._weekIdx++;
+
+    // teams trade on odd weeks first half of season
+    if (this._weekIdx <= this._weeks.length / 2 && this._weekIdx % 1 === 0) {
+      this._triggerTrades();
+    }
 
     if (this._weekIdx === this._weeks.length) {
       this._completed = true;
@@ -57,7 +66,7 @@ class Week {
     if (this._completed) {
       throw new Error("Week has already been completed");
     }
-    this._games.forEach((game: Game) => game.simulate());
+    this._games.forEach((game: Game) => game.sim());
     this._completed = true;
   }
 

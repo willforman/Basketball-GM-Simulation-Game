@@ -1,6 +1,7 @@
 import Player from "../player/Player";
 import { Choice } from "../models/Choice";
 import RandomSelector from "../services/RandomSelector";
+import { mapPlayerIds } from "../services/funcs";
 
 export default class Roster {
   // 0: PG
@@ -51,11 +52,11 @@ export default class Roster {
   }
 
   add(player: Player): void {
-    const pos = player.pos;
+    this._positions[player.pos].add(player);
+  }
 
-    const posObj = this._positions[pos];
-
-    posObj.add(player);
+  addMultiple(players: Player[]): void {
+    players.forEach((player: Player) => this.add(player));
   }
 
   get(pos: number): Player | null {
@@ -104,9 +105,11 @@ export default class Roster {
   }
 
   remove(player: Player): void {
-    const pos = player.pos;
+    this._positions[player.pos].remove(player);
+  }
 
-    this._positions[pos].remove(player);
+  removeMultiple(players: Player[]): void {
+    players.forEach((player: Player) => this.remove(player));
   }
 
   // returns a new list of starters
@@ -125,10 +128,15 @@ export default class Roster {
   }
 
   get playersToRenew(): Player[] {
+    return this.allPlayers.filter(
+      (player: Player) => player.contract.yearsLeft === 0
+    );
+  }
+
+  get size(): number {
     return this._positions.reduce(
-      (toRenew: Player[], currPos: Position) =>
-        toRenew.concat(currPos.playersToRenew),
-      []
+      (tot: number, curr: Position) => tot + curr.allPlayers.length,
+      0
     );
   }
 }
@@ -168,7 +176,11 @@ class Position {
     const idxAt = this._sortedPlayers.indexOf(player);
 
     if (idxAt === -1) {
-      throw new Error(`Given illegal player`);
+      throw new Error(
+        `Given player ${player.id} isn't in ${mapPlayerIds(
+          this._sortedPlayers
+        )}`
+      );
     }
 
     this._sortedPlayers.splice(idxAt, 1);

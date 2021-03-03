@@ -38,9 +38,13 @@ export default class Game {
     this._completed = false;
   }
 
-  simulate(): void {
+  sim(): boolean {
     if (this._completed) {
       throw Error("Game already played");
+    }
+
+    if (!this._homeTeam.roster.isValid() && !this._awayTeam.roster.isValid()) {
+      return false;
     }
 
     const result = simGame(
@@ -56,6 +60,8 @@ export default class Game {
     this._awayBoxScores = result.awayBoxScores;
 
     this._completed = true;
+
+    return true;
   }
 
   get scores(): number[] {
