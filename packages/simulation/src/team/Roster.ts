@@ -210,14 +210,17 @@ class Position {
     if (this._sortedPlayers.length === 0) {
       return player.rating;
     }
-    const topPlayerDiff = this._sortedPlayers[0].rating - 50;
 
     const sumOfRatings = this._sortedPlayers.reduce(
       (sum: number, curr: Player) => sum + curr.rating,
       0
     );
 
-    return player.rating - (topPlayerDiff * 2 + sumOfRatings);
+    const avgRating =
+      (sumOfRatings + this._sortedPlayers[0].rating) /
+      (this._sortedPlayers.length + 1);
+
+    return player.rating * 2 - avgRating;
   }
 
   get highestRated(): Player | null {

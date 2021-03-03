@@ -149,7 +149,7 @@ export default class Player {
   }
 
   get idealPay(): number {
-    return ((this.rating - 40) / 60) * 30e7;
+    return ((this.rating - 40) / 60) * 18;
   }
 
   get contract(): Contract {

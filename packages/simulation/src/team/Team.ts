@@ -57,7 +57,6 @@ export default class Team {
 
   addPlayer(player: Player): void {
     this._roster.add(player);
-    
   }
 
   removePlayer(player: Player): void {
@@ -90,8 +89,8 @@ export default class Team {
 
   pickFreeAgents(freeAgents: Player[]): Player[] {
     return freeAgents.filter((player: Player) => {
-      if (this.getPlayerValueRand(player) > 100) {
-        return this._cap.canAdd(player.idealPay);
+      if (this._cap.canAdd(player.idealPay)) {
+        return this.getPlayerValueRand(player) > 40;
       }
     });
   }
@@ -123,5 +122,9 @@ export default class Team {
 
   get name(): string {
     return this._name;
+  }
+
+  get cap(): CapSpace {
+    return this._cap;
   }
 }

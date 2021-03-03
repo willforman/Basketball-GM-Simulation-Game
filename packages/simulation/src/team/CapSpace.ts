@@ -2,7 +2,7 @@ export default class CapSpace {
   private _capacity: number;
   private _currPay: number;
 
-  constructor(capacity: number, currPay: number) {
+  constructor(currPay: number, capacity: number) {
     this._capacity = capacity;
     this._currPay = currPay;
   }

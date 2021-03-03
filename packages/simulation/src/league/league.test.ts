@@ -35,8 +35,13 @@ describe("Draft", () => {
 
 describe("Free Agency", () => {
   it("Simulates", () => {
+    const freeAgentsStartNum = league.freeAgents.players.length;
     league.advToFreeAgency();
     league.freeAgents.sim(league.teams);
+
+    expect(freeAgentsStartNum).toBeGreaterThan(
+      league.freeAgents.players.length
+    );
   });
 });
 
