@@ -7,16 +7,10 @@ import Playoffs from "./Playoffs";
 import FreeAgents from "./FreeAgents";
 import Draft from "./Draft";
 import Conferences from "./Conferences";
-
-enum State {
-  PRESEASON_DRAFT = "preseasonDraft",
-  PRESEASON_FREE_AGENCY = "preseasonFreeAgency",
-  REGULAR_SEASON = "regularSeason",
-  PLAYOFFS = "playoffs",
-}
+import { LeagueState, getNextState } from "./LeagueState";
 
 export default class League {
-  private _state: State;
+  private _state: LeagueState;
   private _year: number;
 
   //private _teams: Team[];
@@ -40,7 +34,7 @@ export default class League {
   constructor(genPlayerName: () => string, confNames: LeagueNames) {
     this._genPlayerName = genPlayerName;
 
-    this._state = State.REGULAR_SEASON;
+    this._state = LeagueState.REGULAR_SEASON;
     this._year = this.START_YEAR;
 
     this._playerID = 1;
@@ -63,7 +57,7 @@ export default class League {
   };
 
   advToDraft(): void {
-    this.advState(State.PLAYOFFS);
+    this._state = getNextState(this._state);
 
     if (!this._playoffs.completed) {
       throw new Error(`Playoffs aren't completed`);
@@ -79,7 +73,7 @@ export default class League {
   }
 
   advToFreeAgency(): void {
-    this.advState(State.PRESEASON_DRAFT);
+    this._state = getNextState(this._state);
 
     if (!this._draft.completed) {
       throw new Error(`Draft isn't completed`);
@@ -91,13 +85,13 @@ export default class League {
   }
 
   advToRegSeason(): void {
-    this.advState(State.PRESEASON_FREE_AGENCY);
+    this._state = getNextState(this._state);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
   }
 
   advToPlayoffs(): void {
-    this.advState(State.REGULAR_SEASON);
+    this._state = getNextState(this._state);
 
     if (!this._regularSeason.completed) {
       throw new Error(`Regular season isn't completed`);
@@ -112,29 +106,6 @@ export default class League {
       this._getPlayerId,
       nonPlayoffTeams
     );
-  }
-
-  private advState(wantedState: State): void {
-    if (wantedState !== this._state) {
-      throw new Error(
-        `Given state: ${this._state}, Desired state: ${wantedState}`
-      );
-    }
-
-    this._state = this.getNextState();
-  }
-
-  private getNextState(): State {
-    switch (this._state) {
-      case State.PRESEASON_DRAFT:
-        return State.PRESEASON_FREE_AGENCY;
-      case State.PRESEASON_FREE_AGENCY:
-        return State.REGULAR_SEASON;
-      case State.REGULAR_SEASON:
-        return State.PLAYOFFS;
-      case State.PLAYOFFS:
-        return State.PRESEASON_DRAFT;
-    }
   }
 
   // get functions
