@@ -6,7 +6,7 @@ export const getRandElem = <T>(arr: T[]): T => {
 
 export const pickRandElems = <T>(
   arr: T[],
-  shouldAdd: (elem: T) => boolean,
+  shouldAdd: (elemToAdd: T, currArr: T[]) => boolean,
   shouldReturn?: (arrToCheck: T[]) => boolean
 ): T[] => {
   const randOrder = arr.sort((a: T, b: T) => Math.random());
@@ -17,7 +17,7 @@ export const pickRandElems = <T>(
 
   const picked: T[] = [];
   for (let i = 0; i < arr.length; i++) {
-    if (shouldAdd(randOrder[i])) {
+    if (shouldAdd(randOrder[i], picked)) {
       picked.push(randOrder[i]);
     }
     if (shouldReturn(picked) === true) {

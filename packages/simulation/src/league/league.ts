@@ -53,7 +53,7 @@ export default class League {
   }
 
   triggerTrades = (): void => {
-    proposeTrades(this.teams);
+    //proposeTrades(this.teams);
   };
 
   advToDraft(): void {

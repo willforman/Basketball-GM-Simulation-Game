@@ -2,7 +2,7 @@ import Team from "../team/Team";
 import Player from "../player/Player";
 import { pickRandElems, oneInXOdds, mapPlayerIds } from "../services/funcs";
 import Roster from "./Roster";
-import { ROSTER_SIZE } from "../models";
+import { ROSTER_SIZE, MAX_CAP } from "../models";
 
 export const calcPlayersValue = (
   rosterEvaluating: Roster,
@@ -16,29 +16,58 @@ export const calcPlayersValue = (
 };
 
 export const getTradeGiving = (playersCanGive: Player[]): Player[] => {
-  return pickRandElems(playersCanGive, (p: Player) => oneInXOdds(7));
+  return pickRandElems(
+    playersCanGive,
+    (p: Player) => true,
+    (arr: Player[]) => Math.round(Math.random() * arr.length) === 1
+  );
+};
+
+const calcCap = (players: Player[]): number => {
+  return players.reduce(
+    (curr: number, player: Player) => curr + player.contract.price,
+    0
+  );
 };
 
 export const getTradeRecieving = (
-  playersGiving: Player[],
-  rosterGiving: Roster, // needed to evaluate the value of players giving
   playersCanRecieve: Player[],
-  maxPlayersCanRecieve: number
+  minPlayers: number,
+  maxPlayers: number,
+  minCap: number,
+  maxCap: number
 ): Player[] => {
-  const givingVal = calcPlayersValue(rosterGiving, playersGiving);
-
-  return pickRandElems(
+  const players = pickRandElems(
     playersCanRecieve,
-    (player: Player) => oneInXOdds(1),
+    (player: Player, players: Player[]) =>
+      players.length < maxPlayers &&
+      calcCap(players) + player.contract.price < maxCap,
     (playersRecieving: Player[]) => {
-      if (playersRecieving.length === maxPlayersCanRecieve) {
-        console.log(`max=${maxPlayersCanRecieve}`);
-        return true;
+      if (playersRecieving.length > minPlayers) {
+        const cap = playersRecieving.reduce(
+          (curr: number, player: Player) => curr + player.contract.price,
+          0
+        );
+        if (cap > minCap) {
+          return true;
+        }
       }
-      const receivingVal = calcPlayersValue(rosterGiving, playersRecieving);
-      return Math.random() * Math.abs(givingVal - receivingVal) < 5;
+      if (oneInXOdds(3)) {
+        playersRecieving.shift();
+      }
+      return false;
     }
   );
+
+  const cap = calcCap(players);
+
+  if (minPlayers <= players.length && players.length <= maxPlayers) {
+    if (minCap <= cap && cap <= maxCap) {
+      return players;
+    }
+  }
+
+  return [];
 };
 
 export const otherTeamAccept = (
@@ -46,32 +75,72 @@ export const otherTeamAccept = (
   playersGiving: Player[],
   playersRecieving: Player[]
 ): boolean => {
+  console.log(
+    `get=${calcPlayersValue(
+      otherTeam,
+      playersRecieving
+    )}, give=${calcPlayersValue(otherTeam, playersGiving)}`
+  );
   return (
     calcPlayersValue(otherTeam, playersRecieving) >
     calcPlayersValue(otherTeam, playersGiving)
   );
 };
 
+const getXOtherTeams = (
+  teams: Team[],
+  x: number,
+  teamCantPick: Team
+): Team[] => {
+  return pickRandElems(
+    teams,
+    (teamPicked: Team) => teamPicked !== teamCantPick,
+    (teams: Team[]) => teams.length === 3
+  );
+};
+
 export const proposeTrades = (teams: Team[]): void => {
   teams.forEach((teamTrading: Team) => {
-    const teamsTradingWith = pickRandElems(
-      teams,
-      (teamPicked: Team) => teamPicked !== teamTrading,
-      (teams: Team[]) => teams.length === 3
-    );
+    const teamsTradingWith = getXOtherTeams(teams, 3, teamTrading);
 
     teamsTradingWith.forEach((teamTradingWith: Team) => {
       const playersGiving = getTradeGiving(teamTrading.roster.allPlayers);
 
+      if (playersGiving.length === 0) {
+        return;
+      }
+
       const maxPlayersCanRecieve =
-        ROSTER_SIZE - playersGiving.length - teamTrading.roster.size;
+        ROSTER_SIZE - teamTrading.roster.size + playersGiving.length;
+
+      const maxCapCanRecieve =
+        MAX_CAP - teamTrading.roster.cap + calcCap(playersGiving);
+
+      const minPlayers =
+        playersGiving.length - (ROSTER_SIZE - teamTradingWith.roster.size);
+
+      const minCap =
+        calcCap(playersGiving) - (MAX_CAP - teamTradingWith.roster.cap);
+
+      console.log(
+        `Cap: min=${minCap} max=${maxCapCanRecieve}\nPlayers: min=${minPlayers} max=${maxPlayersCanRecieve}`
+      );
 
       const playersRecieving = getTradeRecieving(
-        playersGiving,
-        teamTrading.roster,
         teamTradingWith.roster.allPlayers,
-        maxPlayersCanRecieve
+        minPlayers,
+        maxPlayersCanRecieve,
+        minCap,
+        maxCapCanRecieve
       );
+
+      console.log("before");
+
+      if (playersRecieving.length === 0) {
+        return;
+      }
+
+      console.log("after");
 
       if (
         otherTeamAccept(teamTradingWith.roster, playersRecieving, playersGiving)
@@ -82,6 +151,18 @@ export const proposeTrades = (teams: Team[]): void => {
           playersGiving,
           playersRecieving
         );
+      }
+
+      console.log("trade complete");
+
+      if (
+        teamTrading.roster.size > ROSTER_SIZE ||
+        teamTradingWith.roster.size > ROSTER_SIZE
+      ) {
+        console.error(
+          `${teamTrading.roster.size}, ${teamTradingWith.roster.size}`
+        );
+        throw new Error("Illegal team sizes");
       }
     });
   });

@@ -10,6 +10,7 @@ export default class Roster {
   // 3: PF
   // 4: C
   private _positions: Position[];
+  private _cap: number;
 
   private _genPlayerName: () => string;
   private _getNextId: () => number; // increment player id number for league
@@ -22,6 +23,7 @@ export default class Roster {
     this._retire = (player: Player): void => this.remove(player);
 
     this._positions = [];
+    this._cap = 0;
 
     // create the position objs and gen players for them
     for (let i = 0; i < 5; i++) {
@@ -119,6 +121,13 @@ export default class Roster {
       0
     );
   }
+
+  get cap(): number {
+    return this._positions.reduce(
+      (tot: number, curr: Position) => tot + curr.cap,
+      0
+    );
+  }
 }
 
 class Position {
@@ -184,6 +193,13 @@ class Position {
 
   get allPlayers(): Player[] {
     return this._sortedPlayers;
+  }
+
+  get cap(): number {
+    return this._sortedPlayers.reduce(
+      (tot: number, curr: Player) => tot + curr.contract.price,
+      0
+    );
   }
 
   getSub(): Player {
