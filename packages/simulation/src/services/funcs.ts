@@ -1,6 +1,9 @@
 import Player from "../player/Player";
 
 export const getRandElem = <T>(arr: T[]): T => {
+  if (!arr) {
+    throw new Error("arr is undefined");
+  }
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
@@ -9,6 +12,10 @@ export const pickRandElems = <T>(
   shouldAdd: (elemToAdd: T, currArr: T[]) => boolean,
   shouldReturn?: (arrToCheck: T[]) => boolean
 ): T[] => {
+  if (!arr) {
+    throw new Error("Arr is undefined");
+  }
+
   const randOrder = arr.sort((a: T, b: T) => Math.random());
 
   if (!shouldReturn) {
