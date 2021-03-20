@@ -12,3 +12,5 @@ export const buildLeague = async (): Promise<League> => {
 };
 
 export default League;
+
+export * from "./team/Team";

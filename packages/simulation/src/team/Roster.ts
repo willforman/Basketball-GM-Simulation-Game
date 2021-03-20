@@ -128,6 +128,13 @@ export default class Roster {
       0
     );
   }
+
+  get rating(): number {
+    return this._positions.reduce(
+      (tot: number, pos: Position) => tot + pos.getAvgRating(this.size),
+      0
+    );
+  }
 }
 
 class Position {
@@ -256,5 +263,12 @@ class Position {
       return null;
     }
     return this._sortedPlayers[0];
+  }
+
+  getAvgRating(playerCount: number): number {
+    return this._sortedPlayers.reduce(
+      (tot: number, player: Player) => tot + player.rating / playerCount,
+      0
+    );
   }
 }

@@ -79,10 +79,12 @@ class Conference {
     this._teams = [];
     this._divisions = [];
 
+    let currId = 0;
+
     divsNames.forEach((div: DivNames) => {
       const divTeams = div.teams.reduce(
         (arr: Team[], curr: TeamNames) =>
-          arr.concat(new Team(curr, genPlayerName, getNextId)),
+          arr.concat(new Team(curr, genPlayerName, getNextId, currId++)),
         []
       );
       this._teams = this._teams.concat(divTeams);

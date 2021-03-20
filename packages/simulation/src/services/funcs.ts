@@ -2,7 +2,7 @@ import Player from "../player/Player";
 
 export const getRandElem = <T>(arr: T[]): T => {
   if (!arr) {
-    throw new Error("arr is undefined");
+    throw new Error("Arr is undefined in getRandElem");
   }
   return arr[Math.floor(Math.random() * arr.length)];
 };

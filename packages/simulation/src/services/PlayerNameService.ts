@@ -32,10 +32,10 @@ export default class PlayerNameGenService {
   }
 
   // return random first name and last name
-  getName(): string {
+  getName = (): string => {
     const fName = getRandElem(this.firstNames);
     const lName = getRandElem(this.lastNames);
 
     return `${fName} ${lName}`;
-  }
+  };
 }

@@ -9,6 +9,7 @@ export default class Team {
   private _name: string;
   private _location: string;
   private _abbreviation: string;
+  private _id: number;
 
   private _wins: number;
   private _losses: number;
@@ -22,11 +23,14 @@ export default class Team {
   constructor(
     names: TeamNames,
     genPlayerName: () => string,
-    getNextId: () => number
+    getNextId: () => number,
+    teamId: number
   ) {
     this._name = names.name;
     this._location = names.location;
     this._abbreviation = names.abbreviation;
+
+    this._id = teamId;
 
     this._wins = 0;
     this._losses = 0;
@@ -146,6 +150,10 @@ export default class Team {
 
   get name(): string {
     return this._name;
+  }
+
+  get id(): number {
+    return this._id;
   }
 
   get cap(): CapSpace {
