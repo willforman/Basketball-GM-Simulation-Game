@@ -9,12 +9,16 @@ export default class Conferences {
     genPlayerName: () => string,
     getNextId: () => number
   ) {
+    let currTeamId = 0;
+
+    const getTeamId = () => currTeamId++;
+
     this._conferences = [];
     this._conferences.push(
-      new Conference(confNames.east, genPlayerName, getNextId)
+      new Conference(confNames.east, genPlayerName, getNextId, getTeamId)
     );
     this._conferences.push(
-      new Conference(confNames.west, genPlayerName, getNextId)
+      new Conference(confNames.west, genPlayerName, getNextId, getTeamId)
     );
   }
 
@@ -74,17 +78,16 @@ class Conference {
   constructor(
     divsNames: DivNames[],
     genPlayerName: () => string,
-    getNextId: () => number
+    getNextId: () => number,
+    getTeamId: () => number
   ) {
     this._teams = [];
     this._divisions = [];
 
-    let currId = 0;
-
     divsNames.forEach((div: DivNames) => {
       const divTeams = div.teams.reduce(
         (arr: Team[], curr: TeamNames) =>
-          arr.concat(new Team(curr, genPlayerName, getNextId, currId++)),
+          arr.concat(new Team(curr, genPlayerName, getNextId, getTeamId())),
         []
       );
       this._teams = this._teams.concat(divTeams);

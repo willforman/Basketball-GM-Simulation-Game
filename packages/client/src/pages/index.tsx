@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import League, { buildLeague } from "@bball/simulation/src";
-import Team from "@bball/simulation/src";
+import League, { buildLeague, Team } from "@bball/simulation/src";
 
 const Index: React.FC = () => {
   const [league, setLeague] = useState<League>();
@@ -23,6 +22,8 @@ const Index: React.FC = () => {
     );
   } else {
     console.log(league);
+
+    const mapped = league.teams.map((team: Team) => team.id);
 
     return (
       <div>
