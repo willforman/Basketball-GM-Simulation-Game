@@ -1,9 +1,9 @@
-import Player from "../player/Player";
+import { Player } from "../player/Player";
 import { Choice } from "../models/Choice";
-import RandomSelector from "../services/RandomSelector";
+import { RandomSelector } from "../services/RandomSelector";
 import { mapPlayerIds } from "../services/funcs";
 
-export default class Roster {
+export class Roster {
   // 0: PG
   // 1: SG
   // 2: SF

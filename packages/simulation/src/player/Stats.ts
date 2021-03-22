@@ -1,6 +1,6 @@
 import { Move } from "../models";
 
-export default class Stats {
+export class Stats {
   // 0: inside shot
   // 1: mid shot
   // 2: three pt shot

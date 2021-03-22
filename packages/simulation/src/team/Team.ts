@@ -1,11 +1,12 @@
-import Player from "../player/Player";
-import Game from "../game/Game";
+import { Player } from "../player/Player";
+import { Game } from "../game/Game";
 import { TeamNames, Pick, MAX_CAP, ROSTER_SIZE } from "../models";
-import Roster from "./Roster";
-import DraftPicks from "./DraftPicks";
-import CapSpace from "./CapSpace";
 
-export default class Team {
+import { Roster } from "./Roster";
+import { DraftPicks } from "./DraftPicks";
+import { CapSpace } from "./CapSpace";
+
+export class Team {
   private _name: string;
   private _location: string;
   private _abbreviation: string;

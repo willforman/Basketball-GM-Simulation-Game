@@ -1,6 +1,6 @@
 import { Choice } from "../models";
 
-export default class RandomSelector<T> {
+export class RandomSelector<T> {
   private sum: number;
   private choices: Choice<T>[];
 

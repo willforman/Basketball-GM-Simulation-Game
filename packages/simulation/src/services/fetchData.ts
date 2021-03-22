@@ -4,7 +4,7 @@ interface ResponseGeneric<ResponseStructure> {
   payload: ResponseStructure;
 }
 
-export default async <ResponseStructure>(
+export const fetchData = async <ResponseStructure>(
   url: string
 ): Promise<ResponseGeneric<ResponseStructure>> => {
   const response = await fetch(url);

@@ -1,7 +1,7 @@
-import Player from "../player/Player";
+import { Player } from "../player/Player";
 import { Move, Location, locationArr } from "../models";
 
-export default class CourtLocations {
+export class CourtLocations {
   private _players: Player[];
   private _locs: Map<Location, Player[]>;
 

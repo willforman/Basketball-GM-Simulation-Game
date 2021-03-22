@@ -1,7 +1,7 @@
-import Team from "../team/Team";
+import { Team } from "../team/Team";
 import { TeamNames, LeagueNames, DivNames } from "../models";
 
-export default class Conferences {
+export class Conferences {
   private _conferences: Conference[];
 
   constructor(

@@ -1,8 +1,8 @@
-import Game from "../game/Game";
-import Team from "../team/Team";
+import { Game } from "../game/Game";
+import { Team } from "../team/Team";
 import { roundRobin } from "./scheduleGames";
 
-export default class RegularSeason {
+export class RegularSeason {
   private _weeks: Week[];
   private _weekIdx: number;
 

@@ -1,9 +1,9 @@
 import { Move, Location, GameResult } from "../models";
-import RandomSelector from "../services/RandomSelector";
-import Player from "../player/Player";
-import BoxScore from "./BoxScore";
-import CourtLocations from "./CourtLocations";
-import Team from "../team/Team";
+import { RandomSelector } from "../services/RandomSelector";
+import { Player } from "../player/Player";
+import { BoxScore } from "./BoxScore";
+import { CourtLocations } from "./CourtLocations";
+import { Team } from "../team/Team";
 
 const getReboundLocation: () => Location = new RandomSelector<Location>([
   { item: Location.PAINT, weight: 70 },
@@ -195,7 +195,7 @@ const playPossession = (
   };
 };
 
-export default (
+export const simGame = (
   homeTeam: Team,
   awayTeam: Team,
   quarterMins: number

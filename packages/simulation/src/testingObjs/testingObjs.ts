@@ -1,8 +1,8 @@
-import Game from "../game/Game";
-import League from "../league/League";
+import { Game } from "../game/Game";
+import { League } from "../league/League";
 import { TeamNames, LeagueNames, DivNames } from "../models";
-import Player from "../player/Player";
-import Team from "../team/Team";
+import { Player } from "../player/Player";
+import { Team } from "../team/Team";
 
 const genPlayerName = (): string => {
   return "Test Player";
@@ -51,7 +51,7 @@ const retire = (): void => {
 
 export const makeTeam = (teamNamesGiven?: TeamNames): Team => {
   const teamNames = teamNamesGiven ?? genTeamName();
-  return new Team(teamNames, genPlayerName, getId);
+  return new Team(teamNames, genPlayerName, getId, getId());
 };
 
 export const makeGame = (team1: Team, team2: Team): Game => {

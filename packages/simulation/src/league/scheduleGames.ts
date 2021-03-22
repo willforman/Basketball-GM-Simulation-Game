@@ -1,5 +1,5 @@
-import Team from "../team/Team";
-import Game from "../game/Game";
+import { Team } from "../team/Team";
+import { Game } from "../game/Game";
 
 export const roundRobin = (teamsPassed: Team[]): Game[][] => {
   const games: Game[][] = [];

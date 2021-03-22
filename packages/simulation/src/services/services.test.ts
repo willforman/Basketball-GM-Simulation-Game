@@ -1,7 +1,7 @@
 import { TeamNames } from "../models";
-import PlayerNameGenService from "./PlayerNameService";
-import RandomSelector from "./RandomSelector";
-import getTeamNames from "./getTeamNames";
+import { PlayerNameGenService } from "./PlayerNameService";
+import { RandomSelector } from "./RandomSelector";
+import { getTeamNames } from "./getTeamNames";
 
 describe("Team Name Service", () => {
   it("Generates team names", async () => {

@@ -1,4 +1,4 @@
-import fetchData from "./fetchData";
+import { fetchData } from "./fetchData";
 import { getRandElem } from "./funcs";
 
 interface FirstNameResponse {
@@ -7,7 +7,7 @@ interface FirstNameResponse {
 }
 
 // gets names for league
-export default class PlayerNameGenService {
+export class PlayerNameGenService {
   private firstNames: string[];
   private lastNames: string[];
 

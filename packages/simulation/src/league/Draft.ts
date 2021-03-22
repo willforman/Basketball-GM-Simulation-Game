@@ -1,8 +1,8 @@
-import Player from "../player/Player";
-import Team from "../team/Team";
+import { Player } from "../player/Player";
+import { Team } from "../team/Team";
 import { Pick, LEAGUE_SIZE } from "../models";
 
-export default class Draft {
+export class Draft {
   private _players: Player[];
   private _order: Team[];
 

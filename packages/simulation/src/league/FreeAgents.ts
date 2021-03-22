@@ -1,7 +1,7 @@
-import Player from "../player/Player";
-import Team from "../team/Team";
+import { Player } from "../player/Player";
+import { Team } from "../team/Team";
 
-export default class FreeAgents {
+export class FreeAgents {
   private _players: Player[];
 
   get START_NUM_FREE_AGENTS(): number {

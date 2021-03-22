@@ -1,7 +1,7 @@
-import Team from "./Team";
+import { Team } from "./Team";
 import { Pick } from "../models";
 
-export default class DraftPicks {
+export class DraftPicks {
   private _draftYears: DraftYear[];
   private _team: Team;
 

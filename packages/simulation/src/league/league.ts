@@ -1,15 +1,15 @@
-import Team from "../team/Team";
+import { Team } from "../team/Team";
 import { LeagueNames } from "../models";
 import { proposeTrades } from "../team/trade";
 
-import RegularSeason from "./RegularSeason";
-import Playoffs from "./Playoffs";
-import FreeAgents from "./FreeAgents";
-import Draft from "./Draft";
-import Conferences from "./Conferences";
+import { RegularSeason } from "./RegularSeason";
+import { Playoffs } from "./Playoffs";
+import { FreeAgents } from "./FreeAgents";
+import { Draft } from "./Draft";
+import { Conferences } from "./Conferences";
 import { LeagueState, getNextState } from "./LeagueState";
 
-export default class League {
+export class League {
   private _state: LeagueState;
   private _year: number;
 

@@ -1,9 +1,9 @@
-import BoxScore from "../game/BoxScore";
+import { BoxScore } from "../game/BoxScore";
 import { getStats } from "./statGen";
 import { Move, Location, Archetype, Contract } from "../models";
-import Stats from "./Stats";
+import { Stats } from "./Stats";
 
-export default class Player {
+export class Player {
   private _name: string;
   private _age: number;
   private _id: number;

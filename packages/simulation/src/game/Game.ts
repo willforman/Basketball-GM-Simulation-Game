@@ -1,9 +1,9 @@
-import Player from "../player/Player";
-import Team from "../team/Team";
-import BoxScore from "./BoxScore";
-import simGame from "./simGame";
+import { Player } from "../player/Player";
+import { Team } from "../team/Team";
+import { BoxScore } from "./BoxScore";
+import { simGame } from "./simGame";
 
-export default class Game {
+export class Game {
   private _homeTeam: Team;
   private _awayTeam: Team;
 

@@ -1,4 +1,4 @@
-export default class CapSpace {
+export class CapSpace {
   private _capacity: number;
   private _currPay: number;
 

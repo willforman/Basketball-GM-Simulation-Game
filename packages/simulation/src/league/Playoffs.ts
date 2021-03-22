@@ -1,5 +1,5 @@
-import Team from "../team/Team";
-import Game from "../game/Game";
+import { Team } from "../team/Team";
+import { Game } from "../game/Game";
 
 export const genPlayoffsNextRound = (confs: Team[][]): Round => {
   const confRounds = confs.map((conf: Team[]) => {
@@ -15,7 +15,7 @@ export const genPlayoffsNextRound = (confs: Team[][]): Round => {
   return new Round(confRounds);
 };
 
-export default class Playoffs {
+export class Playoffs {
   private _rounds: Round[];
   private _roundIdx: number;
   private _championship: PlayoffSeries;

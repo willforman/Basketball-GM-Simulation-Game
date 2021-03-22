@@ -1,6 +1,6 @@
 import { Move } from "../models";
 
-export default class BoxScore {
+export class BoxScore {
   private _title: string;
 
   // stats tracked in game

@@ -1,6 +1,6 @@
-import RandomSelector from "../services/RandomSelector";
+import { RandomSelector } from "../services/RandomSelector";
 import { Choice, Move, Location, moveArr, Archetype } from "../models";
-import Stats from "./Stats";
+import { Stats } from "./Stats";
 
 export interface StatsGen {
   archetype: Archetype;

@@ -1,7 +1,7 @@
-import Team from "../team/Team";
-import Player from "../player/Player";
+import { Team } from "../team/Team";
+import { Player } from "../player/Player";
 import { pickRandElems, oneInXOdds, mapPlayerIds } from "../services/funcs";
-import Roster from "./Roster";
+import { Roster } from "./Roster";
 import { ROSTER_SIZE, MAX_CAP } from "../models";
 
 export const calcPlayersValue = (
