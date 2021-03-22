@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import League, { buildLeague, Team } from "@bball/simulation/src";
+import { League, buildLeague, Team, Player } from "@bball/simulation/src";
 
 const Index: React.FC = () => {
   const [league, setLeague] = useState<League>();
@@ -21,10 +21,6 @@ const Index: React.FC = () => {
       </div>
     );
   } else {
-    console.log(league);
-
-    const mapped = league.teams.map((team: Team) => team.id);
-
     return (
       <div>
         <h1>League Loaded: yes</h1>
@@ -33,6 +29,11 @@ const Index: React.FC = () => {
             <li
               key={team.id}
             >{`Name = ${team.name}, rating = ${team.roster.rating}`}</li>
+          ))}
+        </ul>
+        <ul>
+          {league.teams[0].roster.allPlayers.map((player: Player) => (
+            <li key={player.id}>{player.name}</li>
           ))}
         </ul>
       </div>

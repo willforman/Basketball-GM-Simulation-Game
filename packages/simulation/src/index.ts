@@ -1,6 +1,6 @@
-import League from "./league/League";
-import PlayerNameGenService from "./services/PlayerNameService";
-import getTeamNames from "./services/getTeamNames";
+import { League } from "./league/League";
+import { PlayerNameGenService } from "./services/PlayerNameService";
+import { getTeamNames } from "./services/getTeamNames";
 
 export const buildLeague = async (): Promise<League> => {
   const ng = await PlayerNameGenService.build();
@@ -11,6 +11,7 @@ export const buildLeague = async (): Promise<League> => {
   return league;
 };
 
-export default League;
-
 export * from "./team/Team";
+export * from "./league/League";
+export * from "./player/Player";
+export * from "./game/Game";
