@@ -2,72 +2,70 @@ import React from "react";
 import {
   VStack,
   Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  Center,
 } from "@chakra-ui/react";
 
-const SideBarButton = () => {
+const SideBarButton: React.FC<{ onClick: () => void; text: string }> = ({
+  onClick,
+  text,
+}) => {
+  console.log(text);
   return (
     <Button
       _hover={{ backgroundColor: "purple.500" }}
       variant="ghost"
       borderRadius="0"
       width="100%"
-    ></Button>
+      onClick={onClick}
+    >
+      {text}
+    </Button>
   );
 };
 
-type NavGroupProps = {
-  overallName: string;
-  names: string[];
-};
-
-const NavGroup = (props: NavGroupProps) => {
+const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
+  overallName,
+  names,
+}) => {
   return (
     <VStack color="white" backgroundColor="purple.600" spacing="0" width="100%">
       <h1>
-        <b>{props.overallName}</b>
+        <b>{overallName}</b>
       </h1>
       <VStack backgroundColor="purple.600" spacing={-2} width="100%">
-        {props.names.map((name: string) => (
-          <Button
-            className="sidebar-button"
+        {names.map((name: string) => (
+          <SideBarButton
+            onClick={() => console.log(`${overallName.toLowerCase()}/${name}`)}
             key={name}
-            _hover={{ backgroundColor: "purple.500" }}
-            variant="ghost"
-            borderRadius="0"
-            width="100%"
-            onClick={() => console.log(`${props.overallName}/${name}`)}
-          >
-            {name}
-          </Button>
+            text={name}
+          ></SideBarButton>
         ))}
       </VStack>
     </VStack>
   );
 };
 
-type SimButtonProps = {
-  actions: string[];
-};
-
-const SimButton: React.FC<SimButtonProps> = (props: SimButtonProps) => {
+const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
   return (
     <Accordion allowToggle width="100%" borderColor="purple.600" color="white">
       <AccordionItem bg="purple.600">
-        <AccordionButton>
-          <b>sim</b>
-          <AccordionIcon color="white" />
+        <AccordionButton paddingLeft={0} paddingRight={0}>
+          <Center width="100%" bg="purple.600">
+            <b>sim</b>
+          </Center>
         </AccordionButton>
-        <AccordionPanel bg="purple.600" width="100%">
-          {props.actions.map((action: string) => (
+        <AccordionPanel
+          bg="purple.600"
+          width="100%"
+          paddingLeft={0}
+          paddingRight={0}
+        >
+          {actions.map((action: string) => (
             <Button
               key={action}
               _hover={{ backgroundColor: "purple.500" }}
