@@ -133,6 +133,10 @@ export class Team {
     return this._roster;
   }
 
+  get games(): Game[] {
+    return this._games;
+  }
+
   get abreviation(): string {
     return this._abbreviation;
   }

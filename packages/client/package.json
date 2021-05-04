@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "gatsby develop",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "build": "gatsby build"
   },
   "dependencies": {
     "@bball/simulation": "1.0.0",

@@ -2,11 +2,11 @@ import React from "react";
 import { Box, SimpleGrid } from "@chakra-ui/react";
 
 import Roster from "../../components/roster";
+import Schedule from "../../components/schedule";
 import { Team } from "@bball/simulation/src";
-import { LeagueContext, useLeague } from "../../context/league";
-import { Layout } from "../../components/layout";
+import { useLeague } from "../../context/league";
+import Layout from "../../components/layout";
 import { navigate } from "gatsby-link";
-import { assertLeague } from "../../util/assertLeague";
 
 const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
   const leagueContext = useLeague();
@@ -20,9 +20,8 @@ const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
 
   return (
     <Layout>
-      <SimpleGrid columns={2} spacing={10}>
-        <Roster team={team} starters={true}></Roster>
-      </SimpleGrid>
+      <Roster team={team} starters={true}></Roster>
+      <Schedule team={team} showGames={5}></Schedule>
     </Layout>
   );
 };

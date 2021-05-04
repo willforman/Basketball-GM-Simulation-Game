@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-} from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { Player, Team } from "@bball/simulation/src";
 
 const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
@@ -16,11 +8,12 @@ const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
 }) => {
   const players = starters ? team.roster.starters : team.roster.allPlayers;
   return (
-    <Table variant="simple" bg="white" size="sm">
+    <Table variant="simple" bg="white" size="sm" marginBottom="2">
       <Thead>
         <Tr>
           <Th>Name</Th>
           <Th>Rating</Th>
+          <Th>Pos</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -28,6 +21,7 @@ const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
           <Tr key={player.id}>
             <Td>{player.name}</Td>
             <Td>{player.rating}</Td>
+            <Td>{player.pos}</Td>
           </Tr>
         ))}
       </Tbody>

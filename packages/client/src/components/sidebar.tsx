@@ -90,7 +90,7 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
 export const SideBar: React.FC = () => {
   return (
     <VStack
-      width="140px"
+      width="100%"
       height="100vh"
       backgroundColor="purple.600"
       spacing={5}

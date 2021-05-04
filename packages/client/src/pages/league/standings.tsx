@@ -1,7 +1,8 @@
 import React from "react";
+import Layout from "../../components/layout";
 
 const Standings: React.FC = () => {
-  return <div>Standings</div>;
+  return <Layout>Standings</Layout>;
 };
 
 export default Standings;
