@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { League } from "@bball/simulation/src";
 
-type LeagueContextType = {
+export type LeagueContextType = {
   league: League | null;
   setLeague: (league: League) => void;
 };

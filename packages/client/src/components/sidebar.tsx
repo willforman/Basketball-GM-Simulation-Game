@@ -8,7 +8,10 @@ import {
   AccordionIcon,
   AccordionPanel,
   Center,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
+
+import { Link as GatsbyLink } from "gatsby";
 
 const SideBarButton: React.FC<{ onClick: () => void; text: string }> = ({
   onClick,
@@ -34,16 +37,18 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
 }) => {
   return (
     <VStack color="white" backgroundColor="purple.600" spacing="0" width="100%">
-      <h1>
+      <ChakraLink as={GatsbyLink} to={`/${overallName}/`}>
         <b>{overallName}</b>
-      </h1>
+      </ChakraLink>
       <VStack backgroundColor="purple.600" spacing={-2} width="100%">
         {names.map((name: string) => (
-          <SideBarButton
-            onClick={() => console.log(`${overallName.toLowerCase()}/${name}`)}
+          <ChakraLink
+            as={GatsbyLink}
+            to={`/${overallName}/${name}/`}
             key={name}
-            text={name}
-          ></SideBarButton>
+          >
+            {name}
+          </ChakraLink>
         ))}
       </VStack>
     </VStack>
@@ -84,13 +89,15 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
 
 export const SideBar: React.FC = () => {
   return (
-    <VStack width="140px" backgroundColor="purple.600" spacing={5}>
+    <VStack
+      width="140px"
+      height="100vh"
+      backgroundColor="purple.600"
+      spacing={5}
+    >
       <SimButton actions={["1 game", "season"]}></SimButton>
-      <NavGroup
-        overallName={"LEAGUE"}
-        names={["standings", "playoffs"]}
-      ></NavGroup>
-      <NavGroup overallName={"TEAM"} names={["roster", "schedule"]}></NavGroup>
+      <NavGroup overallName={"league"} names={["standings"]}></NavGroup>
+      <NavGroup overallName={"team"} names={["roster"]}></NavGroup>
     </VStack>
   );
 };

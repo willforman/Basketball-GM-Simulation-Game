@@ -10,19 +10,24 @@ import {
 } from "@chakra-ui/react";
 import { Player, Team } from "@bball/simulation/src";
 
-const Roster: React.FC<{ team: Team }> = ({ team }) => {
+const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
+  team,
+  starters,
+}) => {
+  const players = starters ? team.roster.starters : team.roster.allPlayers;
   return (
-    <Table variant="simple">
-      <TableCaption>Roster for {team.name}</TableCaption>
+    <Table variant="simple" bg="white" size="sm">
       <Thead>
         <Tr>
           <Th>Name</Th>
+          <Th>Rating</Th>
         </Tr>
       </Thead>
       <Tbody>
-        {team.roster.allPlayers.map((player: Player) => (
-          <Tr>
+        {players.map((player: Player) => (
+          <Tr key={player.id}>
             <Td>{player.name}</Td>
+            <Td>{player.rating}</Td>
           </Tr>
         ))}
       </Tbody>
