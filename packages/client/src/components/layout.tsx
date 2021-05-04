@@ -1,12 +1,16 @@
 import React from "react";
 import "./layout.css";
+import { SideBar } from "./sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = (props) => {
-  return <div>{props.children}</div>;
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
+  return (
+    <>
+      <SideBar></SideBar>
+      <main>{children}</main>
+    </>
+  );
 };
-
-export default Layout;
