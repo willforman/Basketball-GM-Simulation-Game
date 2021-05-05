@@ -19,7 +19,7 @@ const Schedule: React.FC<ScheduleProps> = ({ team, showGames }) => {
       </Thead>
       <Tbody>
         {games.map((game) => (
-          <Tr>
+          <Tr key={game.title}>
             <Td>{game.title}</Td>
           </Tr>
         ))}
