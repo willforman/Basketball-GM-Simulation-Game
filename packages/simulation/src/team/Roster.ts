@@ -12,13 +12,13 @@ export class Roster {
   private _positions: Position[];
   private _cap: number;
 
-  private _genPlayerName: () => string;
-  private _getNextId: () => number; // increment player id number for league
+  private _genPlayer: (pos: number, retire: (player: Player) => void) => Player;
   private _retire: (player: Player) => void;
 
-  constructor(genPlayerName: () => string, getNextId: () => number) {
-    this._genPlayerName = genPlayerName;
-    this._getNextId = getNextId;
+  constructor(
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player
+  ) {
+    this._genPlayer = genPlayer;
 
     this._retire = (player: Player): void => this.remove(player);
 
@@ -27,24 +27,14 @@ export class Roster {
 
     // create the position objs and gen players for them
     for (let i = 0; i < 5; i++) {
-      const starter = new Player(
-        this._genPlayerName(),
-        this._getNextId(),
-        i,
-        this._retire
-      );
+      const starter = genPlayer(i, this._retire);
       this._positions.push(new Position(starter));
     }
 
     // generate 10 random players and add them
     for (let i = 0; i < 10; i++) {
       const pos = Math.floor(Math.random() * 6);
-      const player = new Player(
-        this._genPlayerName(),
-        this._getNextId(),
-        pos,
-        this._retire
-      );
+      const player = genPlayer(pos, this._retire);
       this.add(player);
     }
   }

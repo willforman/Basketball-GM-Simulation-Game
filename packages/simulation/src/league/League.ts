@@ -7,6 +7,7 @@ import { Playoffs } from "./Playoffs";
 import { FreeAgents } from "./FreeAgents";
 import { Draft } from "./Draft";
 import { Conferences } from "./Conferences";
+import { Player } from "../player/Player";
 import { LeagueState, getNextState } from "./LeagueState";
 
 export class League {
@@ -23,6 +24,7 @@ export class League {
   private _draft: Draft;
 
   private _playerID: number;
+  private _players: Player[];
 
   private _genPlayerName: () => string;
   private _getPlayerId: () => number;
@@ -39,13 +41,18 @@ export class League {
 
     this._playerID = 1;
 
+    let playerID = 1;
+    this._players = [];
+
+    const genPlayer = (pos: number, retire: (player: Player) => void) => {
+      const player = new Player(genPlayerName(), playerID++, pos, retire);
+      this._players.push(player);
+      return player;
+    };
+
     this._getPlayerId = () => this._playerID++;
 
-    this._conferences = new Conferences(
-      confNames,
-      genPlayerName,
-      this._getPlayerId
-    );
+    this._conferences = new Conferences(confNames, genPlayer);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 

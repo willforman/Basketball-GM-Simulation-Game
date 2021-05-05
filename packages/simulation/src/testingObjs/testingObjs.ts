@@ -45,13 +45,17 @@ const getId = (): number => {
   return id++;
 };
 
-const retire = (): void => {
+const retire = (player: Player): void => {
   1 + 1;
+};
+
+const mockGenPlayer = (pos: number, retire: (player: Player) => void) => {
+  return new Player(genPlayerName(), getId(), pos, retire);
 };
 
 export const makeTeam = (teamNamesGiven?: TeamNames): Team => {
   const teamNames = teamNamesGiven ?? genTeamName();
-  return new Team(teamNames, genPlayerName, getId, getId());
+  return new Team(teamNames, mockGenPlayer, getId());
 };
 
 export const makeGame = (team1: Team, team2: Team): Game => {

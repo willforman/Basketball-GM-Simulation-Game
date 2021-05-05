@@ -23,8 +23,7 @@ export class Team {
 
   constructor(
     names: TeamNames,
-    genPlayerName: () => string,
-    getNextId: () => number,
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player,
     teamId: number
   ) {
     this._name = names.name;
@@ -38,7 +37,7 @@ export class Team {
 
     this._games = [];
 
-    this._roster = new Roster(genPlayerName, getNextId);
+    this._roster = new Roster(genPlayer);
 
     this._picks = new DraftPicks(this);
     const currPay = this._roster.allPlayers.reduce(
