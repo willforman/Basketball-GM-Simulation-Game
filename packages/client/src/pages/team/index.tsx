@@ -1,5 +1,4 @@
-import React from "react";
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 
 import Roster from "../../components/roster";
 import Schedule from "../../components/schedule";
@@ -11,8 +10,15 @@ import { navigate } from "gatsby-link";
 const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
   const leagueContext = useLeague();
 
+  // if navigated to this page without a league, will go back
+  // to create league page
+  useEffect(() => {
+    if (leagueContext.league == null) {
+      navigate("/");
+    }
+  });
+
   if (leagueContext.league == null) {
-    navigate("/");
     return <div></div>;
   }
 
