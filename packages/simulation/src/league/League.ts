@@ -23,40 +23,35 @@ export class League {
   private _freeAgents: FreeAgents;
   private _draft: Draft;
 
-  private _playerID: number;
   private _players: Player[];
-
-  private _genPlayerName: () => string;
-  private _getPlayerId: () => number;
+  private _genPlayer: (pos: number, retire: (player: Player) => void) => Player;
 
   get START_YEAR(): number {
     return 2021;
   }
 
   constructor(genPlayerName: () => string, confNames: LeagueNames) {
-    this._genPlayerName = genPlayerName;
-
     this._state = LeagueState.REGULAR_SEASON;
     this._year = this.START_YEAR;
 
-    this._playerID = 1;
-
-    let playerID = 1;
     this._players = [];
 
+    let playerID = 0;
+    const getPlayerID = (): number => {
+      return playerID++;
+    };
+
     const genPlayer = (pos: number, retire: (player: Player) => void) => {
-      const player = new Player(genPlayerName(), playerID++, pos, retire);
+      const player = new Player(genPlayerName(), getPlayerID(), pos, retire);
       this._players.push(player);
       return player;
     };
-
-    this._getPlayerId = () => this._playerID++;
 
     this._conferences = new Conferences(confNames, genPlayer);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
-    this._freeAgents = new FreeAgents(this._getPlayerId, genPlayerName);
+    this._freeAgents = new FreeAgents(getPlayerID, genPlayerName);
   }
 
   triggerTrades = (): void => {
@@ -108,11 +103,7 @@ export class League {
       this._conferences.nonPlayoffTeams[1]
     );
     this._playoffs = new Playoffs(this._conferences.playoffTeams);
-    this._draft = new Draft(
-      this._genPlayerName,
-      this._getPlayerId,
-      nonPlayoffTeams
-    );
+    this._draft = new Draft(this._genPlayer, nonPlayoffTeams);
   }
 
   // get functions
@@ -146,5 +137,9 @@ export class League {
 
   get teams(): Team[] {
     return this._conferences.allTeams;
+  }
+
+  get players(): Player[] {
+    return this._players;
   }
 }

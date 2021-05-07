@@ -15,8 +15,7 @@ export class Draft {
   }
 
   constructor(
-    genName: () => string,
-    getId: () => number,
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player,
     nonPlayoffTeams: Team[]
   ) {
     this._players = [];
@@ -27,7 +26,7 @@ export class Draft {
     };
 
     for (let i = 0; i < this.DRAFT_NUM_PLAYERS; i++) {
-      this._players.push(new Player(genName(), getId(), -1, retire, true));
+      this._players.push(genPlayer(-1, retire));
     }
 
     this._players.sort((a: Player, b: Player) => a.playerComp(b));

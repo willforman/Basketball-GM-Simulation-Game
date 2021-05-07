@@ -4,7 +4,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 const Stats: React.FC<{ player: Player }> = ({ player }) => {
   return (
-    <Table variant="simple">
+    <Table variant="simple" size="sm">
       <Thead>
         <Tr>
           <Th>Rating</Th>

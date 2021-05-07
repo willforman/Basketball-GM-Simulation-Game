@@ -8,21 +8,21 @@ import Layout from "../../components/layout";
 import { navigate } from "gatsby-link";
 
 const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
-  const leagueContext = useLeague();
+  const { league } = useLeague();
 
   // if navigated to this page without a league, will go back
   // to create league page
   useEffect(() => {
-    if (leagueContext.league == null) {
+    if (league == null) {
       navigate("/");
     }
   });
 
-  if (leagueContext.league == null) {
+  if (league == null) {
     return <div></div>;
   }
 
-  team = team ?? leagueContext.league.teams[0];
+  team = team ?? league.teams[0];
 
   return (
     <Layout>
