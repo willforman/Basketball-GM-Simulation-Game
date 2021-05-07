@@ -1,4 +1,5 @@
 import { Team } from "../team/Team";
+import { Player } from "../player/Player";
 import { TeamNames, LeagueNames, DivNames } from "../models";
 
 export class Conferences {
@@ -6,8 +7,7 @@ export class Conferences {
 
   constructor(
     confNames: LeagueNames,
-    genPlayerName: () => string,
-    getNextId: () => number
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player
   ) {
     let currTeamId = 0;
 
@@ -15,10 +15,10 @@ export class Conferences {
 
     this._conferences = [];
     this._conferences.push(
-      new Conference(confNames.east, genPlayerName, getNextId, getTeamId)
+      new Conference(confNames.east, genPlayer, getTeamId)
     );
     this._conferences.push(
-      new Conference(confNames.west, genPlayerName, getNextId, getTeamId)
+      new Conference(confNames.west, genPlayer, getTeamId)
     );
   }
 
@@ -77,8 +77,7 @@ class Conference {
 
   constructor(
     divsNames: DivNames[],
-    genPlayerName: () => string,
-    getNextId: () => number,
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player,
     getTeamId: () => number
   ) {
     this._teams = [];
@@ -87,7 +86,7 @@ class Conference {
     divsNames.forEach((div: DivNames) => {
       const divTeams = div.teams.reduce(
         (arr: Team[], curr: TeamNames) =>
-          arr.concat(new Team(curr, genPlayerName, getNextId, getTeamId())),
+          arr.concat(new Team(curr, genPlayer, getTeamId())),
         []
       );
       this._teams = this._teams.concat(divTeams);
