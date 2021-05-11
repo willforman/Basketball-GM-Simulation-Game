@@ -10689,6 +10689,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-nba-logos@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-nba-logos/-/react-nba-logos-1.1.0.tgz#9b1f3f2c21ae6d428e34c65a03e354bf5f8019ae"
+  integrity sha512-E04WZaGC8gtYldLaueo/VD4MR5cmeg1DFH0FeRUkgJNfjXou51FmydQr+iDFip63okGI9z8HvB1pddVLpGT44Q==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-refresh@^0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.9.0.tgz#71863337adc3e5c2f8a6bfddd12ae3bfe32aafbf"

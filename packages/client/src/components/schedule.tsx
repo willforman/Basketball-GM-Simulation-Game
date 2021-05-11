@@ -10,17 +10,21 @@ type ScheduleProps = {
 const Schedule: React.FC<ScheduleProps> = ({ team, showGames }) => {
   const games = team.games.slice(0, showGames);
 
+  console.log(games);
+
   return (
-    <Table bg="white" size="sm">
+    <Table bg="white" size="sm" color="black">
       <Thead>
         <Tr>
           <Th>Game Title</Th>
+          <Th>Score</Th>
         </Tr>
       </Thead>
       <Tbody>
         {games.map((game) => (
           <Tr key={game.title}>
             <Td>{game.title}</Td>
+            <Td>{`${game.scores[0]} - ${game.scores[0]}`}</Td>
           </Tr>
         ))}
       </Tbody>

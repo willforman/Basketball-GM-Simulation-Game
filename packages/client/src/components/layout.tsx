@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
 import "./layout.css";
 import { SideBar } from "./sidebar";
 
@@ -9,9 +9,9 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <Grid templateColumns="120px auto" gap={4}>
+    <Grid templateColumns="120px auto">
       <SideBar></SideBar>
-      <main>{children}</main>
+      <Box margin="30">{children}</Box>
     </Grid>
   );
 };
