@@ -17,12 +17,14 @@ const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
 }) => {
   const players = starters ? team.roster.starters : team.roster.allPlayers;
   return (
-    <Table variant="simple" bg="white" size="sm" marginBottom="2" color="black">
+    <Table variant="simple" bg="white" size="sm" color="black">
       <Thead>
         <Tr>
           <Th>Name</Th>
+          <Th>Position</Th>
           <Th>Rating</Th>
-          <Th>Pos</Th>
+          <Th>Potential</Th>
+          <Th>Contract</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -33,8 +35,10 @@ const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
                 {player.name}
               </ChakraLink>
             </Td>
-            <Td>{player.rating}</Td>
             <Td>{player.pos}</Td>
+            <Td>{player.rating}</Td>
+            <Td>{player.potential}</Td>
+            <Td>{`${player.contract.price.toFixed(2)}M`}</Td>
           </Tr>
         ))}
       </Tbody>

@@ -17,3 +17,4 @@ export * from "./player/Player";
 export * from "./game/Game";
 export { PlayerNameGenService } from "./services/PlayerNameService";
 export { getTeamNames } from "./services/getTeamNames";
+export * from "./models/consts";

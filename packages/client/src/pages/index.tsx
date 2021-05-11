@@ -15,7 +15,7 @@ const Index: React.FC<{ leagueErr: boolean }> = ({ leagueErr }) => {
   const leagueContext = useLeague();
 
   return (
-    <Box height="100vh">
+    <Box height="100vh" bg="#1a202c" color="white">
       <Center>
         <VStack margin="30vh">
           <Text fontWeight="extrabold" fontSize="5xl">

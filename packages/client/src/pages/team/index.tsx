@@ -6,6 +6,8 @@ import { Team } from "@bball/simulation/src";
 import { useLeague } from "../../context/league";
 import Layout from "../../components/layout";
 import { navigate } from "gatsby-link";
+import { Grid, GridItem } from "@chakra-ui/layout";
+import TeamInfo from "../../components/teamInfo";
 
 const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
   const { league } = useLeague();
@@ -26,8 +28,17 @@ const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
 
   return (
     <Layout>
-      <Roster team={team} starters={true}></Roster>
-      <Schedule team={team} showGames={5}></Schedule>
+      <Grid templateColumns="repeat(3, 1fr)" gap={4} m={10} rowGap={10}>
+        <GridItem>
+          <TeamInfo team={team} />
+        </GridItem>
+        <GridItem colSpan={2}>
+          <Schedule team={team} showGames={5} />
+        </GridItem>
+        <GridItem colSpan={3}>
+          <Roster team={team} starters={true}></Roster>
+        </GridItem>
+      </Grid>
     </Layout>
   );
 };
