@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Grid } from "@chakra-ui/react";
-import "./layout.css";
 import { SideBar } from "./sidebar";
 
 interface LayoutProps {
