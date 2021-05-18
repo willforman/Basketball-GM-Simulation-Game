@@ -1,7 +1,8 @@
 export const colors = {
   bball: {
-    main: "purple.600",
-    main_light: "purple.500",
+    main: "#6B46C1",
+    mainLight: "#805AD5",
     background: "#1a202c",
+    test: "#eb4034",
   },
 };
