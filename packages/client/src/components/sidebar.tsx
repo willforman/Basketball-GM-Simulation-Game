@@ -5,7 +5,6 @@ import {
   Accordion,
   AccordionItem,
   AccordionButton,
-  AccordionIcon,
   AccordionPanel,
   Center,
   Link as ChakraLink,
