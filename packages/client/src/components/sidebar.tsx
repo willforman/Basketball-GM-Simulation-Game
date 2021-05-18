@@ -9,27 +9,10 @@ import {
   AccordionPanel,
   Center,
   Link as ChakraLink,
+  Text,
 } from "@chakra-ui/react";
 
 import { Link as GatsbyLink } from "gatsby";
-
-const SideBarButton: React.FC<{ onClick: () => void; text: string }> = ({
-  onClick,
-  text,
-}) => {
-  console.log(text);
-  return (
-    <Button
-      _hover={{ backgroundColor: "purple.500" }}
-      variant="ghost"
-      borderRadius="0"
-      width="100%"
-      onClick={onClick}
-    >
-      {text}
-    </Button>
-  );
-};
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -103,6 +86,9 @@ export const SideBar: React.FC = () => {
       <SimButton actions={["1 game", "Season"]}></SimButton>
       <NavGroup overallName={"League"} names={["Standings"]}></NavGroup>
       <NavGroup overallName={"Team"} names={["Roster"]}></NavGroup>
+      <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">
+        <Text>Github</Text>
+      </ChakraLink>
     </VStack>
   );
 };
