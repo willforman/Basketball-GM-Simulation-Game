@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Table,
+  TableContainer,
   Thead,
   Tbody,
   Tr,
@@ -11,38 +12,45 @@ import {
 import { Player, Team } from "@bball/simulation/src";
 import { Link as GatsbyLink } from "gatsby";
 
-const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
+const Roster: React.FC<{ team: Team; showAllPlayers?: boolean }> = ({
   team,
-  starters,
+  showAllPlayers,
 }) => {
-  const players = starters ? team.roster.starters : team.roster.allPlayers;
+  const players = team.roster.starters;
+
+  if (showAllPlayers) {
+    players.push(...team.roster.bench);
+  }
+
   return (
-    <Table variant="simple" bg="white" size="sm" color="black">
-      <Thead>
-        <Tr>
-          <Th>Name</Th>
-          <Th>Position</Th>
-          <Th>Rating</Th>
-          <Th>Potential</Th>
-          <Th>Contract</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {players.map((player: Player) => (
-          <Tr key={player.id}>
-            <Td>
-              <ChakraLink as={GatsbyLink} to="/player/" state={{ player }}>
-                {player.name}
-              </ChakraLink>
-            </Td>
-            <Td>{player.pos}</Td>
-            <Td>{player.rating}</Td>
-            <Td>{player.potential}</Td>
-            <Td>{`${player.contract.price.toFixed(2)}M`}</Td>
+    <TableContainer>
+      <Table bg="bball.background_light">
+        <Thead>
+          <Tr>
+            <Th color="gray.400">Name</Th>
+            <Th>Position</Th>
+            <Th>Rating</Th>
+            <Th>Potential</Th>
+            <Th>Contract</Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
+        </Thead>
+        <Tbody>
+          {players.map((player: Player) => (
+            <Tr key={player.id}>
+              <Td>
+                <ChakraLink as={GatsbyLink} to="/player/" state={{ player }}>
+                  {player.name}
+                </ChakraLink>
+              </Td>
+              <Td>{player.posStr}</Td>
+              <Td>{player.rating}</Td>
+              <Td>{player.potential}</Td>
+              <Td>{`${player.contract.price.toFixed(2)}M`}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
   );
 };
 

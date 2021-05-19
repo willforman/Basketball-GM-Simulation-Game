@@ -13,15 +13,49 @@ export default extendTheme({
     global: {
       body: {
         color: "white",
-        bg: "bball.background",
       },
     },
   },
   components: {
+    Table: {
+      variants: {
+        dark: {
+          bg: "red",
+          th: {
+            color: "gray.400",
+            borderBottom: "1px",
+            borderColor: "gray.800",
+          },
+          td: {
+            color: "white",
+            fontWeight: "bold",
+            borderBottom: "1px",
+            borderColor: "gray.800",
+          },
+        },
+      },
+      defaultProps: {
+        size: "sm",
+        variant: "dark",
+      },
+    },
     Text: {
       baseStyle: {
         fontWeight: "bold",
       },
     },
+
+    // Table: {
+    //   baseStyle: {
+    //     color: "blue",
+    //     bg: "white",
+    //   },
+    // },
+    // Td: {
+    //   baseStyle: {
+    //     color: "yellow",
+    //     bg: "green",
+    //   },
+    // },
   },
 });

@@ -31,7 +31,7 @@ const RosterComp: React.FC<{ team: Team }> = ({ team }) => {
           2
         )} M / $${MAX_CAP} M`}</Text>
       </Box>
-      <Roster team={team}></Roster>
+      <Roster team={team} showAllPlayers></Roster>
     </Layout>
   );
 };
