@@ -11,13 +11,18 @@ import {
 import { Player, Team } from "@bball/simulation/src";
 import { Link as GatsbyLink } from "gatsby";
 
-const Roster: React.FC<{ team: Team; starters?: boolean }> = ({
+const Roster: React.FC<{ team: Team; showAllPlayers?: boolean }> = ({
   team,
-  starters,
+  showAllPlayers,
 }) => {
-  const players = starters ? team.roster.starters : team.roster.allPlayers;
+  const players = team.roster.starters;
+
+  if (showAllPlayers) {
+    players.push(...team.roster.bench);
+  }
+
   return (
-    <Table variant="simple" bg="white" size="sm" color="black">
+    <Table>
       <Thead>
         <Tr>
           <Th>Name</Th>

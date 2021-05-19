@@ -66,8 +66,21 @@ export class Roster {
     return this._positions[pos].starter;
   }
 
-  getBench(pos: number): Player[] {
+  getBenchPos(pos: number): Player[] {
     return this._positions[pos].bench;
+  }
+
+  get bench(): Player[] {
+    const players: Player[] = [];
+    this._positions.forEach((pos: Position) => {
+      pos.allPlayers.forEach((player: Player) => {
+        if (player !== pos.starter) {
+          players.push(player);
+        }
+      });
+    });
+
+    return players;
   }
 
   get starters(): Player[] {
