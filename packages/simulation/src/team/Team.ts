@@ -163,4 +163,8 @@ export class Team {
   get cap(): CapSpace {
     return this._cap;
   }
+
+  get winPct(): number {
+    return +(this._wins / (this._wins + this._losses)).toFixed(3);
+  }
 }
