@@ -9,4 +9,8 @@ export default extendTheme({
   components: {
     Text,
   },
+  config: {
+    useSystemColorMode: false,
+    initialColorMode: "dark",
+  },
 });
