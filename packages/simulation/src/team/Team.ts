@@ -165,6 +165,7 @@ export class Team {
   }
 
   get winPct(): number {
-    return +(this._wins / (this._wins + this._losses)).toFixed(3);
+    if (this._wins + this._losses === 0) return 0;
+    return this._wins / (this._wins + this._losses);
   }
 }

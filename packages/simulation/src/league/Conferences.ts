@@ -69,6 +69,14 @@ export class Conferences {
       this._conferences[0].nonPlayoffTeams,
     ];
   }
+
+  sortTeams(teams: Team[]): Team[] {
+    return teams.sort((a: Team, b: Team) => a.winPct - b.winPct);
+  }
+
+  get standings(): [Team[], Team[]] {
+    return [this.sortTeams(this.eastTeams), this.sortTeams(this.westTeams)];
+  }
 }
 
 class Conference {
