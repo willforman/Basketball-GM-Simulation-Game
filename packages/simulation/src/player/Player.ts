@@ -166,7 +166,7 @@ export class Player {
   }
 
   get idealPay(): number {
-    return ((this.rating - 40) / 60) * 18;
+    return Math.pow(this.rating / 25, 3);
   }
 
   get contract(): Contract {
