@@ -1,12 +1,27 @@
 import { extendTheme } from "@chakra-ui/react";
-import { colors } from "./colors";
-import { styles } from "./styles";
-import { Text } from "./components/text";
 
 export default extendTheme({
-  colors,
-  styles,
+  colors: {
+    bball: {
+      main: "#6B46C1",
+      main_light: "#805AD5",
+      background: "#1a202c",
+      background_light: "#011627",
+    },
+  },
+  styles: {
+    global: {
+      body: {
+        color: "white",
+        bg: "bball.background",
+      },
+    },
+  },
   components: {
-    Text,
+    Text: {
+      baseStyle: {
+        fontWeight: "bold",
+      },
+    },
   },
 });
