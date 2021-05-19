@@ -36,7 +36,7 @@ const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
           <Schedule team={team} showGames={5} />
         </GridItem>
         <GridItem colSpan={3}>
-          <Roster team={team} starters={true}></Roster>
+          <Roster team={team} starters={true} />
         </GridItem>
       </Grid>
     </Layout>

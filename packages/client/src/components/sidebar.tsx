@@ -82,9 +82,9 @@ export const SideBar: React.FC = () => {
       backgroundColor="purple.600"
       spacing={5}
     >
-      <SimButton actions={["1 game", "Season"]}></SimButton>
-      <NavGroup overallName={"League"} names={["Standings"]}></NavGroup>
-      <NavGroup overallName={"Team"} names={["Roster"]}></NavGroup>
+      <SimButton actions={["1 game", "Season"]} />
+      <NavGroup overallName={"League"} names={["Standings"]} />
+      <NavGroup overallName={"Team"} names={["Roster"]} />
       <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">
         <Text>Github</Text>
       </ChakraLink>

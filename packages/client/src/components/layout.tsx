@@ -9,7 +9,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <Grid templateColumns="120px auto">
-      <SideBar></SideBar>
+      <SideBar />
       <Box margin="30">{children}</Box>
     </Grid>
   );
