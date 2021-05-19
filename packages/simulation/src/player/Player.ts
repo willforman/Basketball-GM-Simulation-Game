@@ -143,6 +143,23 @@ export class Player {
     return this._pos;
   }
 
+  get posStr(): string {
+    switch (this._pos) {
+      case 0:
+        return "PG";
+      case 1:
+        return "SG";
+      case 2:
+        return "SF";
+      case 3:
+        return "PF";
+      case 4:
+        return "C";
+      default:
+        throw new Error(`Invalid pos: ${this._pos}`);
+    }
+  }
+
   // used for determining weight of getting subbed into game
   getSubOdds(): number {
     return Math.max(this.rating - 40, 10);
