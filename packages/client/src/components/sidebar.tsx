@@ -18,7 +18,7 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   names,
 }) => {
   return (
-    <VStack color="white" backgroundColor="purple.600" spacing="0" width="100%">
+    <VStack color="white" backgroundColor="bball.main" spacing="0" width="100%">
       <ChakraLink
         as={GatsbyLink}
         to={`/${overallName.toLowerCase()}/`}
@@ -26,7 +26,7 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
       >
         {overallName}
       </ChakraLink>
-      <VStack backgroundColor="purple.600" spacing={-2} width="100%">
+      <VStack backgroundColor="bball.main" spacing={-2} width="100%">
         {names.map((name: string) => (
           <ChakraLink
             as={GatsbyLink}
@@ -44,15 +44,15 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
 
 const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
   return (
-    <Accordion allowToggle width="100%" borderColor="purple.600" color="white">
-      <AccordionItem bg="purple.600">
+    <Accordion allowToggle width="100%" borderColor="bball.main" color="white">
+      <AccordionItem bg="bball.main">
         <AccordionButton paddingLeft={0} paddingRight={0}>
-          <Center width="100%" bg="purple.600">
+          <Center width="100%" bg="bball.main">
             <b>Simulate</b>
           </Center>
         </AccordionButton>
         <AccordionPanel
-          bg="purple.500"
+          bg="bball.main_light"
           width="100%"
           paddingLeft={0}
           paddingRight={0}
@@ -60,7 +60,7 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
           {actions.map((action: string) => (
             <Button
               key={action}
-              _hover={{ backgroundColor: "purple.500" }}
+              _hover={{ backgroundColor: "bball.main_light" }}
               variant="ghost"
               borderRadius="0"
               width="100%"
@@ -79,7 +79,7 @@ export const SideBar: React.FC = () => {
     <VStack
       width="100%"
       height="100vh"
-      backgroundColor="purple.600"
+      backgroundColor="bball.main"
       spacing={5}
     >
       <SimButton actions={["1 game", "Season"]} />
