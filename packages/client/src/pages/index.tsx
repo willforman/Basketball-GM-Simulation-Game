@@ -15,14 +15,14 @@ const Index: React.FC<{ leagueErr: boolean }> = ({ leagueErr }) => {
   const leagueContext = useLeague();
 
   return (
-    <Box height="100vh" bg="#1a202c" color="white">
+    <Box height="100vh" bg="bball.background" color="white">
       <Center>
         <VStack margin="30vh">
           <Text fontWeight="extrabold" fontSize="5xl">
             Basketball GM
           </Text>
           <Button
-            bg="purple.600"
+            bg="bball.main"
             size="lg"
             onClick={async () => {
               leagueContext.setLeague(await buildLeague());
