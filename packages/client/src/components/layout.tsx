@@ -10,7 +10,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <Grid templateColumns="120px auto">
       <SideBar />
-      <Box margin="30">{children}</Box>
+      <Box padding="30" bg="bball.background">
+        {children}
+      </Box>
     </Grid>
   );
 };
