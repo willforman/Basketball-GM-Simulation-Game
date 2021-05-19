@@ -10,8 +10,6 @@ type ScheduleProps = {
 const Schedule: React.FC<ScheduleProps> = ({ team, showGames }) => {
   const games = team.games.slice(0, showGames);
 
-  console.log(games);
-
   return (
     <Table bg="white" size="sm" color="black">
       <Thead>
