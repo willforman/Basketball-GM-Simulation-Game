@@ -146,4 +146,8 @@ export class League {
   get standings(): [Team[], Team[]] {
     return this._conferences.standings;
   }
+
+  get state(): LeagueState {
+    return this._state;
+  }
 }
