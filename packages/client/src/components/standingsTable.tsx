@@ -37,7 +37,7 @@ const StandingsTable: React.FC<{ teams: Team[] }> = ({ teams }) => {
               </Td>
               <Td>{team.wins}</Td>
               <Td>{team.losses}</Td>
-              <Td>{team.winPct}</Td>
+              <Td>{team.winPct.toFixed(2)}</Td>
             </Tr>
           ))}
         </Tbody>

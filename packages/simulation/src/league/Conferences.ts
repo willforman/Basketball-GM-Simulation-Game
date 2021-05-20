@@ -71,7 +71,7 @@ export class Conferences {
   }
 
   sortTeams(teams: Team[]): Team[] {
-    return teams.sort((a: Team, b: Team) => a.winPct - b.winPct);
+    return teams.sort((a: Team, b: Team) => b.winPct - a.winPct);
   }
 
   get standings(): [Team[], Team[]] {
