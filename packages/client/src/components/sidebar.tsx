@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 
 import { Link as GatsbyLink } from "gatsby";
+import { useLeague } from "../context/league";
+import { LeagueState, SimActions, getActions } from "@bball/simulation/src";
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -72,6 +74,16 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
       </AccordionItem>
     </Accordion>
   );
+};
+
+const Simulate: React.FC = () => {
+  const { league } = useLeague();
+
+  if (!league) {
+    return <div></div>;
+  }
+
+  return <SimButton actions={getActions(league)} />;
 };
 
 export const SideBar: React.FC = () => {
