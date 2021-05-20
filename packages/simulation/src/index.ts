@@ -13,6 +13,7 @@ export const buildLeague = async (): Promise<League> => {
 
 export * from "./team/Team";
 export * from "./league/League";
+export * from "./league/LeagueState";
 export * from "./player/Player";
 export * from "./game/Game";
 export { PlayerNameGenService } from "./services/PlayerNameService";

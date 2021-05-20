@@ -106,6 +106,10 @@ export class League {
     this._draft = new Draft(this._genPlayer, nonPlayoffTeams);
   }
 
+  simFreeAgency(): void {
+    this._freeAgents.sim(this.teams);
+  }
+
   // get functions
   get year(): number {
     return this._year;
