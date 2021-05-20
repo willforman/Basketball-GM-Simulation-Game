@@ -57,6 +57,14 @@ export class Game {
 
     this._completed = true;
 
+    if (result.homeScore >= result.awayScore) {
+      this._homeTeam.addWin();
+      this._awayTeam.addLoss();
+    } else {
+      this._homeTeam.addLoss();
+      this._awayTeam.addWin();
+    }
+
     return true;
   }
 

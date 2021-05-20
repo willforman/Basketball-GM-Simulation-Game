@@ -168,4 +168,12 @@ export class Team {
     if (this._wins + this._losses === 0) return 0;
     return this._wins / (this._wins + this._losses);
   }
+
+  addWin(): void {
+    this._wins++;
+  }
+
+  addLoss(): void {
+    this._losses++;
+  }
 }
