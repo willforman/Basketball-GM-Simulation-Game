@@ -13,7 +13,12 @@ import {
 
 import { Link as GatsbyLink } from "gatsby";
 import { useLeague } from "../context/league";
-import { SimAction, SimActions, getActions } from "@bball/simulation/src";
+import {
+  SimAction,
+  SimActions,
+  getActions,
+  League,
+} from "@bball/simulation/src";
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -44,7 +49,10 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   );
 };
 
-const SimButton: React.FC<{ simActions: SimActions }> = ({ simActions }) => {
+const SimButton: React.FC<{ simActions: SimActions; league: League }> = ({
+  simActions,
+  league,
+}) => {
   return (
     <Accordion allowToggle width="100%" borderColor="bball.main" color="white">
       <AccordionItem bg="bball.main">
@@ -93,7 +101,7 @@ const Simulate: React.FC = () => {
 
   console.log(league);
 
-  return <SimButton simActions={actions} />;
+  return <SimButton simActions={actions} league={league} />;
 };
 
 export const SideBar: React.FC = () => {
