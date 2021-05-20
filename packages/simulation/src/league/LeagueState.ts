@@ -15,6 +15,7 @@ export interface SimAction {
 export interface SimActions {
   actions: SimAction[];
   advFunc: () => void;
+  isStateComplete: () => boolean;
 }
 
 export const getNextState = (state: LeagueState): LeagueState => {
@@ -39,6 +40,7 @@ export const getActions = (league: League): SimActions => {
           { name: "Season", func: league.regularSeason.simAll },
         ],
         advFunc: league.advToPlayoffs,
+        isStateComplete: () => league.regularSeason.completed,
       };
     case LeagueState.PLAYOFFS:
       return {
@@ -47,16 +49,19 @@ export const getActions = (league: League): SimActions => {
           { name: "Playoffs", func: league.playoffs.simAll },
         ],
         advFunc: league.advToDraft,
+        isStateComplete: () => league.playoffs.completed,
       };
     case LeagueState.PRESEASON_DRAFT:
       return {
         actions: [{ name: "Draft", func: league.draft.sim }],
         advFunc: league.advToFreeAgency,
+        isStateComplete: () => league.draft.completed,
       };
     case LeagueState.PRESEASON_FREE_AGENCY:
       return {
         actions: [{ name: "Free Agency", func: league.simFreeAgency }],
         advFunc: league.advToRegSeason,
+        isStateComplete: () => true,
       };
   }
 };

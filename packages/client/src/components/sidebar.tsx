@@ -13,7 +13,7 @@ import {
 
 import { Link as GatsbyLink } from "gatsby";
 import { useLeague } from "../context/league";
-import { LeagueState, SimActions, getActions } from "@bball/simulation/src";
+import { SimAction, SimActions, getActions } from "@bball/simulation/src";
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -44,7 +44,7 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   );
 };
 
-const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
+const SimButton: React.FC<{ simActions: SimActions }> = ({ simActions }) => {
   return (
     <Accordion allowToggle width="100%" borderColor="bball.main" color="white">
       <AccordionItem bg="bball.main">
@@ -59,15 +59,21 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
           paddingLeft={0}
           paddingRight={0}
         >
-          {actions.map((action: string) => (
+          {simActions.actions.map((action: SimAction) => (
             <Button
-              key={action}
+              key={action.name}
               _hover={{ backgroundColor: "bball.main_light" }}
               variant="ghost"
               borderRadius="0"
               width="100%"
+              onClick={() => {
+                action.func();
+                if (simActions.isStateComplete()) {
+                  simActions.advFunc();
+                }
+              }}
             >
-              {action}
+              {action.name}
             </Button>
           ))}
         </AccordionPanel>
@@ -83,7 +89,11 @@ const Simulate: React.FC = () => {
     return <div></div>;
   }
 
-  return <SimButton actions={getActions(league)} />;
+  const actions = getActions(league);
+
+  console.log(league);
+
+  return <SimButton simActions={actions} />;
 };
 
 export const SideBar: React.FC = () => {
@@ -94,7 +104,7 @@ export const SideBar: React.FC = () => {
       backgroundColor="bball.main"
       spacing={5}
     >
-      <SimButton actions={["1 game", "Season"]} />
+      <Simulate />
       <NavGroup overallName={"League"} names={["Playoffs"]} />
       <NavGroup overallName={"Team"} names={["Roster"]} />
       <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">

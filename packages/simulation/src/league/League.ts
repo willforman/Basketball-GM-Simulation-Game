@@ -41,13 +41,13 @@ export class League {
       return playerID++;
     };
 
-    const genPlayer = (pos: number, retire: (player: Player) => void) => {
+    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
       const player = new Player(genPlayerName(), getPlayerID(), pos, retire);
       this._players.push(player);
       return player;
     };
 
-    this._conferences = new Conferences(confNames, genPlayer);
+    this._conferences = new Conferences(confNames, this._genPlayer);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
