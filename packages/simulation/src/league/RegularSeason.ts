@@ -55,6 +55,10 @@ export class RegularSeason {
   get weekIdx(): number {
     return this._weekIdx;
   }
+
+  getWeekGames(weekIdx: number): Game[] {
+    return this._weeks[weekIdx].games;
+  }
 }
 
 class Week {
@@ -76,5 +80,9 @@ class Week {
 
   get completed(): boolean {
     return this._completed;
+  }
+
+  get games(): Game[] {
+    return this._games;
   }
 }
