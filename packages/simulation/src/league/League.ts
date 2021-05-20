@@ -142,4 +142,8 @@ export class League {
   get players(): Player[] {
     return this._players;
   }
+
+  get standings(): [Team[], Team[]] {
+    return this._conferences.standings;
+  }
 }

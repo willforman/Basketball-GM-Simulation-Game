@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLeague } from "../../context/league";
 import Layout from "../../components/layout";
-import { Text } from "@chakra-ui/react";
+import StandingsTable from "../../components/standingsTable";
+import { navigate } from "gatsby";
+import { Grid, GridItem, Text } from "@chakra-ui/layout";
 
 const LeagueIndex: React.FC = () => {
+  const { league } = useLeague();
+
+  // if navigated to this page without a league, will go back
+  // to create league page
+  useEffect(() => {
+    if (league == null) {
+      navigate("/");
+    }
+  });
+
+  if (league == null) {
+    return <div></div>;
+  }
+
   return (
     <Layout>
-      <Text>League</Text>
+      <Grid templateColumns="1fr 1fr" gap={4}>
+        <GridItem>
+          <StandingsTable league={league} />
+        </GridItem>
+        <GridItem>
+          <Text size="3xl" fontWeight="extrabold">
+            Week: 1/29
+          </Text>
+        </GridItem>
+      </Grid>
     </Layout>
   );
 };
