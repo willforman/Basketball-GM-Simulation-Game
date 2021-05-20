@@ -38,7 +38,7 @@ export class RegularSeason {
     }
   };
 
-  simAll(): void {
+  simAll = (): void => {
     if (this._completed) {
       throw new Error("Season already completed");
     }
@@ -46,7 +46,7 @@ export class RegularSeason {
     for (let week = this._weekIdx; week < this._weeks.length; week++) {
       this.simWeek();
     }
-  }
+  };
 
   get completed(): boolean {
     return this._completed;
