@@ -24,7 +24,7 @@ const Schedule: React.FC<{ games: Game[] }> = ({ games }) => {
           {games.map((game) => (
             <Tr key={game.title}>
               <Td>{game.title}</Td>
-              <Td>{`${game.scores[0]} - ${game.scores[0]}`}</Td>
+              <Td>{`${game.scores[0]} - ${game.scores[1]}`}</Td>
             </Tr>
           ))}
         </Tbody>
