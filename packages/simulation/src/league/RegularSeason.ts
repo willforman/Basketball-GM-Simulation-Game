@@ -51,6 +51,10 @@ export class RegularSeason {
   get completed(): boolean {
     return this._completed;
   }
+
+  get weekIdx(): number {
+    return this._weekIdx;
+  }
 }
 
 class Week {
