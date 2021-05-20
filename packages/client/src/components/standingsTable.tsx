@@ -10,8 +10,10 @@ import {
   Box,
   Text,
   Button,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import { League, Team } from "@bball/simulation/src";
+import { Link as GatsbyLink } from "gatsby";
 
 const StandingsTable: React.FC<{ teams: Team[] }> = ({ teams }) => {
   return (
@@ -28,7 +30,11 @@ const StandingsTable: React.FC<{ teams: Team[] }> = ({ teams }) => {
         <Tbody>
           {teams.map((team: Team, idx: number) => (
             <Tr key={team.abreviation}>
-              <Td>{`${idx + 1})\t${team.name}`}</Td>
+              <Td>
+                <ChakraLink as={GatsbyLink} to="/team">{`${idx + 1})\t${
+                  team.name
+                }`}</ChakraLink>
+              </Td>
               <Td>{team.wins}</Td>
               <Td>{team.losses}</Td>
               <Td>{team.winPct}</Td>
