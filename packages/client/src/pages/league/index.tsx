@@ -4,6 +4,7 @@ import Layout from "../../components/layout";
 import StandingsTable from "../../components/standingsTable";
 import { navigate } from "gatsby";
 import { Grid, GridItem, Text } from "@chakra-ui/layout";
+import Schedule from "../../components/schedule";
 
 const LeagueIndex: React.FC = () => {
   const { league } = useLeague();
@@ -30,6 +31,7 @@ const LeagueIndex: React.FC = () => {
           <Text size="3xl" fontWeight="extrabold">
             {`Week: ${league.regularSeason.weekIdx + 1} / 29`}
           </Text>
+          <Schedule games={league.regularSeason.getWeekGames(0)} />
         </GridItem>
       </Grid>
     </Layout>
