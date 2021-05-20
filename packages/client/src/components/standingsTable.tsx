@@ -16,6 +16,8 @@ import { League, Team } from "@bball/simulation/src";
 import { Link as GatsbyLink } from "gatsby";
 
 const StandingsTable: React.FC<{ teams: Team[] }> = ({ teams }) => {
+  console.log("render table");
+
   return (
     <TableContainer>
       <Table bg="bball.background_light">
@@ -50,11 +52,15 @@ const Standings: React.FC<{ league: League }> = ({ league }) => {
   const [confIdx, setConfIdx] = useState(0);
   const confs = league.standings;
 
+  console.log("render standings");
+
   return (
     <Box>
       <Button
         bg="bball.main"
-        onClick={() => setConfIdx(confIdx == 0 ? 1 : 0)}
+        onClick={() => {
+          setConfIdx(confIdx == 0 ? 1 : 0);
+        }}
       >{`Show: ${confIdx === 0 ? "East" : "West"}`}</Button>
       <StandingsTable teams={confs[confIdx]} />
     </Box>
