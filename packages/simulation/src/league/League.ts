@@ -92,7 +92,7 @@ export class League {
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
   }
 
-  advToPlayoffs = (): void => {
+  advToPlayoffs(): void {
     this._state = getNextState(this._state);
 
     if (!this._regularSeason.completed) {
@@ -104,7 +104,7 @@ export class League {
     );
     this._playoffs = new Playoffs(this._conferences.playoffTeams);
     this._draft = new Draft(this._genPlayer, nonPlayoffTeams);
-  };
+  }
 
   simFreeAgency(): void {
     this._freeAgents.sim(this.teams);
