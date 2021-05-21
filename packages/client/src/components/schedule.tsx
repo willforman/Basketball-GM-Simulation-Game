@@ -8,16 +8,9 @@ import {
   Td,
   TableContainer,
 } from "@chakra-ui/react";
-import { Team } from "@bball/simulation/src";
+import { Game } from "@bball/simulation/src";
 
-type ScheduleProps = {
-  team: Team;
-  showGames: number;
-};
-
-const Schedule: React.FC<ScheduleProps> = ({ team, showGames }) => {
-  const games = team.games.slice(0, showGames);
-
+const Schedule: React.FC<{ games: Game[] }> = ({ games }) => {
   return (
     <TableContainer>
       <Table variant="dark" bg="bball.background_light">
@@ -31,7 +24,7 @@ const Schedule: React.FC<ScheduleProps> = ({ team, showGames }) => {
           {games.map((game) => (
             <Tr key={game.title}>
               <Td>{game.title}</Td>
-              <Td>{`${game.scores[0]} - ${game.scores[0]}`}</Td>
+              <Td>{`${game.scores[0]} - ${game.scores[1]}`}</Td>
             </Tr>
           ))}
         </Tbody>

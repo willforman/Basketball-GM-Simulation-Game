@@ -148,8 +148,16 @@ export class Team {
     return this._wins;
   }
 
+  set wins(newWins: number) {
+    this._wins = newWins;
+  }
+
   get losses(): number {
     return this._losses;
+  }
+
+  set losses(newLosses: number) {
+    this._losses = newLosses;
   }
 
   get name(): string {

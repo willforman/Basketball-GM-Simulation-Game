@@ -13,8 +13,9 @@ export const buildLeague = async (): Promise<League> => {
 
 export * from "./team/Team";
 export * from "./league/League";
+export * from "./league/LeagueState";
 export * from "./player/Player";
 export * from "./game/Game";
 export { PlayerNameGenService } from "./services/PlayerNameService";
 export { getTeamNames } from "./services/getTeamNames";
-export * from "./models/consts";
+export * from "./models";

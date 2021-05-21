@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 
 import { Link as GatsbyLink } from "gatsby";
+import { useLeague } from "../context/league";
+import { getActionNames, simForState } from "@bball/simulation/src";
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -42,7 +44,15 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   );
 };
 
-const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
+const Simulate: React.FC = () => {
+  const { league, setLeague } = useLeague();
+
+  if (!league) {
+    return <div>Can't Simulate</div>;
+  }
+
+  const actions = getActionNames(league.state);
+
   return (
     <Accordion allowToggle width="100%" borderColor="bball.main" color="white">
       <AccordionItem bg="bball.main">
@@ -64,6 +74,9 @@ const SimButton: React.FC<{ actions: string[] }> = ({ actions }) => {
               variant="ghost"
               borderRadius="0"
               width="100%"
+              onClick={() => {
+                simForState(league, action);
+              }}
             >
               {action}
             </Button>
@@ -82,7 +95,7 @@ export const SideBar: React.FC = () => {
       backgroundColor="bball.main"
       spacing={5}
     >
-      <SimButton actions={["1 game", "Season"]} />
+      <Simulate />
       <NavGroup overallName={"League"} names={["Playoffs"]} />
       <NavGroup overallName={"Team"} names={["Roster"]} />
       <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">

@@ -38,7 +38,7 @@ const Roster: React.FC<{ team: Team; showAllPlayers?: boolean }> = ({
           {players.map((player: Player) => (
             <Tr key={player.id}>
               <Td>
-                <ChakraLink as={GatsbyLink} to="/player/" state={{ player }}>
+                <ChakraLink as={GatsbyLink} to="/player/">
                   {player.name}
                 </ChakraLink>
               </Td>

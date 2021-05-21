@@ -14,13 +14,19 @@ export class Game {
   private _awayBoxScores: Map<Player, BoxScore>;
 
   private _completed: boolean;
+  private _isPlayoffGame: boolean;
 
   // declared constants
   get QUARTER_LENGTH_MINUTES(): number {
     return 15;
   }
 
-  constructor(team1: Team, team2: Team, teamIdx: number) {
+  constructor(
+    team1: Team,
+    team2: Team,
+    teamIdx: number,
+    isPlayoffGame?: boolean
+  ) {
     // if team index is even, first team is home and other is not
     // necessary based on scheduling algorithm so even split of home and
     // away games
@@ -36,6 +42,7 @@ export class Game {
     this._awayScore = 0;
 
     this._completed = false;
+    this._isPlayoffGame = isPlayoffGame ?? false;
   }
 
   sim(): boolean {
@@ -56,6 +63,19 @@ export class Game {
     this._awayBoxScores = result.awayBoxScores;
 
     this._completed = true;
+
+    // don't wanna add wins and losses if it's a playoff game
+    if (this._isPlayoffGame) {
+      return true;
+    }
+
+    if (result.homeScore >= result.awayScore) {
+      this._homeTeam.wins = this._homeTeam.wins + 1;
+      this._awayTeam.losses = this._awayTeam.losses + 1;
+    } else {
+      this._homeTeam.losses = this._homeTeam.losses + 1;
+      this._awayTeam.wins = this._awayTeam.wins + 1;
+    }
 
     return true;
   }

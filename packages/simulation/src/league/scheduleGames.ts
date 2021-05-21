@@ -22,8 +22,8 @@ export const roundRobin = (teamsPassed: Team[]): Game[][] => {
     copyTeams[teamIdx].addGame(g1);
 
     for (let i = 1; i < (copyTeams.length + 1) / 2; i++) {
-      const firstIdx = (week + 1) % copyTeams.length;
-      const secondIdx = (week + copyTeams.length - 1) % copyTeams.length;
+      const firstIdx = (week + i) % copyTeams.length;
+      const secondIdx = (week + copyTeams.length - i) % copyTeams.length;
 
       const g2 = new Game(copyTeams[firstIdx], copyTeams[secondIdx], teamIdx);
       gamesThisWeek.push(g2);
