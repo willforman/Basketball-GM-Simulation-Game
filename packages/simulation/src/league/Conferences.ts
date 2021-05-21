@@ -59,14 +59,14 @@ export class Conferences {
   get playoffTeams(): Team[][] {
     return [
       this._conferences[0].playoffTeams,
-      this._conferences[0].playoffTeams,
+      this._conferences[1].playoffTeams,
     ];
   }
 
   get nonPlayoffTeams(): Team[][] {
     return [
       this._conferences[0].nonPlayoffTeams,
-      this._conferences[0].nonPlayoffTeams,
+      this._conferences[1].nonPlayoffTeams,
     ];
   }
 
