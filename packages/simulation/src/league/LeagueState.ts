@@ -7,17 +7,6 @@ export enum LeagueState {
   PLAYOFFS = "playoffs",
 }
 
-export interface SimAction {
-  name: string;
-  func: () => void;
-}
-
-export interface SimActions {
-  actions: SimAction[];
-  advFunc: () => void;
-  isStateComplete: () => boolean;
-}
-
 export const getNextState = (state: LeagueState): LeagueState => {
   switch (state) {
     case LeagueState.PRESEASON_DRAFT:
@@ -31,37 +20,50 @@ export const getNextState = (state: LeagueState): LeagueState => {
   }
 };
 
-export const getActions = (league: League): SimActions => {
+export const getActionNames = (state: LeagueState): string[] => {
+  switch (state) {
+    case LeagueState.REGULAR_SEASON:
+      return ["1 game", "Season"];
+    case LeagueState.PLAYOFFS:
+      return ["1 round", "Playoff"];
+    case LeagueState.PRESEASON_DRAFT:
+      return ["Draft"];
+    case LeagueState.PRESEASON_FREE_AGENCY:
+      return ["Free Agency"];
+  }
+};
+
+export const simForState = (league: League, actionName: string): void => {
   switch (league.state) {
     case LeagueState.REGULAR_SEASON:
-      return {
-        actions: [
-          { name: "1 game", func: league.regularSeason.simWeek },
-          { name: "Season", func: league.regularSeason.simAll },
-        ],
-        advFunc: league.advToPlayoffs,
-        isStateComplete: () => league.regularSeason.completed,
-      };
+      if (actionName === "1 game") {
+        league.regularSeason.simWeek();
+        if (league.regularSeason.completed) {
+          league.advToPlayoffs();
+        }
+      } else {
+        league.regularSeason.simAll();
+        league.advToPlayoffs();
+      }
+      break;
     case LeagueState.PLAYOFFS:
-      return {
-        actions: [
-          { name: "1 round", func: league.playoffs.simRound },
-          { name: "Playoffs", func: league.playoffs.simAll },
-        ],
-        advFunc: league.advToDraft,
-        isStateComplete: () => league.playoffs.completed,
-      };
+      if (actionName === "1 round") {
+        league.playoffs.simRound();
+        if (league.playoffs.completed) {
+          league.advToDraft();
+        }
+      } else {
+        league.playoffs.simAll();
+        league.advToDraft();
+      }
+      break;
     case LeagueState.PRESEASON_DRAFT:
-      return {
-        actions: [{ name: "Draft", func: league.draft.sim }],
-        advFunc: league.advToFreeAgency,
-        isStateComplete: () => league.draft.completed,
-      };
+      league.draft.sim();
+      league.advToFreeAgency();
+      break;
     case LeagueState.PRESEASON_FREE_AGENCY:
-      return {
-        actions: [{ name: "Free Agency", func: league.simFreeAgency }],
-        advFunc: league.advToRegSeason,
-        isStateComplete: () => true,
-      };
+      league.freeAgents.sim(league.teams);
+      league.advToRegSeason();
+      break;
   }
 };

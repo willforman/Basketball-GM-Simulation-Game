@@ -13,7 +13,7 @@ import {
 
 import { Link as GatsbyLink } from "gatsby";
 import { useLeague } from "../context/league";
-import { SimAction, SimActions, getActions } from "@bball/simulation/src";
+import { getActionNames, simForState } from "@bball/simulation/src";
 
 const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   overallName,
@@ -44,7 +44,15 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
   );
 };
 
-const SimButton: React.FC<{ simActions: SimActions }> = ({ simActions }) => {
+const Simulate: React.FC = () => {
+  const { league, setLeague } = useLeague();
+
+  if (!league) {
+    return <div>Can't Simulate</div>;
+  }
+
+  const actions = getActionNames(league.state);
+
   return (
     <Accordion allowToggle width="100%" borderColor="bball.main" color="white">
       <AccordionItem bg="bball.main">
@@ -59,41 +67,24 @@ const SimButton: React.FC<{ simActions: SimActions }> = ({ simActions }) => {
           paddingLeft={0}
           paddingRight={0}
         >
-          {simActions.actions.map((action: SimAction) => (
+          {actions.map((action: string) => (
             <Button
-              key={action.name}
+              key={action}
               _hover={{ backgroundColor: "bball.main_light" }}
               variant="ghost"
               borderRadius="0"
               width="100%"
               onClick={() => {
-                action.func();
-                if (simActions.isStateComplete()) {
-                  simActions.advFunc();
-                }
+                simForState(league, action);
               }}
             >
-              {action.name}
+              {action}
             </Button>
           ))}
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
   );
-};
-
-const Simulate: React.FC = () => {
-  const { league } = useLeague();
-
-  if (!league) {
-    return <div></div>;
-  }
-
-  const actions = getActions(league);
-
-  console.log(league);
-
-  return <SimButton simActions={actions} />;
 };
 
 export const SideBar: React.FC = () => {
