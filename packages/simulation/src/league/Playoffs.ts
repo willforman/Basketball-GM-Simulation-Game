@@ -230,7 +230,7 @@ class PlayoffSeries {
 
   // team idx will be even if team1 is home, odd if away
   private simGame(teamIdx: number): void {
-    const game = new Game(this._team1, this._team2, teamIdx);
+    const game = new Game(this._team1, this._team2, teamIdx, true);
     this._games.push(game);
 
     game.sim();
