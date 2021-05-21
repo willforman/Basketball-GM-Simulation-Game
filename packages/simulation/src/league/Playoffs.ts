@@ -77,6 +77,10 @@ export class Playoffs {
     return this._rounds[this._roundIdx];
   }
 
+  get rounds(): Round[] {
+    return this._rounds;
+  }
+
   get teamsInDraftOrder(): Team[] {
     if (!this._completed) {
       throw new Error("Playoffs not complete");
@@ -94,7 +98,7 @@ export class Playoffs {
   }
 }
 
-class Round {
+export class Round {
   private _confRounds: ConfRound[];
   private _completed: boolean;
 
@@ -149,7 +153,7 @@ class Round {
   }
 }
 
-class ConfRound {
+export class ConfRound {
   private _series: PlayoffSeries[];
   private _completed: boolean;
 
@@ -205,9 +209,13 @@ class ConfRound {
 
     return teams;
   }
+
+  get series(): PlayoffSeries[] {
+    return this._series;
+  }
 }
 
-class PlayoffSeries {
+export class PlayoffSeries {
   private _team1: Team;
   private _team2: Team;
 
@@ -271,6 +279,22 @@ class PlayoffSeries {
 
   get loser(): Team {
     return this.didTeam1Win ? this._team2 : this._team1;
+  }
+
+  get team1(): Team {
+    return this._team1;
+  }
+
+  get team2(): Team {
+    return this._team2;
+  }
+
+  get wins1(): number {
+    return this._wins1;
+  }
+
+  get wins2(): number {
+    return this._wins2;
   }
 
   // returns odds of team 1 winning
