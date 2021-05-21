@@ -8,20 +8,27 @@ import { navigate } from "gatsby-link";
 const Playoffs: React.FC = () => {
   const { league } = useLeague();
 
-  if (!league) {
-    return <div></div>;
-  }
-
   useEffect(() => {
     if (!league) {
       navigate("/");
     }
   });
 
+  if (!league) {
+    return <div></div>;
+  }
+
+  if (!league.playoffs) {
+    return (
+      <Layout>
+        <Text>Playoffs not generated yet</Text>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      <Text>Playoffs</Text>
-      <Bracket league={league} />
+      <Bracket playoffs={league.playoffs} />
     </Layout>
   );
 };

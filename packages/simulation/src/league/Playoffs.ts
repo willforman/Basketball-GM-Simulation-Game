@@ -96,6 +96,10 @@ export class Playoffs {
 
     return teams;
   }
+
+  get championship(): PlayoffSeries {
+    return this._championship;
+  }
 }
 
 export class Round {

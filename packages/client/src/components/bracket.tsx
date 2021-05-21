@@ -1,33 +1,52 @@
 import React from "react";
-import { Team, League, PlayoffSeries, ConfRound } from "@bball/simulation/src";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import {
+  Playoffs,
+  PlayoffSeries,
+  ConfRound,
+  Round,
+} from "@bball/simulation/src";
+import { Box, Text, VStack, Divider, HStack } from "@chakra-ui/react";
 
-const Series: React.FC<{ series: PlayoffSeries }> = ({ series }) => {
+const SeriesComp: React.FC<{ series: PlayoffSeries }> = ({ series }) => {
   return (
-    <Box bg="bball.background_light">
+    <Box bg="bball.background_light" width="28">
       <VStack>
-        <Text>{series.team1.name}</Text>
-        <Text>{series.team2.name}</Text>
+        <Text>{`${series.team1.name} - ${series.wins1}`}</Text>
+        <Divider />
+        <Text>{`${series.team2.name} - ${series.wins2}`}</Text>
       </VStack>
     </Box>
   );
 };
 
-const Round: React.FC<{ round: ConfRound }> = ({ round }) => {
+const RoundComp: React.FC<{ round: ConfRound }> = ({ round }) => {
   return (
     <VStack>
       {round.series.map((series: PlayoffSeries) => (
-        <Series series={series} key={`${series.team1}${series.team2}`} />
+        <SeriesComp
+          series={series}
+          key={`${series.team1.name}${series.team2.name}`}
+        />
       ))}
     </VStack>
   );
 };
 
-const Bracket: React.FC<{ league: League }> = ({ league }) => {
+const Bracket: React.FC<{ playoffs: Playoffs }> = ({ playoffs }) => {
   return (
-    <VStack>
-      <Round round={league.playoffs.rounds[0].east} />
-    </VStack>
+    <HStack>
+      {playoffs.rounds.map((round: Round, idx: number) => (
+        <VStack key={`${idx}`}>
+          <Text>East</Text>
+          <RoundComp round={round.east} />
+          <Text>West</Text>
+          <RoundComp round={round.west} />
+        </VStack>
+      ))}
+      {playoffs.championship ? (
+        <SeriesComp series={playoffs.championship} />
+      ) : null}
+    </HStack>
   );
 };
 
