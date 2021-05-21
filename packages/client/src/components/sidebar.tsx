@@ -58,7 +58,10 @@ const Simulate: React.FC = () => {
       <AccordionItem bg="bball.main">
         <AccordionButton paddingLeft={0} paddingRight={0}>
           <Center width="100%" bg="bball.main">
-            <b>Simulate</b>
+            <VStack>
+              <Text fontSize="smaller">{`${league.year} ${league.state}`}</Text>
+              <Text>Simulate</Text>
+            </VStack>
           </Center>
         </AccordionButton>
         <AccordionPanel
