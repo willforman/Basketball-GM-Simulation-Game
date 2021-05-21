@@ -58,11 +58,11 @@ export class Game {
     this._completed = true;
 
     if (result.homeScore >= result.awayScore) {
-      this._homeTeam.addWin();
-      this._awayTeam.addLoss();
+      this._homeTeam.wins = this._homeTeam.wins + 1;
+      this._awayTeam.losses = this._awayTeam.losses + 1;
     } else {
-      this._homeTeam.addLoss();
-      this._awayTeam.addWin();
+      this._homeTeam.losses = this._homeTeam.losses + 1;
+      this._awayTeam.wins = this._awayTeam.wins + 1;
     }
 
     return true;

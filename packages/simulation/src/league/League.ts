@@ -90,6 +90,12 @@ export class League {
     this._state = getNextState(this._state);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
+
+    // needs to clear wins and losses from teams
+    this._conferences.allTeams.forEach((team: Team) => {
+      team.wins = 0;
+      team.losses = 0;
+    });
   }
 
   advToPlayoffs(): void {

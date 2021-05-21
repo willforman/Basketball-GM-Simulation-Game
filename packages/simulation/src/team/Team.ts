@@ -148,8 +148,16 @@ export class Team {
     return this._wins;
   }
 
+  set wins(newWins: number) {
+    this._wins = newWins;
+  }
+
   get losses(): number {
     return this._losses;
+  }
+
+  set losses(newLosses: number) {
+    this._losses = newLosses;
   }
 
   get name(): string {
@@ -167,13 +175,5 @@ export class Team {
   get winPct(): number {
     if (this._wins + this._losses === 0) return 0;
     return this._wins / (this._wins + this._losses);
-  }
-
-  addWin(): void {
-    this._wins++;
-  }
-
-  addLoss(): void {
-    this._losses++;
   }
 }
