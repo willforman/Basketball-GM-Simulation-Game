@@ -29,7 +29,9 @@ const LeagueIndex: React.FC = () => {
         </GridItem>
         <GridItem>
           <Text size="3xl" fontWeight="extrabold">
-            {`Week: ${league.regularSeason.weekIdx + 1} / 29`}
+            {`Week: ${league.regularSeason.weekIdx + 1} / ${
+              league.regularSeason.numWeeks
+            }`}
           </Text>
           <Schedule games={league.regularSeason.getWeekGames(0)} />
         </GridItem>
