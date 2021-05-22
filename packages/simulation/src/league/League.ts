@@ -41,22 +41,56 @@ export class League {
       return playerID++;
     };
 
-    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
-      const player = new Player(genPlayerName(), getPlayerID(), pos, retire);
+    const genPlayer = (
+      pos: number,
+      retire: (player: Player) => void,
+      young: boolean
+    ) => {
+      const player = new Player(
+        genPlayerName(),
+        getPlayerID(),
+        pos,
+        retire,
+        young
+      );
       this._players.push(player);
       return player;
+    };
+
+    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
+      return genPlayer(pos, retire, true);
+    };
+
+    const genPlayerAnyAge = (pos: number, retire: (player: Player) => void) => {
+      return genPlayer(pos, retire, false);
     };
 
     this._conferences = new Conferences(confNames, this._genPlayer);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
-    this._freeAgents = new FreeAgents(getPlayerID, genPlayerName);
+    this._freeAgents = new FreeAgents(genPlayerAnyAge);
+    this._draft = new Draft(this._genPlayer);
   }
 
   triggerTrades = (): void => {
     //proposeTrades(this.teams);
   };
+
+  advToPlayoffs(): void {
+    this._state = getNextState(this._state);
+
+    if (!this._regularSeason.completed) {
+      throw new Error(`Regular season isn't completed`);
+    }
+
+    this._playoffs = new Playoffs(this._conferences.playoffTeams);
+
+    const nonPlayoffTeams = this._conferences.nonPlayoffTeams[0].concat(
+      this._conferences.nonPlayoffTeams[1]
+    );
+    this._draft.addNonPlayoffTeams(nonPlayoffTeams);
+  }
 
   advToDraft(): void {
     this._state = getNextState(this._state);
@@ -83,6 +117,8 @@ export class League {
 
     this._freeAgents.addPlayers(this._draft.players);
 
+    this._draft = new Draft(this._genPlayer);
+
     this.teams.forEach((team: Team) => team.renewFreeAgents());
   }
 
@@ -96,20 +132,6 @@ export class League {
       team.wins = 0;
       team.losses = 0;
     });
-  }
-
-  advToPlayoffs(): void {
-    this._state = getNextState(this._state);
-
-    if (!this._regularSeason.completed) {
-      throw new Error(`Regular season isn't completed`);
-    }
-
-    const nonPlayoffTeams = this._conferences.nonPlayoffTeams[0].concat(
-      this._conferences.nonPlayoffTeams[1]
-    );
-    this._playoffs = new Playoffs(this._conferences.playoffTeams);
-    this._draft = new Draft(this._genPlayer, nonPlayoffTeams);
   }
 
   simFreeAgency(): void {

@@ -19,9 +19,10 @@ const Roster: React.FC<{ players: Player[] }> = ({ players }) => {
         <Thead>
           <Tr>
             <Th color="gray.400">Name</Th>
-            <Th>Position</Th>
-            <Th>Rating</Th>
-            <Th>Potential</Th>
+            <Th>Pos</Th>
+            <Th>Rat</Th>
+            <Th>Pot</Th>
+            <Th>Age</Th>
             <Th>Contract</Th>
           </Tr>
         </Thead>
@@ -36,6 +37,7 @@ const Roster: React.FC<{ players: Player[] }> = ({ players }) => {
               <Td>{player.posStr}</Td>
               <Td>{player.rating}</Td>
               <Td>{player.potential}</Td>
+              <Td>{player.age}</Td>
               <Td>{`${player.contract.price.toFixed(2)}M`}</Td>
             </Tr>
           ))}

@@ -1,6 +1,6 @@
 import { Player } from "../player/Player";
 import { Team } from "../team/Team";
-import { Pick, LEAGUE_SIZE } from "../models";
+import { Pick, LEAGUE_SIZE, DRAFT_PLAYERS } from "../models";
 
 export class Draft {
   private _players: Player[];
@@ -10,13 +10,8 @@ export class Draft {
   private _pickNum: number;
   private _completed: boolean;
 
-  get DRAFT_NUM_PLAYERS(): number {
-    return 64 + 30;
-  }
-
   constructor(
-    genPlayer: (pos: number, retire: (player: Player) => void) => Player,
-    nonPlayoffTeams: Team[]
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player
   ) {
     this._players = [];
     this._picks = [];
@@ -25,13 +20,13 @@ export class Draft {
       this.removePlayer(player);
     };
 
-    for (let i = 0; i < this.DRAFT_NUM_PLAYERS; i++) {
+    for (let i = 0; i < DRAFT_PLAYERS; i++) {
       this._players.push(genPlayer(-1, retire));
     }
+  }
 
-    this._players.sort((a: Player, b: Player) => a.playerComp(b));
-
-    this._order = nonPlayoffTeams;
+  addNonPlayoffTeams(nonPlayoffteams: Team[]): void {
+    this._order = nonPlayoffteams;
   }
 
   addPlayoffTeams(playoffTeams: Team[]): void {

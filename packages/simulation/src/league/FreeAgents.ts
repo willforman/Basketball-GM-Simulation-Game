@@ -1,22 +1,21 @@
 import { Player } from "../player/Player";
 import { Team } from "../team/Team";
+import { START_FREE_AGENTS_NUM } from "../models/consts";
 
 export class FreeAgents {
   private _players: Player[];
 
-  get START_NUM_FREE_AGENTS(): number {
-    return 60;
-  }
-
-  constructor(getId: () => number, genPlayerName: () => string) {
+  constructor(
+    genPlayer: (pos: number, retire: (player: Player) => void) => Player
+  ) {
     const retire = (player: Player) => {
       this.removePlayer(player);
     };
 
     this._players = [];
 
-    for (let i = 0; i < this.START_NUM_FREE_AGENTS; i++) {
-      this._players.push(new Player(genPlayerName(), getId(), -1, retire));
+    for (let i = 0; i < START_FREE_AGENTS_NUM; i++) {
+      this._players.push(genPlayer(-1, retire));
     }
   }
 
