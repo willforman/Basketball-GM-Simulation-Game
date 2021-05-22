@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLeague } from "../../context/league";
 import Layout from "../../components/layout";
 import StandingsTable from "../../components/standingsTable";
@@ -28,12 +28,7 @@ const LeagueIndex: React.FC = () => {
           <StandingsTable league={league} />
         </GridItem>
         <GridItem>
-          <Text size="3xl" fontWeight="extrabold">
-            {`Week: ${league.regularSeason.weekIdx + 1} / ${
-              league.regularSeason.numWeeks
-            }`}
-          </Text>
-          <Schedule games={league.regularSeason.getWeekGames(0)} />
+          <Schedule league={league} />
         </GridItem>
       </Grid>
     </Layout>
