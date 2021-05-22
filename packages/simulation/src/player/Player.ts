@@ -188,6 +188,10 @@ export class Player {
 
     return options;
   }
+
+  get age(): number {
+    return this._age;
+  }
 }
 
 // returns 0 if age is over 33, 1 if not

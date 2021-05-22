@@ -23,8 +23,6 @@ export class Draft {
     for (let i = 0; i < DRAFT_PLAYERS; i++) {
       this._players.push(genPlayer(-1, retire));
     }
-
-    this._players.sort((a: Player, b: Player) => a.playerComp(b));
   }
 
   addNonPlayoffTeams(nonPlayoffteams: Team[]): void {
