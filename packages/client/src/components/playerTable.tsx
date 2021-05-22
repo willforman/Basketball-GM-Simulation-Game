@@ -9,19 +9,10 @@ import {
   Td,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { Player, Team } from "@bball/simulation/src";
+import { Player } from "@bball/simulation/src";
 import { Link as GatsbyLink } from "gatsby";
 
-const Roster: React.FC<{ team: Team; showAllPlayers?: boolean }> = ({
-  team,
-  showAllPlayers,
-}) => {
-  const players = team.roster.starters;
-
-  if (showAllPlayers) {
-    players.push(...team.roster.bench);
-  }
-
+const Roster: React.FC<{ players: Player[] }> = ({ players }) => {
   return (
     <TableContainer>
       <Table bg="bball.background_light">

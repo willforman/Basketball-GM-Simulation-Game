@@ -18,8 +18,6 @@ export class FreeAgents {
     for (let i = 0; i < this.START_NUM_FREE_AGENTS; i++) {
       this._players.push(new Player(genPlayerName(), getId(), -1, retire));
     }
-
-    this.sort();
   }
 
   removePlayer(player: Player): void {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
-import Roster from "../../components/roster";
-import Schedule from "../../components/schedule";
+import PlayerTable from "../../components/playerTable";
+import { ScheduleWeek } from "../../components/schedule";
 import { Team } from "@bball/simulation/src";
 import { useLeague } from "../../context/league";
 import Layout from "../../components/layout";
@@ -33,10 +33,10 @@ const TeamIndex: React.FC<{ team?: Team }> = ({ team }) => {
           <TeamInfo team={team} />
         </GridItem>
         <GridItem colSpan={2}>
-          <Schedule games={team.games.slice(0, 6)} />
+          <ScheduleWeek games={team.games.slice(0, 6)} />
         </GridItem>
         <GridItem colSpan={3}>
-          <Roster team={team} />
+          <PlayerTable players={team.roster.starters} />
         </GridItem>
       </Grid>
     </Layout>

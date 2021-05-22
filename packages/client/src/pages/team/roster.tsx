@@ -1,7 +1,7 @@
 import { Team, MAX_CAP } from "@bball/simulation/src";
 import React, { useEffect } from "react";
 import Layout from "../../components/layout";
-import Roster from "../../components/roster";
+import PlayerTable from "../../components/playerTable";
 import { useLeague } from "../../context/league";
 import { navigate } from "gatsby";
 import { Box, Text } from "@chakra-ui/layout";
@@ -31,7 +31,7 @@ const RosterComp: React.FC<{ team: Team }> = ({ team }) => {
           2
         )} M / $${MAX_CAP} M`}</Text>
       </Box>
-      <Roster team={team} showAllPlayers></Roster>
+      <PlayerTable players={team.roster.allPlayers} />
     </Layout>
   );
 };
