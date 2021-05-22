@@ -101,7 +101,10 @@ export const SideBar: React.FC = () => {
       spacing={5}
     >
       <Simulate />
-      <NavGroup overallName={"League"} names={["Playoffs", "Free Agents"]} />
+      <NavGroup
+        overallName={"League"}
+        names={["Playoffs", "Free Agents", "Draft"]}
+      />
       <NavGroup overallName={"Team"} names={["Roster"]} />
       <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">
         <Text>Github</Text>
