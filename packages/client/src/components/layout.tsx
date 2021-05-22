@@ -10,7 +10,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         padding="30"
         bg="bball.background"
         overflowY="auto"
-        height="100%"
+        //height="100%"
         maxH="100vh"
       >
         {children}
