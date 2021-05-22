@@ -10,7 +10,6 @@ export class Roster {
   // 3: PF
   // 4: C
   private _positions: Position[];
-  private _cap: number;
 
   private _retire: (player: Player) => void;
 
@@ -20,7 +19,6 @@ export class Roster {
     this._retire = (player: Player): void => this.remove(player);
 
     this._positions = [];
-    this._cap = 0;
 
     // create the position objs and gen players for them
     for (let i = 0; i < 5; i++) {
