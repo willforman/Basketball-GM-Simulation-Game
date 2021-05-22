@@ -59,6 +59,10 @@ export class RegularSeason {
   getWeekGames(weekIdx: number): Game[] {
     return this._weeks[weekIdx].games;
   }
+
+  get numWeeks(): number {
+    return this._weeks.length;
+  }
 }
 
 class Week {

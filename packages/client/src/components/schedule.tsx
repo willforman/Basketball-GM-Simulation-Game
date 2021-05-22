@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   Thead,
@@ -7,10 +7,17 @@ import {
   Th,
   Td,
   TableContainer,
+  Box,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberDecrementStepper,
+  Text,
 } from "@chakra-ui/react";
-import { Game } from "@bball/simulation/src";
+import { Game, League } from "@bball/simulation/src";
 
-const Schedule: React.FC<{ games: Game[] }> = ({ games }) => {
+export const ScheduleWeek: React.FC<{ games: Game[] }> = ({ games }) => {
   return (
     <TableContainer>
       <Table variant="dark" bg="bball.background_light">
@@ -30,6 +37,40 @@ const Schedule: React.FC<{ games: Game[] }> = ({ games }) => {
         </Tbody>
       </Table>
     </TableContainer>
+  );
+};
+
+const WeekInput: React.FC<{
+  numWeeks: number;
+  setWeek: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ numWeeks, setWeek }) => {
+  return (
+    <Box>
+      <NumberInput
+        defaultValue={1}
+        min={1}
+        max={numWeeks}
+        onChange={(week: string) => setWeek(parseInt(week))}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+    </Box>
+  );
+};
+
+const Schedule: React.FC<{ league: League }> = ({ league }) => {
+  const [week, setWeek] = useState(1);
+
+  return (
+    <Box>
+      <Text>Week:</Text>
+      <WeekInput numWeeks={league.regularSeason.numWeeks} setWeek={setWeek} />
+      <ScheduleWeek games={league.regularSeason.getWeekGames(week - 1)} />
+    </Box>
   );
 };
 
