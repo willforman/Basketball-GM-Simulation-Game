@@ -1,12 +1,9 @@
 import { Player } from "../player/Player";
 import { Team } from "../team/Team";
+import { START_FREE_AGENTS_NUM } from "../models/consts";
 
 export class FreeAgents {
   private _players: Player[];
-
-  get START_NUM_FREE_AGENTS(): number {
-    return 60;
-  }
 
   constructor(getId: () => number, genPlayerName: () => string) {
     const retire = (player: Player) => {
@@ -15,7 +12,7 @@ export class FreeAgents {
 
     this._players = [];
 
-    for (let i = 0; i < this.START_NUM_FREE_AGENTS; i++) {
+    for (let i = 0; i < START_FREE_AGENTS_NUM; i++) {
       this._players.push(new Player(genPlayerName(), getId(), -1, retire));
     }
   }
