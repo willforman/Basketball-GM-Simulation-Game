@@ -9,7 +9,7 @@ import {
   Td,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { Player, Team } from "@bball/simulation/src";
+import { Player } from "@bball/simulation/src";
 import { Link as GatsbyLink } from "gatsby";
 
 const Roster: React.FC<{ players: Player[] }> = ({ players }) => {
