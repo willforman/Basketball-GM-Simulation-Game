@@ -41,17 +41,35 @@ export class League {
       return playerID++;
     };
 
-    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
-      const player = new Player(genPlayerName(), getPlayerID(), pos, retire);
+    const genPlayer = (
+      pos: number,
+      retire: (player: Player) => void,
+      young: boolean
+    ) => {
+      const player = new Player(
+        genPlayerName(),
+        getPlayerID(),
+        pos,
+        retire,
+        young
+      );
       this._players.push(player);
       return player;
+    };
+
+    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
+      return genPlayer(pos, retire, true);
+    };
+
+    const genPlayerAnyAge = (pos: number, retire: (player: Player) => void) => {
+      return genPlayer(pos, retire, false);
     };
 
     this._conferences = new Conferences(confNames, this._genPlayer);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
-    this._freeAgents = new FreeAgents(getPlayerID, genPlayerName);
+    this._freeAgents = new FreeAgents(genPlayerAnyAge);
     this._draft = new Draft(this._genPlayer);
   }
 
