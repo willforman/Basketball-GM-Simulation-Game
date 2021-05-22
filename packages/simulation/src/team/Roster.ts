@@ -11,25 +11,21 @@ export class Roster {
   // 4: C
   private _positions: Position[];
 
-  private _retire: (player: Player) => void;
-
   constructor(
     genPlayer: (pos: number, retire: (player: Player) => void) => Player
   ) {
-    this._retire = (player: Player): void => this.remove(player);
-
     this._positions = [];
 
     // create the position objs and gen players for them
     for (let i = 0; i < 5; i++) {
-      const starter = genPlayer(i, this._retire);
+      const starter = genPlayer(i, this.remove);
       this._positions.push(new Position(starter));
     }
 
     // generate 10 random players and add them
     for (let i = 0; i < 10; i++) {
       const pos = Math.floor(Math.random() * 6);
-      const player = genPlayer(pos, this._retire);
+      const player = genPlayer(pos, this.remove);
       this.add(player);
     }
   }
@@ -40,6 +36,7 @@ export class Roster {
 
   add(player: Player): void {
     this._positions[player.pos].add(player);
+    player.retire = this.remove;
   }
 
   addMultiple(players: Player[]): void {
