@@ -6,7 +6,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Grid templateColumns="120px auto">
       <SideBar />
-      <Box padding="30" bg="bball.background">
+      <Box
+        padding="30"
+        bg="bball.background"
+        overflowY="auto"
+        height="100%"
+        maxH="100vh"
+      >
         {children}
       </Box>
     </Grid>
