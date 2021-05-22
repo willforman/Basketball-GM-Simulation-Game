@@ -18,16 +18,9 @@ const Draft: React.FC = () => {
     return <div></div>;
   }
 
-  if (!league.draft) {
-    return (
-      <Layout>
-        <Text>No draft</Text>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
+      <Text>Upcoming draft</Text>
       <PlayerTable players={league.draft.players} />
     </Layout>
   );
