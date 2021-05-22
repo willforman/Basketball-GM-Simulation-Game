@@ -65,7 +65,7 @@ export class League {
       return genPlayer(pos, retire, false);
     };
 
-    this._conferences = new Conferences(confNames, this._genPlayer);
+    this._conferences = new Conferences(confNames, genPlayerAnyAge);
 
     this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
