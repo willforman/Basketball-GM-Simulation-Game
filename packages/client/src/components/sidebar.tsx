@@ -32,7 +32,9 @@ const NavGroup: React.FC<{ overallName: string; names: string[] }> = ({
         {names.map((name: string) => (
           <ChakraLink
             as={GatsbyLink}
-            to={`/${overallName.toLowerCase()}/${name.toLowerCase()}/`}
+            to={`/${overallName.toLowerCase()}/${name
+              .toLowerCase()
+              .replace(" ", "-")}/`}
             key={name}
             fontWeight="medium"
           >
@@ -99,7 +101,7 @@ export const SideBar: React.FC = () => {
       spacing={5}
     >
       <Simulate />
-      <NavGroup overallName={"League"} names={["Playoffs"]} />
+      <NavGroup overallName={"League"} names={["Playoffs", "Free Agents"]} />
       <NavGroup overallName={"Team"} names={["Roster"]} />
       <ChakraLink href="https://github.com/willforman/Basketball-GM-Simulation-Game">
         <Text>Github</Text>
