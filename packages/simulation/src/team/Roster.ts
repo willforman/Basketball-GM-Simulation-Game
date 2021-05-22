@@ -12,14 +12,11 @@ export class Roster {
   private _positions: Position[];
   private _cap: number;
 
-  private _genPlayer: (pos: number, retire: (player: Player) => void) => Player;
   private _retire: (player: Player) => void;
 
   constructor(
     genPlayer: (pos: number, retire: (player: Player) => void) => Player
   ) {
-    this._genPlayer = genPlayer;
-
     this._retire = (player: Player): void => this.remove(player);
 
     this._positions = [];
