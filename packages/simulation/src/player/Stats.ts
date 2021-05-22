@@ -13,15 +13,7 @@ export class Stats {
   private _stats: Stat[];
   private _rating: number;
 
-  private _getPot: () => number;
-
-  constructor(
-    statsArr: number[],
-    primaryIdxs: number[],
-    getPotential: () => number,
-    startRating: number
-  ) {
-    this._getPot = getPotential;
+  constructor(statsArr: number[], primaryIdxs: number[], startRating: number) {
     this._rating = startRating;
 
     this._stats = [];
@@ -42,8 +34,8 @@ export class Stats {
     });
   }
 
-  updateStats(): void {
-    this._stats.forEach((stat: Stat) => stat.update(this._getPot()));
+  updateStats(newPot: number): void {
+    this._stats.forEach((stat: Stat) => stat.update(newPot));
 
     // update the rating stat
     const sum = this._stats.reduce(

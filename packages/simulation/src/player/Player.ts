@@ -92,7 +92,7 @@ export class Player {
 
   goToNextYear(): void {
     this._age++;
-    this.stats.updateStats();
+    this.stats.updateStats(this._potential);
   }
 
   addBoxScore(boxScore: BoxScore): void {
