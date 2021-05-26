@@ -121,6 +121,10 @@ export class Stats {
   get rebounding(): number {
     return this._stats[8].get();
   }
+
+  get all(): number[] {
+    return this._stats.map((curr: Stat) => curr.get());
+  }
 }
 
 class Stat {
