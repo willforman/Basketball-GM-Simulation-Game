@@ -50,7 +50,12 @@ const WeekInput: React.FC<{
         defaultValue={1}
         min={1}
         max={numWeeks}
-        onChange={(week: string) => setWeek(parseInt(week))}
+        onChange={(week: string) => {
+          const weekNum = parseInt(week);
+          if (weekNum >= 1 && weekNum <= numWeeks) {
+            setWeek(weekNum);
+          }
+        }}
       >
         <NumberInputField />
         <NumberInputStepper>
