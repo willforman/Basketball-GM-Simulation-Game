@@ -8,6 +8,7 @@ import {
   BOX_SCORE_STATS,
 } from "../models";
 import { Stats } from "./Stats";
+import { zeros } from "../services/funcs";
 
 export class Player {
   private _name: string;
@@ -216,7 +217,7 @@ class SeasonStats {
   }
 
   get avg(): number[] {
-    const avgs: number[] = new Array(11).fill(0);
+    const avgs: number[] = zeros(BOX_SCORE_STATS);
 
     for (let i = 0; i < this._boxScores.length; i++) {
       for (let j = 0; j < BOX_SCORE_STATS; j++) {

@@ -274,6 +274,22 @@ export const simGame = (
     }
   }
 
+  const addBS = (players: Player[], boxScores: Map<Player, BoxScore>) => {
+    players.forEach((player: Player) => {
+      const bs = boxScores.get(player);
+
+      if (!bs) {
+        console.error(player);
+        throw new Error("Given invalid player");
+      }
+
+      player.addBoxScore(bs);
+    });
+  };
+
+  addBS(homeRoster.allPlayers, homeBoxScores);
+  addBS(awayRoster.allPlayers, awayBoxScores);
+
   return {
     homeBoxScores,
     awayBoxScores,

@@ -1,4 +1,5 @@
 import { Move, BOX_SCORE_STATS } from "../models";
+import { zeros } from "../services/funcs";
 
 export class BoxScore {
   private _title: string;
@@ -8,7 +9,7 @@ export class BoxScore {
 
   constructor(title: string) {
     this._title = title;
-    this._all = new Array(BOX_SCORE_STATS).fill(0);
+    this._all = zeros(BOX_SCORE_STATS);
   }
 
   get points(): number {

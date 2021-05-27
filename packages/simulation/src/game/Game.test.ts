@@ -17,6 +17,6 @@ describe("Game", () => {
   it("Box scores are correct", () => {
     const boxScore = game.boxScores[0];
 
-    expect(boxScore.FGA).toBeGreaterThan(0);
+    expect(boxScore.FGAs).toBeGreaterThan(0);
   });
 });

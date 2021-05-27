@@ -2,6 +2,7 @@ import { TeamNames } from "../models";
 import { PlayerNameGenService } from "./PlayerNameService";
 import { RandomSelector } from "./RandomSelector";
 import { getTeamNames } from "./getTeamNames";
+import { zeros } from "./funcs";
 
 describe("Team Name Service", () => {
   it("Generates team names", async () => {
@@ -58,5 +59,18 @@ describe("Random Selector", () => {
     // ideally should be 33%
     expect(oneSelected).toBeGreaterThanOrEqual(300);
     expect(oneSelected).toBeLessThanOrEqual(370);
+  });
+});
+
+describe("Funcs", () => {
+  it("Zeros", () => {
+    const len = 10;
+    const arr = zeros(len);
+
+    expect(arr).toHaveLength(len);
+
+    for (let i = 0; i < len; i++) {
+      expect(arr[i]).toBe(0);
+    }
   });
 });
