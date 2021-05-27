@@ -195,6 +195,19 @@ const playPossession = (
   };
 };
 
+const addMinsToBoxScores = (items: TeamItems, seconds: number) => {
+  items.starters.forEach((player) => {
+    const bs = items.boxScores.get(player);
+
+    if (!bs) {
+      console.error(player);
+      throw new Error("Given invalid player");
+    }
+
+    bs.addMins(seconds / 60);
+  });
+};
+
 export const simGame = (
   homeTeam: Team,
   awayTeam: Team,
@@ -246,7 +259,7 @@ export const simGame = (
 
   for (let quarter = 1; quarter <= 4; quarter++) {
     let secondsLeftInQuarter = quarterMins * 60;
-    let consecPlays = 0;
+    let consecSecs = 0;
     while (secondsLeftInQuarter > 0) {
       const offItems = homeHasBall ? homeItems : awayItems;
       const defItems = homeHasBall ? awayItems : homeItems;
@@ -260,16 +273,19 @@ export const simGame = (
       }
       homeHasBall = !homeHasBall;
 
-      consecPlays++;
+      consecSecs += possession.secondsTaken;
 
-      if (Math.floor(Math.random() * consecPlays) > 5) {
+      if (Math.floor(Math.random() * consecSecs) > 400) {
+        addMinsToBoxScores(homeItems, consecSecs);
+        addMinsToBoxScores(awayItems, consecSecs);
+
         homeItems.starters = homeRoster.getSubs();
         awayItems.starters = awayRoster.getSubs();
 
         homeItems.locations.addPlayers(homeItems.starters);
         awayItems.locations.addPlayers(awayItems.starters);
 
-        consecPlays = 0;
+        consecSecs = 0;
       }
     }
   }
