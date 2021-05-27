@@ -96,7 +96,7 @@ const playPossession = (
       const locPassingTo = offItems.locations.getLocOfPlayer(playerPassingTo);
 
       const addAssistToPasser = () => {
-        offBoxScore.addAssist();
+        offBoxScore.addAssists(1);
       };
 
       // calls new play to be played because ball was passed
@@ -137,14 +137,14 @@ const playPossession = (
     }
     // if offense tried to pass but defense stole it
     if (offMove === Move.PASS) {
-      defBoxScore.addSteal();
+      defBoxScore.addSteals(1);
     }
     //
     else {
       offBoxScore.addShot(offMove);
       // if defense rating is 20 or more higher, then it's a block and there's no chance for rebounding for offense
       if (defRating - 20 >= offRating) {
-        defBoxScore.addBlock();
+        defBoxScore.addBlocks(1);
       } else {
         const rebLoc = getReboundLocation();
 
@@ -164,7 +164,7 @@ const playPossession = (
         // if offense gets rebound
         if (compareRatings(offRebRating, defRebRating)) {
           const rebounderBoxScore = offItems.boxScores.get(offRebounder!);
-          rebounderBoxScore!.addRebound();
+          rebounderBoxScore!.addRebounds(1);
 
           // calls new play to be played because ball was rebounded
           const passResult = playPossession(
@@ -183,7 +183,7 @@ const playPossession = (
         // if defense gets rebound
         else {
           const rebounderBoxScore = defItems.boxScores.get(defRebounder!);
-          rebounderBoxScore!.addRebound();
+          rebounderBoxScore!.addRebounds(1);
         }
       }
     }
@@ -273,6 +273,22 @@ export const simGame = (
       }
     }
   }
+
+  const addBS = (players: Player[], boxScores: Map<Player, BoxScore>) => {
+    players.forEach((player: Player) => {
+      const bs = boxScores.get(player);
+
+      if (!bs) {
+        console.error(player);
+        throw new Error("Given invalid player");
+      }
+
+      player.addBoxScore(bs);
+    });
+  };
+
+  addBS(homeRoster.allPlayers, homeBoxScores);
+  addBS(awayRoster.allPlayers, awayBoxScores);
 
   return {
     homeBoxScores,

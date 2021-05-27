@@ -1,7 +1,14 @@
 import { BoxScore } from "../game/BoxScore";
 import { getStats } from "./statGen";
-import { Move, Location, Archetype, Contract } from "../models";
+import {
+  Move,
+  Location,
+  Archetype,
+  Contract,
+  BOX_SCORE_STATS,
+} from "../models";
 import { Stats } from "./Stats";
+import { zeros } from "../services/funcs";
 
 export class Player {
   private _name: string;
@@ -15,13 +22,12 @@ export class Player {
   private _stats: Stats;
 
   private _contract: Contract;
+  private _seasonStats: SeasonStats[];
 
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
 
   private _retire: (player: Player) => void;
-
-  private boxScores: BoxScore[];
 
   constructor(
     name: string,
@@ -53,7 +59,7 @@ export class Player {
 
     this._id = id;
 
-    this.boxScores = [];
+    this._seasonStats = [new SeasonStats([new BoxScore("season")])];
 
     const archetypeNum = this._pos + this.getRand(0, 1);
 
@@ -83,6 +89,11 @@ export class Player {
     if (this.getRand(this._age - 31, 0) > 5) {
       this._retire(this);
     }
+
+    this._contract.yearsLeft--;
+
+    this._seasonStats.push(new SeasonStats([new BoxScore("season")]));
+
   }
 
   private getRand(lb: number, ub: number): number {
@@ -95,7 +106,7 @@ export class Player {
   }
 
   addBoxScore(boxScore: BoxScore): void {
-    this.boxScores.push(boxScore);
+    this._seasonStats[this._seasonStats.length - 1].add(boxScore);
   }
 
   playerComp(player: Player): number {
@@ -200,4 +211,28 @@ export class Player {
 // returns 0 if age is over 33, 1 if not
 function ageBoolean(age: number): number {
   return age <= 33 ? 1 : 0;
+}
+
+class SeasonStats {
+  private _boxScores: BoxScore[];
+
+  constructor(boxScores: BoxScore[]) {
+    this._boxScores = boxScores;
+  }
+
+  add(box: BoxScore): void {
+    this._boxScores.push(box);
+  }
+
+  get avg(): number[] {
+    const avgs: number[] = zeros(BOX_SCORE_STATS);
+
+    for (let i = 0; i < this._boxScores.length; i++) {
+      for (let j = 0; j < BOX_SCORE_STATS; j++) {
+        avgs[j] += this._boxScores[i].all[j];
+      }
+    }
+
+    return avgs;
+  }
 }

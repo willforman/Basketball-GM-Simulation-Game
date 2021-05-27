@@ -44,3 +44,7 @@ export const oneInXOdds = (x: number): boolean => {
 export const mapPlayerIds = (players: Player[]): number[] => {
   return players.map((player: Player) => player.id);
 };
+
+export const zeros = (numZeros: number): number[] => {
+  return new Array(numZeros).fill(0);
+};

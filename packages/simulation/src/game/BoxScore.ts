@@ -1,59 +1,126 @@
-import { Move } from "../models";
+import { Move, BOX_SCORE_STATS } from "../models";
+import { zeros } from "../services/funcs";
 
 export class BoxScore {
   private _title: string;
 
   // stats tracked in game
-  private _points: number;
-  private _rebounds: number;
-  private _assists: number;
-  private _blocks: number;
-  private _steals: number;
-  private _FGAs: number;
-  private _FGMs: number;
-  private _threePtAs: number;
-  private _threePtMs: number;
-  private _FTAs: number;
-  private _FTMs: number;
+  private _all: number[];
 
   constructor(title: string) {
     this._title = title;
-
-    this._points = this._rebounds = this._assists = this._blocks = this._steals = 0;
-    this._FGAs = this._FGMs = this._threePtAs = this._threePtMs = this._FTAs = this._FTMs = 0;
+    this._all = zeros(BOX_SCORE_STATS);
   }
 
-  addShot(move: string, points = 0): void {
-    this._FGAs++;
+  get points(): number {
+    return this._all[0];
+  }
+
+  get rebounds(): number {
+    return this._all[1];
+  }
+
+  get assists(): number {
+    return this._all[2];
+  }
+
+  get blocks(): number {
+    return this._all[3];
+  }
+
+  get steals(): number {
+    return this._all[4];
+  }
+
+  get FGAs(): number {
+    return this._all[5];
+  }
+
+  get FGMs(): number {
+    return this._all[6];
+  }
+
+  get threePtAs(): number {
+    return this._all[7];
+  }
+
+  get threePtMs(): number {
+    return this._all[8];
+  }
+
+  get FTAs(): number {
+    return this._all[9];
+  }
+
+  get FTMs(): number {
+    return this._all[10];
+  }
+
+  get all(): number[] {
+    return this._all;
+  }
+
+  addShot(move: Move, points = 0): void {
+    this._all[5]++;
     if (move === Move.THREE_PT_SHOT) {
-      this._threePtAs++;
+      this._all[7]++;
     }
     if (points > 0) {
-      this._points += points;
-      this._FGMs++;
+      this._all[0] += points;
+      this._all[6]++;
       if (move === Move.THREE_PT_SHOT) {
-        this._threePtMs++;
+        this._all[8]++;
       }
     }
   }
 
-  addAssist(): void {
-    this._assists++;
+  addPoints(num: number): void {
+    this._all[0] += num;
   }
 
-  addSteal(): void {
-    this._steals++;
+  addRebounds(num: number): void {
+    this._all[1] += num;
   }
 
-  addBlock(): void {
-    this._blocks++;
+  addAssists(num: number): void {
+    this._all[2] += num;
   }
 
-  addRebound(): void {
-    this._rebounds++;
+  addBlocks(num: number): void {
+    this._all[3] += num;
   }
 
-  get FGA(): number {
-    return this._FGAs;
+  addSteals(num: number): void {
+    this._all[4] += num;
+  }
+
+  addFGAs(num: number): void {
+    this._all[5] += num;
+  }
+
+  addFGMs(num: number): void {
+    this._all[6] += num;
+  }
+
+  addThreePtAs(num: number): void {
+    this._all[7] += num;
+  }
+
+  addThreePtMs(num: number): void {
+    this._all[8] += num;
+  }
+
+  addFTAs(num: number): void {
+    this._all[9] += num;
+  }
+
+  addFTMs(num: number): void {
+    this._all[10] += num;
+  }
+
+  add(box: BoxScore): void {
+    for (let i = 0; i < this._all.length; i++) {
+      this._all[i] += box.all[i];
+    }
   }
 }
