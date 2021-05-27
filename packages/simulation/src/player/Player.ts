@@ -90,6 +90,8 @@ export class Player {
     }
 
     this._contract.yearsLeft--;
+
+    this._seasonStats.push(new SeasonStats([new BoxScore("season")]));
   }
 
   private getRand(lb: number, ub: number): number {
