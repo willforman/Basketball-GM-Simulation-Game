@@ -1,4 +1,4 @@
-import { Move } from "../models";
+import { Move, BOX_SCORE_STATS } from "../models";
 
 export class BoxScore {
   private _title: string;
@@ -8,7 +8,7 @@ export class BoxScore {
 
   constructor(title: string) {
     this._title = title;
-    this._all = new Array(11).fill(0);
+    this._all = new Array(BOX_SCORE_STATS).fill(0);
   }
 
   get points(): number {
@@ -59,7 +59,7 @@ export class BoxScore {
     return this._all;
   }
 
-  addShot(move: string, points = 0): void {
+  addShot(move: Move, points = 0): void {
     this._all[5]++;
     if (move === Move.THREE_PT_SHOT) {
       this._all[7]++;
@@ -115,5 +115,11 @@ export class BoxScore {
 
   addFTMs(num: number): void {
     this._all[10] += num;
+  }
+
+  add(box: BoxScore): void {
+    for (let i = 0; i < this._all.length; i++) {
+      this._all[i] += box.all[i];
+    }
   }
 }

@@ -1,6 +1,12 @@
 import { BoxScore } from "../game/BoxScore";
 import { getStats } from "./statGen";
-import { Move, Location, Archetype, Contract } from "../models";
+import {
+  Move,
+  Location,
+  Archetype,
+  Contract,
+  BOX_SCORE_STATS,
+} from "../models";
 import { Stats } from "./Stats";
 
 export class Player {
@@ -52,7 +58,7 @@ export class Player {
 
     this._id = id;
 
-    this._seasonStats = [new SeasonStats(new BoxScore("season"), 0)];
+    this._seasonStats = [new SeasonStats([new BoxScore("season")])];
 
     const archetypeNum = this._pos + this.getRand(0, 1);
 
@@ -95,7 +101,7 @@ export class Player {
   }
 
   addBoxScore(boxScore: BoxScore): void {
-    this.boxScores.push(boxScore);
+    this._seasonStats[this._seasonStats.length - 1].add(boxScore);
   }
 
   playerComp(player: Player): number {
@@ -199,17 +205,25 @@ function ageBoolean(age: number): number {
 }
 
 class SeasonStats {
-  private _stats: BoxScore;
-  private _games: number;
+  private _boxScores: BoxScore[];
 
-  constructor(stats: BoxScore, games: number) {
-    this._stats = stats;
-    this._games = games;
+  constructor(boxScores: BoxScore[]) {
+    this._boxScores = boxScores;
   }
 
-  get(): number[] {
-    return this._stats.all.map((stat: number) => stat / this._games);
+  add(box: BoxScore): void {
+    this._boxScores.push(box);
   }
 
-  add(box: BoxScore): void {}
+  get avg(): number[] {
+    const avgs: number[] = new Array(11).fill(0);
+
+    for (let i = 0; i < this._boxScores.length; i++) {
+      for (let j = 0; j < BOX_SCORE_STATS; j++) {
+        avgs[j] += this._boxScores[i].all[j];
+      }
+    }
+
+    return avgs;
+  }
 }
