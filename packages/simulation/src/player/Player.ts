@@ -93,7 +93,6 @@ export class Player {
     this._contract.yearsLeft--;
 
     this._seasonStats.push(new SeasonStats([new BoxScore("season")]));
-
   }
 
   private getRand(lb: number, ub: number): number {
@@ -206,6 +205,10 @@ export class Player {
   set retire(newRetire: (player: Player) => void) {
     this._retire = newRetire;
   }
+
+  get seasonStats(): SeasonStats[] {
+    return this._seasonStats;
+  }
 }
 
 // returns 0 if age is over 33, 1 if not
@@ -227,11 +230,13 @@ class SeasonStats {
   get avg(): number[] {
     const avgs: number[] = zeros(BOX_SCORE_STATS);
 
-    for (let i = 0; i < this._boxScores.length; i++) {
-      for (let j = 0; j < BOX_SCORE_STATS; j++) {
-        avgs[j] += this._boxScores[i].all[j];
+    console.log(this._boxScores);
+
+    this._boxScores.forEach((boxScore) => {
+      for (let i = 0; i < boxScore.all.length; i++) {
+        avgs[i] += boxScore.all[i] / this._boxScores.length;
       }
-    }
+    });
 
     return avgs;
   }
