@@ -1,4 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
+import "focus-visible/dist/focus-visible";
 
 export default extendTheme({
   colors: {
@@ -44,18 +45,5 @@ export default extendTheme({
         fontWeight: "bold",
       },
     },
-
-    // Table: {
-    //   baseStyle: {
-    //     color: "blue",
-    //     bg: "white",
-    //   },
-    // },
-    // Td: {
-    //   baseStyle: {
-    //     color: "yellow",
-    //     bg: "green",
-    //   },
-    // },
   },
 });
