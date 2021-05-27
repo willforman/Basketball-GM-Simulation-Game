@@ -52,7 +52,7 @@ const PlayerPage: React.FC<{ location: Location }> = ({ location }) => {
           <DefTable player={player} />
         </GridItem>
         <GridItem colSpan={2}>
-          <BoxScoreTable player={player} />
+          <BoxScoreTable statLists={player.avgs} />
         </GridItem>
       </Grid>
     </Layout>

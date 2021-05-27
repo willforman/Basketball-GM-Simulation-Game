@@ -8,9 +8,9 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import { Player } from "@bball/simulation/src";
+import { BoxScore } from "@bball/simulation/src";
 
-const BoxScoreTable: React.FC<{ player: Player }> = ({ player }) => {
+const BoxScoreTable: React.FC<{ statLists: number[][] }> = ({ statLists }) => {
   return (
     <TableContainer>
       <Table bg="bball.background_light">
@@ -27,12 +27,13 @@ const BoxScoreTable: React.FC<{ player: Player }> = ({ player }) => {
             <Th>3PM</Th>
             <Th>FTA</Th>
             <Th>FTM</Th>
+            <Th>Mins</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {player.seasonStats.map((seasonStat, idx) => (
+          {statLists.map((statList, idx) => (
             <Tr key={idx}>
-              {seasonStat.avg.map((stat) => (
+              {statList.map((stat) => (
                 <Td>{stat.toFixed(2)}</Td>
               ))}
             </Tr>

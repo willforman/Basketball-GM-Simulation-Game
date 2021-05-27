@@ -209,6 +209,10 @@ export class Player {
   get seasonStats(): SeasonStats[] {
     return this._seasonStats;
   }
+
+  get avgs(): number[][] {
+    return this._seasonStats.map((season) => season.avg);
+  }
 }
 
 // returns 0 if age is over 33, 1 if not

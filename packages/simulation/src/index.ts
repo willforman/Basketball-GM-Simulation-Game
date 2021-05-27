@@ -17,6 +17,7 @@ export * from "./league/LeagueState";
 export * from "./player/Player";
 export * from "./game/Game";
 export * from "./league/Playoffs";
+export * from "./game/BoxScore";
 export { PlayerNameGenService } from "./services/PlayerNameService";
 export { getTeamNames } from "./services/getTeamNames";
 export * from "./models";
