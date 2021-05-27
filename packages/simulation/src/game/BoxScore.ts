@@ -56,6 +56,10 @@ export class BoxScore {
     return this._all[10];
   }
 
+  get mins(): number {
+    return this._all[11];
+  }
+
   get all(): number[] {
     return this._all;
   }
@@ -116,6 +120,10 @@ export class BoxScore {
 
   addFTMs(num: number): void {
     this._all[10] += num;
+  }
+
+  addMins(num: number): void {
+    this._all[11] += num;
   }
 
   add(box: BoxScore): void {
