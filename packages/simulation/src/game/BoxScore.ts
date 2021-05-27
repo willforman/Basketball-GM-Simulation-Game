@@ -37,23 +37,51 @@ export class BoxScore {
     }
   }
 
-  addAssist(): void {
-    this._assists++;
-  }
-
-  addSteal(): void {
-    this._steals++;
-  }
-
-  addBlock(): void {
-    this._blocks++;
-  }
-
-  addRebound(): void {
-    this._rebounds++;
-  }
-
   get FGA(): number {
     return this._FGAs;
+  }
+
+  addPoints(num: number): void {
+    this._points += num;
+  }
+
+  addRebounds(num: number): void {
+    this._rebounds += num;
+  }
+
+  addAssists(num: number): void {
+    this._assists += num;
+  }
+
+  addBlocks(num: number): void {
+    this._blocks += num;
+  }
+
+  addSteals(num: number): void {
+    this._steals += num;
+  }
+
+  addFGAs(num: number): void {
+    this._FGAs += num;
+  }
+
+  addFGMs(num: number): void {
+    this._FGMs += num;
+  }
+
+  addThreePtAs(num: number): void {
+    this._threePtAs += num;
+  }
+
+  addThreePtMs(num: number): void {
+    this._threePtMs += num;
+  }
+
+  addFTAs(num: number): void {
+    this._FTAs += num;
+  }
+
+  addFTMs(num: number): void {
+    this._FTMs += num;
   }
 }
