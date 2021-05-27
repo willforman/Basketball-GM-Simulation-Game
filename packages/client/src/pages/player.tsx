@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/layout";
 import { useLeague } from "../context/league";
 import queryString from "query-string";
-import { Player } from "@bball/simulation/src";
-import { Table } from "@chakra-ui/react";
-import StatsTable from "../components/statTable";
+import { Text } from "@chakra-ui/react";
+import { OffTable, DefTable } from "../components/statTable";
+import { navigate } from "gatsby";
 
 const PlayerPage: React.FC<{ location: Location }> = ({ location }) => {
+  const { league } = useLeague();
+
+  useEffect(() => {
+    if (!league) {
+      navigate("/");
+    }
+  });
+
+  if (!league) {
+    return <Layout>No league</Layout>;
+  }
+
   const idParam = queryString.parse(location.search).id;
 
   if (typeof idParam !== "string") {
@@ -17,11 +29,6 @@ const PlayerPage: React.FC<{ location: Location }> = ({ location }) => {
 
   if (id < 0) {
     return <Layout>Can't give negative id</Layout>;
-  }
-
-  const { league } = useLeague();
-  if (!league) {
-    return <Layout>No league</Layout>;
   }
 
   if (id >= league.players.length) {
@@ -36,7 +43,11 @@ const PlayerPage: React.FC<{ location: Location }> = ({ location }) => {
 
   return (
     <Layout>
-      <StatsTable player={player} />
+      <Text>{player.name}</Text>
+      <Text>{player.posStr}</Text>
+      <Text>{player.archetype}</Text>
+      <OffTable player={player} />
+      <DefTable player={player} />
     </Layout>
   );
 };
