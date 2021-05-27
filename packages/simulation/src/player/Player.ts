@@ -15,13 +15,12 @@ export class Player {
   private _stats: Stats;
 
   private _contract: Contract;
+  private _seasonStats: SeasonStats[];
 
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
 
   private retire: (player: Player) => void;
-
-  private boxScores: BoxScore[];
 
   constructor(
     name: string,
@@ -53,7 +52,7 @@ export class Player {
 
     this._id = id;
 
-    this.boxScores = [];
+    this._seasonStats = [new SeasonStats(new BoxScore("season"), 0)];
 
     const archetypeNum = this._pos + this.getRand(0, 1);
 
@@ -197,4 +196,20 @@ export class Player {
 // returns 0 if age is over 33, 1 if not
 function ageBoolean(age: number): number {
   return age <= 33 ? 1 : 0;
+}
+
+class SeasonStats {
+  private _stats: BoxScore;
+  private _games: number;
+
+  constructor(stats: BoxScore, games: number) {
+    this._stats = stats;
+    this._games = games;
+  }
+
+  get(): number[] {
+    return this._stats.all.map((stat: number) => stat / this._games);
+  }
+
+  add(box: BoxScore): void {}
 }

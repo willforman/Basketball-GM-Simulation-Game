@@ -84,4 +84,20 @@ export class BoxScore {
   addFTMs(num: number): void {
     this._FTMs += num;
   }
+
+  get all(): number[] {
+    return [
+      this._points,
+      this._rebounds,
+      this._assists,
+      this._blocks,
+      this._steals,
+      this._FGAs,
+      this._FGMs,
+      this._threePtAs,
+      this._threePtMs,
+      this._FTAs,
+      this._FTMs,
+    ];
+  }
 }
