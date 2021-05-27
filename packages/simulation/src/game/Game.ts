@@ -2,6 +2,7 @@ import { Player } from "../player/Player";
 import { Team } from "../team/Team";
 import { BoxScore } from "./BoxScore";
 import { simGame } from "./simGame";
+import { QUARTER_LENGTH_MINS } from "../models/consts";
 
 export class Game {
   private _homeTeam: Team;
@@ -15,11 +16,6 @@ export class Game {
 
   private _completed: boolean;
   private _isPlayoffGame: boolean;
-
-  // declared constants
-  get QUARTER_LENGTH_MINUTES(): number {
-    return 15;
-  }
 
   constructor(
     team1: Team,
@@ -50,11 +46,7 @@ export class Game {
       throw Error("Game already played");
     }
 
-    const result = simGame(
-      this._homeTeam,
-      this._awayTeam,
-      this.QUARTER_LENGTH_MINUTES
-    );
+    const result = simGame(this._homeTeam, this._awayTeam, QUARTER_LENGTH_MINS);
 
     this._homeScore = result.homeScore;
     this._awayScore = result.awayScore;

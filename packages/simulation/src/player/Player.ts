@@ -27,7 +27,7 @@ export class Player {
   getLoc: () => Location;
   getMove: (loc: Location) => Move;
 
-  private retire: (player: Player) => void;
+  private _retire: (player: Player) => void;
 
   constructor(
     name: string,
@@ -38,7 +38,7 @@ export class Player {
   ) {
     this._name = name;
     this._id = id;
-    this.retire = retire;
+    this._retire = retire;
 
     // if given valid position, use that, otherwise generate random one
     this._pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
@@ -84,14 +84,16 @@ export class Player {
 
   advanceYear(): void {
     this._age++;
+    this._contract.yearsLeft--;
 
     if (this.getRand(this._age - 31, 0) > 5) {
-      this.retire(this);
+      this._retire(this);
     }
 
     this._contract.yearsLeft--;
 
     this._seasonStats.push(new SeasonStats([new BoxScore("season")]));
+
   }
 
   private getRand(lb: number, ub: number): number {
@@ -100,7 +102,7 @@ export class Player {
 
   goToNextYear(): void {
     this._age++;
-    this.stats.updateStats();
+    this.stats.updateStats(this._potential);
   }
 
   addBoxScore(boxScore: BoxScore): void {
@@ -199,6 +201,10 @@ export class Player {
 
   get age(): number {
     return this._age;
+  }
+
+  set retire(newRetire: (player: Player) => void) {
+    this._retire = newRetire;
   }
 }
 
