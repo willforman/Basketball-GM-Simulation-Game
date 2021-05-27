@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Layout from "../components/layout";
 import { useLeague } from "../context/league";
 import queryString from "query-string";
-import { Text } from "@chakra-ui/react";
+import { Grid, GridItem, Text } from "@chakra-ui/react";
 import { OffTable, DefTable } from "../components/statTable";
 import { navigate } from "gatsby";
 import BoxScoreTable from "../components/boxScoreTable";
@@ -44,12 +44,17 @@ const PlayerPage: React.FC<{ location: Location }> = ({ location }) => {
 
   return (
     <Layout>
-      <Text>{player.name}</Text>
-      <Text>{player.posStr}</Text>
-      <Text>{player.archetype}</Text>
-      <OffTable player={player} />
-      <DefTable player={player} />
-      <BoxScoreTable player={player} />
+      <Grid templateColumns="repeat(2, 1fr)" gap={2}>
+        <GridItem>
+          <OffTable player={player} />
+        </GridItem>
+        <GridItem>
+          <DefTable player={player} />
+        </GridItem>
+        <GridItem colSpan={2}>
+          <BoxScoreTable player={player} />
+        </GridItem>
+      </Grid>
     </Layout>
   );
 };
