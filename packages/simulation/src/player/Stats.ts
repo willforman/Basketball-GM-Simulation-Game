@@ -1,4 +1,5 @@
-import { Move } from "../models";
+import { Move, NUM_STATS } from "../models";
+import { getRand } from "../services/funcs";
 
 export class Stats {
   // 0: inside shot
@@ -11,38 +12,13 @@ export class Stats {
   // 7: stealing
   // 8: rebounding
   private _stats: Stat[];
-  private _rating: number;
 
-  constructor(statsArr: number[], primaryIdxs: number[], startRating: number) {
-    this._rating = startRating;
-
-    this._stats = [];
-    statsArr.forEach((stat: number, idx: number) => {
-      let startGrowth = 0;
-      if (startRating > 0) {
-        if (idx === statsArr.length - 1) {
-          startGrowth = startRating;
-        } else {
-          const upperBoundRand =
-            startRating > 15 ? startRating / 2 : startRating;
-          startGrowth = Math.floor(Math.random() * upperBoundRand + 1);
-        }
-      }
-
-      const isPrimary = primaryIdxs.includes(idx);
-      this._stats.push(new Stat(stat, isPrimary, startGrowth));
-    });
+  constructor(stats: Stat[]) {
+    this._stats = stats;
   }
 
   updateStats(newPot: number): void {
     this._stats.forEach((stat: Stat) => stat.update(newPot));
-
-    // update the rating stat
-    const sum = this._stats.reduce(
-      (sum: number, curr: Stat) => sum + curr.growth,
-      0
-    );
-    this._rating = Math.round(sum / 3);
   }
 
   getOffenseRating(offMove: Move): number {
@@ -75,7 +51,11 @@ export class Stats {
   // sums growth for each stat and returns sum / 3, rounded
   // can range from 0 to 60 (inclusive)
   get rating(): number {
-    return this._rating;
+    const sum = this._stats.reduce(
+      (sum: number, curr: Stat) => sum + curr.value,
+      0
+    );
+    return (sum * 2) / NUM_STATS;
   }
 
   get insideShot(): number {
@@ -119,38 +99,33 @@ export class Stats {
   }
 }
 
-class Stat {
-  private _base: number;
-  private _growth: number;
+export class Stat {
+  private _value: number;
+  private _primaryMult: number; // 2 if primary stat, 1 if not
 
-  private _isPrimary: number;
-
-  constructor(base: number, isPrimary: boolean, startGrowth: number) {
-    this._base = base;
-    this._growth = startGrowth;
+  constructor(value: number, primaryMult: number) {
+    this._value = value;
+    this._primaryMult = primaryMult;
   }
 
   get(): number {
-    const growth = this._growth * this._isPrimary ? 2 : 1;
-    return this._base + growth;
+    return 20 + this._value * this._primaryMult;
   }
 
-  get growth(): number {
-    return this._isPrimary ? 2 : 1 * this._growth;
+  get value(): number {
+    return this._value;
   }
 
   update(potential: number): number {
     const rawPot = potential - 40; // potential can only go from 40 to 100, so this ranges from 0 to 60
-    let change = Math.round(
-      Math.random() * (15 - this._growth - (rawPot / 4 - 15))
-    );
-    if (change + this._growth < 0) {
-      change = 0 - this._growth;
-    } else if (change + this._growth > 15) {
-      change = 15 - this._growth;
+    const change = getRand(0, rawPot - this._value) - 10;
+    this._value += change;
+    if (this._value < 0) {
+      this._value = 0;
+    } else if (this._value > 40) {
+      this._value = 40;
     }
 
-    this._growth += change;
     return change;
   }
 }

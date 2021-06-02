@@ -5,3 +5,4 @@ export const DRAFT_PLAYERS = 64 + 30;
 export const MAX_CAP = 100;
 export const BOX_SCORE_STATS = 12;
 export const QUARTER_LENGTH_MINS = 15;
+export const NUM_STATS = 9;

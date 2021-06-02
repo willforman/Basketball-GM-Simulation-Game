@@ -1,44 +1,69 @@
-import { getStats } from "./statGen";
-import { Location } from "../models";
-import { makePlayer } from "../testingObjs/testingObjs";
+import { Archetype, Location, NUM_STATS } from "../models";
+import { Stat, Stats } from "./Stats";
+import { getRand } from "../services/funcs";
+import { Player, SeasonStats } from "./Player";
+
+const makePlayer = (): Player => {
+  const statValues = [20, 20, 20, 20, 20, 20, 20, 20, 20].map(
+    (stat: number) => new Stat(stat, 1)
+  );
+  const stats = new Stats(statValues);
+  const contract = {
+    price: 10,
+    yearsLeft: 3,
+  };
+  const seasonStats = [new SeasonStats([])];
+
+  return new Player(
+    "Test player",
+    20,
+    0,
+    0,
+    Archetype.SHARPSHOOTER,
+    70,
+    stats,
+    contract,
+    seasonStats
+  );
+};
 
 describe("Player", () => {
   const player = makePlayer();
+
   it("Is created", () => {
-    expect(player).toBeTruthy();
+    expect(player.name).toEqual("Test player");
   });
 
-  it("Get location", () => {
-    const loc = player.getLoc();
-    expect(loc).toBeTruthy();
-  });
+  it("Updates stats on advance year", () => {
+    player.advanceYear();
 
-  it("Get move", () => {
-    const move = player.getMove(Location.PAINT);
-    expect(move).toBeTruthy();
-  });
-
-  it("Gets contract options", () => {
-    expect(player.contractOptions).toHaveLength(5);
+    const notAllEqualTo40 = player.stats.all.some(
+      (stat: number) => stat !== 40
+    );
+    console.log(player.stats.all);
+    expect(notAllEqualTo40).toBeTruthy();
   });
 });
 
-describe("StatsGen", () => {
-  const statsGen = getStats(0, () => 60, 50);
+describe("Stats", () => {
+  it("Stays in bounds after updating", () => {
+    const stat = new Stat(20, 1);
 
-  it("Outputs correctly", () => {
-    expect(statsGen).toEqual(
-      expect.objectContaining({
-        archetype: "Playmaker",
-      })
-    );
+    for (let i = 0; i < 50; i++) {
+      stat.update(getRand(40, 100));
+      expect(stat.value).toBeLessThanOrEqual(40);
+      expect(stat.value).toBeGreaterThanOrEqual(0);
+    }
   });
 
-  it("Gets location", () => {
-    expect(statsGen.getLocation()).toBeTruthy();
-  });
+  it("Calculates correct rating", () => {
+    const statsArr = [];
 
-  it("Gets move at location", () => {
-    expect(statsGen.getMove(Location.PAINT)).toBeTruthy();
+    for (let i = 0; i < NUM_STATS; i++) {
+      statsArr.push(new Stat(20, 1));
+    }
+
+    const stats = new Stats(statsArr);
+    expect(stats.rating).toEqual(40);
   });
 });

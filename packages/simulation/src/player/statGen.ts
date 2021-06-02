@@ -1,6 +1,14 @@
 import { RandomSelector } from "../services/RandomSelector";
-import { Choice, Move, Location, moveArr, Archetype } from "../models";
+import {
+  Choice,
+  Move,
+  Location,
+  moveArr,
+  Archetype,
+  Contract,
+} from "../models";
 import { Stats } from "./Stats";
+import { getRand } from "../services/funcs";
 
 export interface StatsGen {
   archetype: Archetype;
@@ -41,10 +49,6 @@ const makeLocation = (
   };
 };
 
-const getRandStatNum = (): number => {
-  return Math.floor(Math.random() * 31) - 15;
-};
-
 // const getMovesCanDefend = (stats: number[]): Move[] => {
 //   const moves: Move[] = [];
 
@@ -77,130 +81,127 @@ const getRandStatNum = (): number => {
 //   }
 // };
 
-export function getStats(
-  archetypeNum: number,
-  getPot: () => number,
-  rating: number
-): StatsGen {
-  // stats order:
-  // inside shot, 3 pt shot
-  // free throw, passing
-  // inside defense, 3 pt defense
-  // blocking, stealing
-  // rebounding
-  let archetype: Archetype;
-  let stats: Stats;
-  let locs: LocationObj[];
-
+export const getArchetype = (archetypeNum: number): Archetype => {
   switch (archetypeNum) {
     case 0:
-      archetype = Archetype.PLAYMAKER;
-      stats = new Stats(
-        [20, 40, 65, 85, 15, 35, 75, 85, 20],
-        [2, 3, 7],
-        rating
-      );
-      locs = [
+      return Archetype.PLAYMAKER;
+    case 1:
+      return Archetype.SHARPSHOOTER;
+    case 2:
+      return Archetype.SLASHER;
+    case 3:
+      return Archetype.LOCKDOWN;
+    case 4:
+      return Archetype.STRETCH_BIG;
+    case 5:
+      return Archetype.REBOUNDER;
+    default:
+      throw new Error(`Given invalid archetype num: ${archetypeNum}`);
+  }
+};
+
+export const getStatsNums = (archetype: Archetype): number[] => {
+  switch (archetype) {
+    case Archetype.PLAYMAKER:
+      return [20, 40, 65, 85, 15, 35, 75, 85, 20];
+    case Archetype.SHARPSHOOTER:
+      return [15, 85, 85, 50, 15, 50, 85, 40, 15];
+    case Archetype.SLASHER:
+      return [85, 60, 15, 40, 55, 60, 40, 20, 65];
+    case Archetype.LOCKDOWN:
+      return [25, 30, 15, 50, 60, 85, 85, 75, 15];
+    case Archetype.STRETCH_BIG:
+      return [65, 65, 65, 25, 60, 45, 30, 15, 70];
+    case Archetype.REBOUNDER:
+      return [70, 25, 15, 45, 85, 60, 40, 15, 85];
+  }
+};
+
+export const getPrimaryIdxs = (archetype: Archetype): number[] => {
+  switch (archetype) {
+    case Archetype.PLAYMAKER:
+      return [2, 3, 7];
+    case Archetype.SHARPSHOOTER:
+      return [1, 2, 6];
+    case Archetype.SLASHER:
+      return [0, 5, 8];
+    case Archetype.LOCKDOWN:
+      return [4, 5, 6];
+    case Archetype.STRETCH_BIG:
+      return [1, 2, 3];
+    case Archetype.REBOUNDER:
+      return [0, 4, 8];
+  }
+};
+
+export const getLocs = (archetype: Archetype): LocationObj[] => {
+  switch (archetype) {
+    case Archetype.PLAYMAKER:
+      return [
         makeLocation(Location.PAINT, 1, [70, 20, 0, 10]),
         makeLocation(Location.MID_RANGE, 2, [20, 30, 10, 40]),
         makeLocation(Location.TOP_KEY, 80, [1, 4, 5, 90]),
         makeLocation(Location.CORNER, 17, [10, 10, 20, 60]),
       ];
-      break;
-    case 1:
-      archetype = Archetype.SHARPSHOOTER;
-      stats = new Stats(
-        [15, 85, 85, 50, 15, 50, 85, 40, 15],
-        [1, 2, 6],
-        rating
-      );
-      locs = [
+    case Archetype.SHARPSHOOTER:
+      return [
         makeLocation(Location.PAINT, 1, [40, 40, 0, 20]),
         makeLocation(Location.MID_RANGE, 2, [5, 50, 20, 25]),
         makeLocation(Location.TOP_KEY, 70, [2, 3, 25, 70]),
         makeLocation(Location.CORNER, 27, [2, 3, 55, 40]),
       ];
-      break;
-    case 2:
-      archetype = Archetype.SLASHER;
-      stats = new Stats(
-        [85, 60, 15, 40, 55, 60, 40, 20, 65],
-        [0, 5, 8],
-        rating
-      );
-      locs = [
+    case Archetype.SLASHER:
+      return [
         makeLocation(Location.PAINT, 40, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 55, [50, 30, 0, 20]),
         makeLocation(Location.TOP_KEY, 2, [10, 10, 30, 50]),
         makeLocation(Location.CORNER, 3, [10, 10, 20, 60]),
       ];
-      break;
-    case 3:
-      archetype = Archetype.LOCKDOWN;
-      stats = new Stats(
-        [25, 30, 15, 50, 60, 85, 85, 75, 15],
-        [4, 5, 6],
-        rating
-      );
-      locs = [
+    case Archetype.LOCKDOWN:
+      return [
         makeLocation(Location.PAINT, 30, [50, 0, 0, 50]),
         makeLocation(Location.MID_RANGE, 40, [10, 10, 0, 80]),
         makeLocation(Location.TOP_KEY, 10, [10, 15, 10, 65]),
         makeLocation(Location.CORNER, 20, [10, 10, 10, 70]),
       ];
-      break;
-    case 4:
-      archetype = Archetype.STRETCH_BIG;
-      stats = new Stats(
-        [65, 65, 65, 25, 60, 45, 30, 15, 70],
-        [1, 2, 3],
-        rating
-      );
-      locs = [
+    case Archetype.STRETCH_BIG:
+      return [
         makeLocation(Location.PAINT, 55, [85, 10, 0, 5]),
         makeLocation(Location.MID_RANGE, 10, [25, 45, 10, 20]),
         makeLocation(Location.TOP_KEY, 33, [5, 10, 55, 30]),
         makeLocation(Location.CORNER, 2, [5, 10, 50, 35]),
       ];
-      break;
-    case 5:
-      archetype = Archetype.REBOUNDER;
-      stats = new Stats(
-        [70, 25, 15, 45, 85, 60, 40, 15, 85],
-        [0, 4, 8],
-        rating
-      );
-      locs = [
+    case Archetype.REBOUNDER:
+      return [
         makeLocation(Location.PAINT, 97, [90, 0, 0, 10]),
         makeLocation(Location.MID_RANGE, 3, [50, 30, 0, 20]),
         makeLocation(Location.TOP_KEY, 0, [10, 10, 10, 70]),
         makeLocation(Location.CORNER, 0, [10, 10, 10, 70]),
       ];
-      break;
-    default:
-      throw new Error("Invalid archetype given");
   }
+};
 
-  // getLocation function
-  const choices = locs.map((loc: LocationObj) => loc.choice);
+const getAgeBoolean = (age: number): number => {
+  return age <= 33 ? 1 : 0;
+};
 
-  const getLocation = new RandomSelector<Location>(choices).getChoice;
+export const calcPotential = (age: number): number => {
+  const ageBoolean = getAgeBoolean(age);
+  return 40 + getRand(0, 25) + getRand(0, ((33 - age) * 3 - 12) * ageBoolean);
+};
 
-  // getMove function
-  const getMove = (locName: Location): Move => {
-    const sameLoc = locs.find((loc: LocationObj) => loc.name === locName);
+export const calcRating = (age: number): number => {
+  const ageBoolean = getAgeBoolean(age);
+  return getRand(0, ageBoolean * (33 - age) * 3);
+};
 
-    if (!sameLoc) {
-      throw new Error(`Couldn't find location: ${locName}`);
-    }
-
-    return sameLoc.getMove();
-  };
+export const calcContract = (rating: number, potential: number): Contract => {
+  const yearsLeft = getRand(1, 5);
+  const price =
+    Math.pow(rating / 25, 3) * 0.75 + Math.pow(potential / 25, 3) * 0.25;
 
   return {
-    archetype,
-    stats,
-    getLocation,
-    getMove,
+    price,
+    yearsLeft,
   };
-}
+};

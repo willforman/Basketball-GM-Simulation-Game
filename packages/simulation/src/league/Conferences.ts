@@ -5,22 +5,26 @@ import { TeamNames, LeagueNames, DivNames } from "../models";
 export class Conferences {
   private _conferences: Conference[];
 
-  constructor(
-    confNames: LeagueNames,
-    genPlayer: (pos: number, retire: (player: Player) => void) => Player
-  ) {
-    let currTeamId = 0;
-
-    const getTeamId = () => currTeamId++;
-
-    this._conferences = [];
-    this._conferences.push(
-      new Conference(confNames.east, genPlayer, getTeamId)
-    );
-    this._conferences.push(
-      new Conference(confNames.west, genPlayer, getTeamId)
-    );
+  constructor(conferences: Conference[]) {
+    this._conferences = conferences;
   }
+
+  // constructor(
+  //   confNames: LeagueNames,
+  //   genPlayer: (pos: number, retire: (player: Player) => void) => Player
+  // ) {
+  //   let currTeamId = 0;
+
+  //   const getTeamId = () => currTeamId++;
+
+  //   this._conferences = [];
+  //   this._conferences.push(
+  //     new Conference(confNames.east, genPlayer, getTeamId)
+  //   );
+  //   this._conferences.push(
+  //     new Conference(confNames.west, genPlayer, getTeamId)
+  //   );
+  // }
 
   sort(): void {
     this._conferences.forEach((conf: Conference) => conf.sort());
@@ -83,24 +87,29 @@ class Conference {
   private _divisions: Division[];
   private _teams: Team[];
 
-  constructor(
-    divsNames: DivNames[],
-    genPlayer: (pos: number, retire: (player: Player) => void) => Player,
-    getTeamId: () => number
-  ) {
-    this._teams = [];
-    this._divisions = [];
-
-    divsNames.forEach((div: DivNames) => {
-      const divTeams = div.teams.reduce(
-        (arr: Team[], curr: TeamNames) =>
-          arr.concat(new Team(curr, genPlayer, getTeamId())),
-        []
-      );
-      this._teams = this._teams.concat(divTeams);
-      this._divisions.push(new Division(divTeams));
-    });
+  constructor(divisions: Division[], teams: Team[]) {
+    this._divisions = divisions;
+    this._teams = teams;
   }
+
+  // constructor(
+  //   divsNames: DivNames[],
+  //   genPlayer: (pos: number, retire: (player: Player) => void) => Player,
+  //   getTeamId: () => number
+  // ) {
+  //   this._teams = [];
+  //   this._divisions = [];
+
+  //   divsNames.forEach((div: DivNames) => {
+  //     const divTeams = div.teams.reduce(
+  //       (arr: Team[], curr: TeamNames) =>
+  //         arr.concat(new Team(curr, genPlayer, getTeamId())),
+  //       []
+  //     );
+  //     this._teams = this._teams.concat(divTeams);
+  //     this._divisions.push(new Division(divTeams));
+  //   });
+  // }
 
   sort(): void {
     this._teams.sort((a: Team, b: Team) => a.wins - b.wins);

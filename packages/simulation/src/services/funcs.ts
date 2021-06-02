@@ -48,3 +48,7 @@ export const mapPlayerIds = (players: Player[]): number[] => {
 export const zeros = (numZeros: number): number[] => {
   return new Array(numZeros).fill(0);
 };
+
+export const getRand = (lb: number, ub: number): number => {
+  return Math.floor(Math.random() * (ub - lb + 1)) + lb;
+};

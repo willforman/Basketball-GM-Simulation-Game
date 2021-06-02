@@ -22,56 +22,70 @@ export class League {
 
   private _freeAgents: FreeAgents;
   private _draft: Draft;
-
   private _players: Player[];
-  private _genPlayer: (pos: number, retire: (player: Player) => void) => Player;
 
-  get START_YEAR(): number {
-    return 2021;
+  constructor(
+    state: LeagueState,
+    year: number,
+    conferences: Conferences,
+    regularSeason: RegularSeason,
+    playoffs: Playoffs,
+    freeAgents: FreeAgents,
+    draft: Draft,
+    players: Player[]
+  ) {
+    this._state = state;
+    this._year = year;
+    this._conferences = conferences;
+    this._regularSeason = regularSeason;
+    this._playoffs = playoffs;
+    this._freeAgents = freeAgents;
+    this._draft = draft;
+    this._players = players;
   }
 
-  constructor(genPlayerName: () => string, confNames: LeagueNames) {
-    this._state = LeagueState.REGULAR_SEASON;
-    this._year = this.START_YEAR;
+  // constructor(genPlayerName: () => string, confNames: LeagueNames) {
+  //   this._state = LeagueState.REGULAR_SEASON;
+  //   this._year = this.START_YEAR;
 
-    this._players = [];
+  //   this._players = [];
 
-    let playerID = 0;
-    const getPlayerID = (): number => {
-      return playerID++;
-    };
+  //   let playerID = 0;
+  //   const getPlayerID = (): number => {
+  //     return playerID++;
+  //   };
 
-    const genPlayer = (
-      pos: number,
-      retire: (player: Player) => void,
-      young: boolean
-    ) => {
-      const player = new Player(
-        genPlayerName(),
-        getPlayerID(),
-        pos,
-        retire,
-        young
-      );
-      this._players.push(player);
-      return player;
-    };
+  //   const genPlayer = (
+  //     pos: number,
+  //     retire: (player: Player) => void,
+  //     young: boolean
+  //   ) => {
+  //     const player = new Player(
+  //       genPlayerName(),
+  //       getPlayerID(),
+  //       pos,
+  //       retire,
+  //       young
+  //     );
+  //     this._players.push(player);
+  //     return player;
+  //   };
 
-    this._genPlayer = (pos: number, retire: (player: Player) => void) => {
-      return genPlayer(pos, retire, true);
-    };
+  //   this._genPlayer = (pos: number, retire: (player: Player) => void) => {
+  //     return genPlayer(pos, retire, true);
+  //   };
 
-    const genPlayerAnyAge = (pos: number, retire: (player: Player) => void) => {
-      return genPlayer(pos, retire, false);
-    };
+  //   const genPlayerAnyAge = (pos: number, retire: (player: Player) => void) => {
+  //     return genPlayer(pos, retire, false);
+  //   };
 
-    this._conferences = new Conferences(confNames, genPlayerAnyAge);
+  //   this._conferences = new Conferences(confNames, genPlayerAnyAge);
 
-    this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
+  //   this._regularSeason = new RegularSeason(this.teams, this.triggerTrades);
 
-    this._freeAgents = new FreeAgents(genPlayerAnyAge);
-    this._draft = new Draft(this._genPlayer);
-  }
+  //   this._freeAgents = new FreeAgents(genPlayerAnyAge);
+  //   this._draft = new Draft(this._genPlayer);
+  // }
 
   triggerTrades = (): void => {
     //proposeTrades(this.teams);

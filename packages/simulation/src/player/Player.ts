@@ -1,14 +1,7 @@
 import { BoxScore } from "../game/BoxScore";
-import { getStats } from "./statGen";
-import {
-  Move,
-  Location,
-  Archetype,
-  Contract,
-  BOX_SCORE_STATS,
-} from "../models";
+import { Archetype, Contract, BOX_SCORE_STATS } from "../models";
 import { Stats } from "./Stats";
-import { zeros } from "../services/funcs";
+import { zeros, getRand } from "../services/funcs";
 
 export class Player {
   private _name: string;
@@ -24,99 +17,45 @@ export class Player {
   private _contract: Contract;
   private _seasonStats: SeasonStats[];
 
-  getLoc: () => Location;
-  getMove: (loc: Location) => Move;
-
   private _retire: (player: Player) => void;
 
   constructor(
     name: string,
+    age: number,
     id: number,
     pos: number,
-    retire: (player: Player) => void,
-    young?: boolean // boolean if player should be young
+    archetype: Archetype,
+    potential: number,
+    stats: Stats,
+    contract: Contract,
+    seasonStats: SeasonStats[]
   ) {
     this._name = name;
+    this._age = age;
     this._id = id;
-    this._retire = retire;
-
-    // if given valid position, use that, otherwise generate random one
-    this._pos = 0 <= pos && pos <= 4 ? pos : this.getRand(0, 4);
-
-    const ageUB = young ? 23 : 34;
-
-    this._age = this.getRand(19, ageUB);
-
-    // create potential that is higher
-    this._potential =
-      40 +
-      this.getRand(0, 25) +
-      this.getRand(0, ((33 - this._age) * 3 - 12) * ageBoolean(this._age));
-
-    const rating =
-      this._potential -
-      this.getRand(0, ageBoolean(this._age) * (33 - this._age) * 3);
-
-    this._id = id;
-
-    this._seasonStats = [new SeasonStats([new BoxScore("season")])];
-
-    const archetypeNum = this._pos + this.getRand(0, 1);
-
-    const { archetype, stats, getLocation, getMove } = getStats(
-      archetypeNum,
-      (): number => this._potential,
-      rating
-    );
-
+    this._pos = pos;
     this._archetype = archetype;
-    this.getLoc = getLocation;
-    this.getMove = getMove;
-
-    // assign stats from statgen
+    this._potential = potential;
     this._stats = stats;
-
-    this._contract = {
-      price: this.idealPay,
-      yearsLeft: Math.floor(Math.random() * 5) + 1,
-    };
+    this._contract = contract;
+    this._seasonStats = seasonStats;
   }
 
   advanceYear(): void {
     this._age++;
-    this._contract.yearsLeft--;
 
-    if (this.getRand(this._age - 31, 0) > 5) {
+    if (getRand(0, this._age - 31) > 5) {
       this._retire(this);
     }
 
     this._contract.yearsLeft--;
 
-    this._seasonStats.push(new SeasonStats([new BoxScore("season")]));
-  }
-
-  private getRand(lb: number, ub: number): number {
-    return Math.floor(Math.random() * (ub - lb + 1)) + lb;
-  }
-
-  goToNextYear(): void {
-    this._age++;
-    this.stats.updateStats(this._potential);
+    this._stats.updateStats(this._potential);
+    this._seasonStats.push(new SeasonStats([]));
   }
 
   addBoxScore(boxScore: BoxScore): void {
     this._seasonStats[this._seasonStats.length - 1].add(boxScore);
-  }
-
-  playerComp(player: Player): number {
-    return this.rating - player.rating;
-  }
-
-  newContract(contract?: Contract): void {
-    this._contract = contract ?? {
-      yearsLeft: Math.floor(Math.random() * 6),
-      price: this.idealPay,
-    };
   }
 
   // get methods
@@ -142,10 +81,6 @@ export class Player {
 
   get rating(): number {
     return this.stats.rating;
-  }
-
-  getRatingMultiplier(): number {
-    return this.rating / 100;
   }
 
   get pos(): number {
@@ -182,6 +117,10 @@ export class Player {
     return this._contract;
   }
 
+  set contract(contract: Contract) {
+    this._contract = contract;
+  }
+
   get contractOptions(): number[] {
     const rand = Math.floor(Math.random() * 5);
 
@@ -202,8 +141,8 @@ export class Player {
     return this._age;
   }
 
-  set retire(newRetire: (player: Player) => void) {
-    this._retire = newRetire;
+  set retire(retire: (player: Player) => void) {
+    this._retire = retire;
   }
 
   get seasonStats(): SeasonStats[] {
@@ -215,12 +154,7 @@ export class Player {
   }
 }
 
-// returns 0 if age is over 33, 1 if not
-function ageBoolean(age: number): number {
-  return age <= 33 ? 1 : 0;
-}
-
-class SeasonStats {
+export class SeasonStats {
   private _boxScores: BoxScore[];
 
   constructor(boxScores: BoxScore[]) {
